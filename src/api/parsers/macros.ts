@@ -6,131 +6,91 @@ const macrosEraser = (tMem: number) => Array(tMem).fill("255").join(" ");
 
 export const parseMacrosRaw = (raw: string, storedMacros?: MacrosType[]) => {
   const keymapDB = new KeymapDB();
-  const macrosArray = raw.split(" 0 0")[0].split(" ").map(Number);
 
-  // Translate received macros to human readable text
-  const macros: MacrosType[] = [];
-  let iter = 0;
-  // macros are `0` terminated or when end of macrosArray has been reached, the outer loop
-  // must cycle once more than the inner
-  while (iter <= macrosArray.length) {
-    let actions: MacroActionsType[] = [];
-    while (iter < macrosArray.length) {
-      const type = macrosArray[iter];
-      if (type === 0) {
-        break;
-      }
-
-      switch (type) {
-        case 1:
-          actions.push({
-            type,
-            keyCode: [
-              (macrosArray[(iter += 1)] << 8) + macrosArray[(iter += 1)],
-              (macrosArray[(iter += 1)] << 8) + macrosArray[(iter += 1)],
-            ],
-          });
-          break;
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-          actions.push({ type, keyCode: (macrosArray[(iter += 1)] << 8) + macrosArray[(iter += 1)] });
-          break;
-        case 6:
-        case 7:
-        case 8:
-          actions.push({ type, keyCode: macrosArray[(iter += 1)] });
-          break;
-        default:
-          break;
-      }
-
-      iter += 1;
+  function getCountOfNumbersForType(type: number): number {
+    if (type < 1 || type > 8) {
+      return 0;
     }
-    actions = actions.filter(a => {
-      let result;
-      if (Array.isArray(a.keyCode)) {
-        a.keyCode.filter(k => !Number.isNaN(k));
-      } else {
-        result = !Number.isNaN(a.keyCode);
-      }
-      return result;
-    });
-    macros.push({
-      actions,
-      name: "",
-      macro: "",
-    });
-    iter += 1;
-  }
-  macros.forEach((m, idx) => {
-    const aux = m;
-    aux.id = idx;
-    macros[idx] = aux;
-  });
-
-  // TODO: Check if stored macros match the received ones, if they match, retrieve name and apply it to current macros
-  const stored = storedMacros;
-  if (stored === undefined || stored.length === 0) {
-    return macros;
-  }
-  return macros.map((macro, i) => {
-    if (stored.length < i) {
-      return macro;
+    if (type === 1) {
+      return 4;
     }
+    if (type <= 5) {
+      return 2;
+    }
+    return 1;
+  }
 
-    return {
-      ...macro,
-      name: stored[i]?.name,
-      macro: macro.actions.map(k => keymapDB.parse(k.keyCode as number).label).join(" "),
-    };
-  });
+  function mergeHighLow(high: number, low: number): number {
+    return (high << 8) + low;
+  }
+
+  return raw
+    .trim()
+    .split(" 0 0")[0] // " 0 0" marks the end of the defined super keys
+    .split(" 0 ") // " 0 " marks the end of each super key
+    .map(actionString =>
+      actionString
+        .trim()
+        .split(/ +/)
+        .map(v => parseInt(v, 10))
+        .filter(v => v > 0 && v < 255),
+    )
+    .filter(actions => actions.length > 0)
+    .map(actions => {
+      let macroActions: MacroActionsType[] = [];
+
+      for (let i = 0; i < actions.length; ) {
+        const type = actions[i];
+        i++;
+
+        const countToRetrieve = getCountOfNumbersForType(type);
+        if (countToRetrieve > 0 && (i + countToRetrieve <= actions.length)) {
+          let keyCode: number | number[] = [];
+          switch (countToRetrieve) {
+            case 1:
+              keyCode = actions[i];
+              break;
+            case 2:
+              keyCode = mergeHighLow(actions[i], actions[i + 1]);
+              break;
+            case 4:
+              keyCode = [mergeHighLow(actions[i], actions[i + 1]), mergeHighLow(actions[i + 2], actions[i + 3])];
+              break;
+          }
+          macroActions.push({ type, keyCode });
+        }
+        i += countToRetrieve;
+      }
+      return macroActions;
+    })
+    .map((actions, id) => {
+      return {
+        actions,
+        id,
+        macro: actions.map(k => keymapDB.parse(k.keyCode as number).label).join(" "),
+        // The "match" to lookup the name is based on array index position
+        name: storedMacros.length >= id + 1 ? storedMacros[id].name : "",
+      };
+    });
 };
 
 export const serializeMacros = (macros: MacrosType[], tMem: number) => {
-  // log.info(
-  //   "Macros map function",
-  //   macros,
-  //   macrosEraser,
-  //   macros.length === 0,
-  //   macros.length === 1 && Array.isArray(macros[0].actions),
-  // );
   if (macros.length === 0 || (macros.length === 1 && !Array.isArray(macros[0].actions))) {
     return macrosEraser(tMem);
   }
-  const mapAction = (action: MacroActionsType): number[] => {
-    if (
-      Array.isArray(action.keyCode)
-        ? Number.isNaN(action.keyCode[0]) || Number.isNaN(action.keyCode[1])
-        : Number.isNaN(action.keyCode)
-    )
-      return [];
-    switch (action.type) {
-      case 1:
-        return [
-          action.type,
-          (action.keyCode as number[])[0] >> 8,
-          (action.keyCode as number[])[0] & 255,
-          (action.keyCode as number[])[1] >> 8,
-          (action.keyCode as number[])[1] & 255,
-        ];
-      case 2:
-      case 3:
-      case 4:
-      case 5:
-        return [action.type, (action.keyCode as number) >> 8, (action.keyCode as number) & 255];
-      default:
-        return [action.type, action.keyCode as number];
-    }
-  };
-  const result: string = macros
-    .map(macro => macro.actions.map((action: MacroActionsType) => mapAction(action)).concat([0]))
-    .flat()
-    .concat([0])
-    .join(" ")
-    .split(",")
-    .join(" ");
-  // log.info("MACROS GOING TO BE SAVED", result);
-  return result;
+
+  function splitHighLow(val: number): number[] {
+    return [(val & 0xff00) >> 8, (val & 0x00ff)]
+  }
+
+  return macros
+    .map(m => m.actions
+        .filter(a => [a.keyCode].flat().every(v => !Number.isNaN(v)))
+        .map(a => {
+          if (a.type <= 5) {
+            return [a.type, ...[a.keyCode].flat().map(v => splitHighLow(v)).flat()].join(" ");
+          }
+          return [a.type, ...[a.keyCode].flat()].join(" ");
+        }) + " 0")
+    .join(" ") + " 0";
 };
