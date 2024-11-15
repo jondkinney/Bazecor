@@ -1,12 +1,13 @@
 import { sanitizeIntensity } from "./sanitizeIntensity";
-import { RGB, RGBW } from "./types";
+import { RGBW } from "./types";
+import { PaletteType } from "@Types/layout";
 
 /**
  * Convert a RGBW color to RGB
  * @param {RGBW} color - A RGBW color
  * @returns {RGB} - The color converted to RGB
  */
-export function rgbw2b(color: RGBW): RGB {
+export function rgbw2b(color: RGBW): PaletteType {
   const sanitizedR = sanitizeIntensity(color.r);
   const sanitizedG = sanitizeIntensity(color.g);
   const sanitizedB = sanitizeIntensity(color.b);
