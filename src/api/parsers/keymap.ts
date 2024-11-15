@@ -1,26 +1,27 @@
-import { KeyType } from "@Renderer/types/layout";
+import { KeyType } from "@Types/layout";
 import { KeymapDB } from "../keymap";
 
 const keymapDB = new KeymapDB();
 
-export const parseKeymapRaw = (keymap: string, keyLayerSize: number): number[][] =>
-  keymap
-    .split(" ")
-    .filter(v => v.length > 0)
-    .map((k: string) => parseInt(k, 10))
-    .reduce((resultArray, item, index) => {
-      const localResult = resultArray;
-      const chunkIndex = Math.floor(index / keyLayerSize);
+export function parseKeymapRaw(keymap: string, keyLayerSize: number): number[][] {
+  const rawColorMapAsNumbers = keymap
+    .trim()
+    .split(/ +/)
+    .map((value: string) => parseInt(value, 10));
 
-      if (!localResult[chunkIndex]) {
-        localResult[chunkIndex] = []; // start a new chunk
-      }
-      localResult[chunkIndex].push(item);
-      return localResult;
-    }, []);
+  const result: number[][] = [];
+  for (let i = 0; i < rawColorMapAsNumbers.length; ) {
+    const keys: number[] = [];
+    for (let c = 0; c < keyLayerSize; c++) {
+      keys.push(i < rawColorMapAsNumbers.length ? rawColorMapAsNumbers[i++] : 0);
+    }
+    result.push(keys);
+  }
+  return result;
+}
 
 export const serializeKeymap = (keymap: KeyType[][]) =>
   keymap
     .flat()
-    .map(k => (typeof k === "number" ? String(k) : keymapDB.serialize(k).toString()))
+    .map(k => keymapDB.serialize(k).toString())
     .join(" ");

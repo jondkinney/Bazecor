@@ -1,15 +1,17 @@
-export const parseColormapRaw = (colormap: string, ColorLayerSize: number): number[][] =>
-  colormap
-    .split(" ")
-    .filter(v => v.length > 0)
-    .map((k: string) => parseInt(k, 10))
-    .reduce((resultArray, item, index) => {
-      const localResult: number[][] = resultArray;
-      const chunkIndex = Math.floor(index / ColorLayerSize);
+export function parseColormapRaw(colormap: string, ColorLayerSize: number): number[][] {
+  const rawColorMapAsNumbers = colormap
+    .trim()
+    .split(/ +/)
+    .map((value: string) => parseInt(value, 10))
+    .map((value: number) => Math.max(0, Math.min(255, value)));
 
-      if (!localResult[chunkIndex]) {
-        localResult[chunkIndex] = []; // start a new chunk
-      }
-      localResult[chunkIndex].push(item);
-      return localResult;
-    }, []);
+  const result: number[][] = [];
+  for (let i = 0; i < rawColorMapAsNumbers.length; ) {
+    const color: number[] = [];
+    for (let c = 0; c < ColorLayerSize; c++) {
+      color.push(i < rawColorMapAsNumbers.length ? rawColorMapAsNumbers[i++] : 0);
+    }
+    result.push(color);
+  }
+  return result;
+}
