@@ -1,5 +1,5 @@
-import { rgbw2b } from "../color";
 import { PaletteType } from "@Types/layout";
+import { rgbw2b } from "../color";
 
 /**
  * Converts a string of space delimited numbers from 0-255 representing R, G, B and possibly W channels to an array of PaletteType objects.
@@ -22,16 +22,16 @@ export function parsePaletteRaw(palette: string, isRGBW: boolean): PaletteType[]
     .map((value: number) => Math.max(0, Math.min(255, value)));
 
   const result: PaletteType[] = [];
-  for (let i = 0; i < rawPaletteAsNumbers.length;) {
-    let r = rawPaletteAsNumbers[i++];
-    let g = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
-    let b = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
+  for (let i = 0; i < rawPaletteAsNumbers.length; ) {
+    const r = rawPaletteAsNumbers[i++];
+    const g = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
+    const b = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
 
     if (isRGBW) {
-      let w = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
-      result.push(rgbw2b({r,g,b,w}));
+      const w = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
+      result.push(rgbw2b({ r, g, b, w }));
     } else {
-      result.push({ r: r, g: g, b: b, rgb: `rgb(${r}, ${g}, ${b})` });
+      result.push({ r, g, b, rgb: `rgb(${r}, ${g}, ${b})` });
     }
   }
   return result;

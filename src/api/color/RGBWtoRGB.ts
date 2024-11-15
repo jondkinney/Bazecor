@@ -1,6 +1,6 @@
+import { PaletteType } from "@Types/layout";
 import { sanitizeIntensity } from "./sanitizeIntensity";
 import { RGBW } from "./types";
-import { PaletteType } from "@Types/layout";
 
 /**
  * Convert a RGBW color to RGB
