@@ -17,8 +17,7 @@
 
 import React, { useState } from "react";
 import Styled from "styled-components";
-
-import ReactMarkdown from "react-markdown";
+import parse, { domToReact } from "html-react-parser";
 
 import Heading from "@Renderer/components/atoms/Heading";
 import { Badge } from "@Renderer/components/atoms/Badge";
@@ -160,6 +159,57 @@ interface FirmwareVersionStatusProps {
   typeSelected: string;
 }
 
+const options = {
+  // eslint-disable-next-line consistent-return
+  replace({ name, children }: any) {
+    if (name === "h2") {
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      return (
+        <h2
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: "600",
+            paddingBottom: ".3rem",
+            borderBottom: "1px solid #878787b3",
+            lineHeight: "1.25",
+            marginTop: "1.5rem",
+            marginBottom: "1rem",
+          }}
+        >
+          {domToReact(children, options)}
+        </h2>
+      );
+    }
+    if (name === "p") {
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      return (
+        <p style={{ marginBottom: "1rem", fontSize: "16px", fontWeight: "200", lineHeight: "1.5", wordWrap: "break-word" }}>
+          {domToReact(children, options)}
+        </p>
+      );
+    }
+    if (name === "ul") {
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      return (
+        <p
+          style={{
+            marginTop: "0",
+            marginBottom: "1rem",
+            paddingLeft: "1.5rem",
+            listStyleType: "disc",
+            fontSize: "16px",
+            fontWeight: "200",
+            lineHeight: "1.5",
+            wordWrap: "break-word",
+          }}
+        >
+          {domToReact(children, options)}
+        </p>
+      );
+    }
+  },
+};
+
 const FirmwareVersionStatus = (props: FirmwareVersionStatusProps) => {
   const { device, isUpdated, firmwareList, selectedFirmware, send, typeSelected } = props;
   const [modalFirmwareDetails, setModalFirmwareDetails] = useState(false);
@@ -264,7 +314,7 @@ const FirmwareVersionStatus = (props: FirmwareVersionStatusProps) => {
           </DialogHeader>
           <div className="px-6 pb-6 mt-2">
             {firmwareList[selectedFirmware]?.body ? (
-              <ReactMarkdown>{firmwareList[selectedFirmware]?.body}</ReactMarkdown>
+              <div className="h-40v overflow-auto pl-8 pr-8">{parse(firmwareList[selectedFirmware]?.body, options)}</div>
             ) : (
               <div className="loading marginCenter flex text-center justify-center">
                 <IconLoader />

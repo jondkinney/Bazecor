@@ -539,6 +539,7 @@ const LayoutEditor = (props: LayoutEditorProps) => {
     const plette = parsePaletteRaw(paletteData, currentDevice?.device.RGBWMode);
     log.info("PARSED PALETTE: ", paletteData, plette, currentDevice?.device.RGBWMode);
     const colMap = parseColormapRaw(colorMapData, layerSize);
+    log.info("PARSED COLORMAP: ", colorMapData, layerSize);
 
     return {
       palette: plette,

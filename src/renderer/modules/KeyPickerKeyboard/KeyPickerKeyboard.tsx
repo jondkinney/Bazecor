@@ -476,7 +476,7 @@ function KeyPickerKeyboard(props: Props) {
                                     disabled={false}
                                     // selected={code.base + code.modified >= 20000}
                                     onClick={() => {
-                                      toggleModal(false);
+                                      toggleModal(true);
                                     }}
                                     size="icon"
                                     className="w-9 h-9"

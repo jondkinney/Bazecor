@@ -52,9 +52,10 @@ interface BadgeFirmwareProps {
 }
 
 const BadgeFirmware = ({ countdown }: BadgeFirmwareProps) => {
-  if (countdown === 0 || countdown > 3) return null;
+  if (countdown <= 0 || countdown > 3) return null;
   return (
     <BadgeWrapper
+      data-testid="badge-firmware"
       className={`key-badge key-badge__add ${countdown === 2 || countdown === 3 ? "key-badge__release" : null} ${
         countdown > 4 ? "key-badge__remove" : null
       }`}

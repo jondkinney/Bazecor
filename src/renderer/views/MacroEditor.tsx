@@ -524,8 +524,8 @@ function MacroEditor(props: MacroEditorProps) {
 
   const importMacro = async () => {
     const options = {
-      title: "Load Macro file",
-      buttonLabel: "Load Macro",
+      title: "Import Macro",
+      buttonLabel: "Import Macro",
       filters: [
         { name: "Json", extensions: ["json"] },
         { name: "All Files", extensions: ["*"] },
@@ -572,9 +572,9 @@ function MacroEditor(props: MacroEditorProps) {
     const { macros, selectedMacro } = state;
     const data = JSON.stringify(macros[selectedMacro]);
     const options = {
-      title: "Save Macro file",
-      defaultPath: `Macro${selectedMacro}-${macros[selectedMacro].name}.json`,
-      buttonLabel: "Save Macro",
+      title: "Export Macro",
+      defaultPath: `Macro${selectedMacro + 1}-${macros[selectedMacro].name}.json`,
+      buttonLabel: "Export Macro",
       filters: [
         { name: "Json", extensions: ["json"] },
         { name: "All Files", extensions: ["*"] },

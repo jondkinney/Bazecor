@@ -213,6 +213,13 @@ const TimelineEditorMacroTable = (props: Props) => {
     updateRows(aux);
   };
 
+  const editDelay = (id: number, delay: number | number[]) => {
+    log.info("Delay launched", id, delay);
+    const aux = rows;
+    aux[id].keyCode = delay;
+    updateRows(aux);
+  };
+
   const addModifier = (rowID: number, modifierID: number) => {
     log.info("Called addModifier", rowID, modifierID);
     const { name, keyCode, color } = modifiers[modifierID];
@@ -275,6 +282,7 @@ const TimelineEditorMacroTable = (props: Props) => {
                         onDeleteRow={onDeleteRow}
                         onCloneRow={onCloneRow}
                         addModifier={addModifier}
+                        editDelay={editDelay}
                       />
                     )}
                   </Draggable>

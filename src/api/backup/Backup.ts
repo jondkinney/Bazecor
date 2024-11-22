@@ -1,14 +1,17 @@
 import path from "path";
 import fs from "fs";
-import Store from "electron-store";
 import log from "electron-log/renderer";
 import { Neuron } from "@Renderer/types/neurons";
 import { BackupType } from "@Renderer/types/backups";
 import { VirtualType } from "@Renderer/types/virtual";
+import Store from "../../renderer/utils/Store";
 import Device from "../comms/Device";
 import {
+  convertColormapR2toR,
   convertColormapRtoR2,
+  convertKeymapR2toR,
   convertKeymapRtoR2,
+  convertPaletteR2toR,
   convertPaletteRtoR2,
   parseColormapRaw,
   parseKeymapRaw,
@@ -17,7 +20,7 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glob = require(`glob`);
-const store = new Store();
+const store = Store.getStore();
 
 export default class Backup {
   neurons: Neuron[];
@@ -210,6 +213,8 @@ export default class Backup {
     log.info("Checking if statement:", device.device.info.product === "Raise2", backup.neuron.device.info.product === "Raise");
     if (device.device.info.product === "Raise2" && backup.neuron.device.info.product === "Raise")
       data = Backup.convertRaiseToRaise2(backup, device);
+    if (device.device.info.product === "Raise" && backup.neuron.device.info.product === "Raise2")
+      data = Backup.convertRaise2ToRaise(backup, device);
     if (device) {
       try {
         for (let i = 0; i < data.length; i += 1) {
@@ -294,8 +299,9 @@ export default class Backup {
 
   static convertRaiseToRaise2 = (backup: BackupType, dev: Device) => {
     log.info("converting Raise Backup to Raise2");
+    const bkpDev = backup.neuron.device;
     const keyLayerSize = 80;
-    const colorLayerSize = 132;
+    const colorLayerSize = bkpDev ? bkpDev.keyboardUnderglow.rows * bkpDev.keyboardUnderglow.columns : 132;
 
     const localBackup: BackupType = JSON.parse(JSON.stringify(backup));
     localBackup.neuron.device = dev.device;
@@ -313,7 +319,46 @@ export default class Backup {
     );
     const paletteFinal = palette.map(color => convertPaletteRtoR2(color));
 
-    // log.info("CONVERSION 6:", paletteFinal, colormapFinal);
+    localBackup.backup[colormapIndex].data = colormapFinal
+      .flat()
+      .map(k => k.toString())
+      .join(" ");
+    localBackup.backup[keymapIndex].data = keymapFinal
+      .flat()
+      .map(k => k.toString())
+      .join(" ");
+    localBackup.backup[paletteIndex].data = paletteFinal
+      .flat()
+      .map(v => v.toString())
+      .join(" ");
+
+    log.info("Final Backup:", localBackup.backup);
+    return localBackup.backup;
+  };
+
+  static convertRaise2ToRaise = (backup: BackupType, dev: Device) => {
+    log.info("converting Raise2 Backup to Raise");
+    const bkpDev = backup.neuron.device;
+    const keyLayerSize = 80;
+    const colorLayerSize = bkpDev ? bkpDev.keyboardUnderglow.rows * bkpDev.keyboardUnderglow.columns : 176;
+
+    const localBackup: BackupType = JSON.parse(JSON.stringify(backup));
+    localBackup.neuron.device = dev.device;
+
+    const keymapIndex = localBackup.backup.findIndex(c => c.command === "keymap.custom");
+    const paletteIndex = localBackup.backup.findIndex(c => c.command === "palette");
+    const colormapIndex = localBackup.backup.findIndex(c => c.command === "colormap.map");
+
+    const custom = parseKeymapRaw(localBackup.backup[keymapIndex].data, keyLayerSize);
+    const palette = parsePaletteRaw(localBackup.backup[paletteIndex].data, true);
+    const colormap = parseColormapRaw(localBackup.backup[colormapIndex].data, colorLayerSize);
+
+    const keymapFinal = custom.map((layer: number[]) => convertKeymapR2toR(layer, dev.device.info.keyboardType));
+    const colormapFinal = colormap.map((layer: number[]) =>
+      convertColormapR2toR(layer, dev.device.info.keyboardType, backup.neuron.device.info.keyboardType),
+    );
+    const paletteFinal = palette.map(color => convertPaletteR2toR(color));
+
     localBackup.backup[colormapIndex].data = colormapFinal
       .flat()
       .map(k => k.toString())

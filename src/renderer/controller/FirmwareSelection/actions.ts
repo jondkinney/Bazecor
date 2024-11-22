@@ -41,13 +41,16 @@ const loadAvailableFirmwareVersions = async (allowBeta: boolean) => {
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
       },
+      mediaType: {
+        format: "full",
+      },
     });
     // log.info("Data from github!", JSON.stringify(data));
     data.data.forEach(release => {
       const releaseData = release.name?.split(" ");
       const name = releaseData ? releaseData[0] : "";
       const version = releaseData ? releaseData[1] : "";
-      const body = release.body || "";
+      const body = release.body_html || "";
       const assets: Array<{
         name: string;
         url: string;

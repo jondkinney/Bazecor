@@ -65,6 +65,7 @@ import itIT from "@Renderer/modules/KeyPickerKeyboard/languages/it/IT.json";
 import jaJP from "@Renderer/modules/KeyPickerKeyboard/languages/ja/JP.json";
 import koKR from "@Renderer/modules/KeyPickerKeyboard/languages/ko/KR.json";
 import plPL from "@Renderer/modules/KeyPickerKeyboard/languages/pl/PL.json";
+import ruRU from "@Renderer/modules/KeyPickerKeyboard/languages/ru/RU.json";
 import deCH from "@Renderer/modules/KeyPickerKeyboard/languages/de/CH.json";
 
 // Dygma - Layouts (community/third-party)
@@ -92,6 +93,7 @@ const languages: { [key in LangOptions]: Array<KeyProps> } = {
   "ja-JP": jaJP,
   "ko-KR": koKR,
   "pl-PL": plPL,
+  "ru-RU": ruRU,
   "de-CH": deCH,
   "es-MX": esMX,
   // Community
@@ -117,6 +119,7 @@ export type LangOptions =
   | "ja-JP"
   | "ko-KR"
   | "pl-PL"
+  | "ru-RU"
   | "de-CH"
   | "en-XX-eurkey"
   | "fr-XX-bepo"

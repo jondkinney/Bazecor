@@ -7,6 +7,7 @@ import { parseSuperkeysRaw, serializeSuperkeys } from "./superkeys";
 
 // Converters
 import { convertKeymapRtoR2, convertColormapRtoR2, convertPaletteRtoR2 } from "./conversions/raiseToRaise2";
+import { convertKeymapR2toR, convertColormapR2toR, convertPaletteR2toR } from "./conversions/raise2ToRaise";
 
 export {
   parseKeymapRaw,
@@ -20,4 +21,7 @@ export {
   convertKeymapRtoR2,
   convertColormapRtoR2,
   convertPaletteRtoR2,
+  convertKeymapR2toR,
+  convertColormapR2toR,
+  convertPaletteR2toR,
 };

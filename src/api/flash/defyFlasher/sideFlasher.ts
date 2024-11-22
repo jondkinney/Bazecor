@@ -119,7 +119,7 @@ export default class SideFlaser {
       const seal = recoverSeal(this.firmwareSides.slice(0, 28));
       // log.info("This is the seal from the FW file");
       // eslint-disable-next-line no-console
-      console.info("This is the seal from the Neuron");
+      console.info("This is the seal from the FW File");
       // eslint-disable-next-line no-console
       console.table(seal);
 
@@ -152,6 +152,7 @@ export default class SideFlaser {
       }
       if (selectedDev === undefined) throw new Error("Flashable device not found");
       log.info("Found this device:", selectedDev);
+      await delay(1000);
 
       this.serialport = new SerialPort({
         path: selectedDev?.path,

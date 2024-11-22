@@ -49,8 +49,8 @@ export const convertColormapRtoR2 = (layer: number[], keyboardType: string, back
     const shiftC = result[19];
     const extraC = result[20];
 
-    result[20] = extraC;
-    result[19] = shiftC;
+    result[19] = extraC;
+    result[20] = shiftC;
   }
 
   return result;

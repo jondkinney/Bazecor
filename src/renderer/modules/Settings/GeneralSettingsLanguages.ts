@@ -35,6 +35,7 @@ import jaJP from "@Assets/flags/jaJP.png";
 import koKR from "@Assets/flags/koKR.png";
 import plPL from "@Assets/flags/plPL.png";
 import deCH from "@Assets/flags/deCH.png";
+import ruRU from "@Assets/flags/ruRU.png";
 
 // Dygma - Layouts (community/third-party)
 import enXXeurkey from "@Assets/flags/enXXeurkey.png";
@@ -62,6 +63,7 @@ const flags = [
   koKR,
   nbNO,
   plPL,
+  ruRU,
   esES,
   esMX,
   svSE,
@@ -85,6 +87,7 @@ const languages = [
   "ko-KR",
   "nb-NO",
   "pl-PL",
+  "ru-RU",
   "es-ES",
   "es-MX",
   "sv-SE",
@@ -108,6 +111,7 @@ const languageNames = [
   "Korean",
   "Norwegian",
   "Polish",
+  "Russian",
   "Spanish",
   "Spanish (Latin American)",
   "Swedish",

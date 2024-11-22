@@ -90,6 +90,7 @@ import { isIS, isISModifiedTables } from "./is/IS";
 import { jaJP, jaJPModifiedTables } from "./ja/JP";
 import { koKR, koKRModifiedTables } from "./ko/KR";
 import { plPL, plPLModifiedTables } from "./pl/PL";
+import { ruRU, ruRUModifiedTables} from "./ru/RU";
 import { deCH, deCHModifiedTables } from "./de/CH";
 import { esMX, esMXModifiedTables } from "./es/MX";
 import { itIT, itITModifiedTables } from "./it/IT";
@@ -117,6 +118,7 @@ const supportModifiedTables = {
   "ja-JP": jaJPModifiedTables,
   "ko-KR": koKRModifiedTables,
   "pl-PL": plPLModifiedTables,
+  "ru-RU": ruRUModifiedTables,
   "de-CH": deCHModifiedTables,
   "it-IT": itITModifiedTables,
   // Community
@@ -145,6 +147,7 @@ const languages: {
   "ja-JP": jaJP,
   "ko-KR": koKR,
   "pl-PL": plPL,
+  "ru-RU": ruRU,
   "de-CH": deCH,
   "it-IT": itIT,
   // Community

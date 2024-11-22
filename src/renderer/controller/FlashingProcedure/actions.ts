@@ -76,7 +76,9 @@ const restoreSettings = async (
   try {
     let device: Device | undefined;
     const list = (await DeviceTools.list()) as Device[];
-    log.info(list);
+    log.info("Found these devices", list);
+    await delay(1000);
+
     const selected = list.find(x => parseInt(x.productId, 16) === context.originalDevice?.device?.usb.productId);
     if (selected !== undefined) device = await DeviceTools.connect(selected);
     for (let i = 0; i < backup.backup.length; i += 1) {

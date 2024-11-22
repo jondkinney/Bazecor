@@ -47,8 +47,8 @@ class HID {
 
     filteredDevices.forEach(device => {
       let name;
-      let wireless;
-      let layout;
+      let wireless = true;
+      let layout = "ANSI";
       if (device.productName.includes("Raise2")) {
         const [nme, wless, ly] = device.productName.split(" ")[0].split("-");
         name = nme;
@@ -58,9 +58,17 @@ class HID {
       }
       for (const Hdevice of Hardware.serial) {
         if (device.productId === Hdevice.usb.productId && device.vendorId === Hdevice.usb.vendorId) {
-          const newHID: ExtHIDInterface = device;
-          newHID.device = Hdevice as DygmaDeviceType;
-          foundDevices.push(newHID);
+          if (device.productId === 33) {
+            if (Hdevice.info.keyboardType === layout) {
+              const newHID: ExtHIDInterface = device;
+              newHID.device = Hdevice as DygmaDeviceType;
+              foundDevices.push(newHID);
+            }
+          } else {
+            const newHID: ExtHIDInterface = device;
+            newHID.device = Hdevice as DygmaDeviceType;
+            foundDevices.push(newHID);
+          }
         }
       }
     });

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { withTheme, DefaultTheme } from "styled-components";
 import { Popover, PopoverContent, PopoverTrigger } from "@Renderer/components/atoms/Popover";
 import { i18n } from "@Renderer/i18n";
@@ -11,6 +11,8 @@ import {
   IconStopWatch,
   IconDragAndDrop,
   IconDelete,
+  IconPen,
+  IconCheckmark,
 } from "@Renderer/components/atoms/icons";
 import Heading from "@Renderer/components/atoms/Heading";
 import { Button } from "@Renderer/components/atoms/Button";
@@ -36,6 +38,7 @@ interface KeyMacroProps {
   updateAction: (id: number, actionType: number) => void;
   onDeleteRow: (id: number) => void;
   onCloneRow: (id: number) => void;
+  editDelay: (id: number, delay: number | number[]) => void;
   theme: DefaultTheme;
 }
 
@@ -49,6 +52,7 @@ const KeyMacro: React.FC<KeyMacroProps> = ({
   updateAction,
   onDeleteRow,
   onCloneRow,
+  editDelay,
   theme,
 }) => {
   const getItemStyle = useCallback(
@@ -64,8 +68,35 @@ const KeyMacro: React.FC<KeyMacroProps> = ({
     }),
     [theme.styles.macroKey],
   );
-
   const isModifier = useMemo(() => (item.keyCode as number) > 223 && (item.keyCode as number) < 232 && item.type !== 2, [item]);
+  const [delay, setDelay] = useState<number | number[]>(item.keyCode);
+  const [enableEdit, setEnableEdit] = useState(false);
+
+  const setDelayHandler = (value: string) => {
+    const randomDelay = Array.isArray(item.keyCode);
+    const allNumbers = randomDelay ? value.split("-").filter(v => v !== "").length === 2 : value !== "";
+
+    if (allNumbers) {
+      if (randomDelay) {
+        const newDelay = value
+          .trim()
+          .split("-")
+          .map(s => parseInt(s, 10));
+        setDelay(newDelay);
+      } else {
+        setDelay(parseInt(value, 10));
+      }
+    } else {
+      setDelay(randomDelay ? [0, 0] : 0);
+    }
+  };
+
+  const finishDelayEdit = () => {
+    editDelay(item.id, delay);
+    setEnableEdit(false);
+  };
+
+  const visualKeycode = Array.isArray(item.keyCode) ? item.keyCode.join("-") : item.keyCode;
 
   return (
     <div>
@@ -108,9 +139,34 @@ const KeyMacro: React.FC<KeyMacroProps> = ({
                         >
                           {item.type === 1 || item.type === 2 ? i18n.editor.macros.delay : i18n.general.key}
                         </Heading>
-                        <p className="keyValue text-2xl">
-                          {item.symbol} {item.type === 1 || item.type === 2 ? <small>ms</small> : ""}
-                        </p>
+                        <div className="keyValue text-2xl">
+                          {(item.type === 1 || item.type === 2) && enableEdit ? (
+                            <input
+                              id="changeDelay"
+                              type="text"
+                              value={Array.isArray(delay) ? `${delay[0]}-${delay[1]}` : `${delay}`}
+                              onChange={event => setDelayHandler(event.target.value)}
+                              className="form-input form-input-lg p-3 align-top"
+                            />
+                          ) : (
+                            visualKeycode
+                          )}
+                          {(item.type === 1 || item.type === 2) && !enableEdit ? <small>ms</small> : ""}
+                          {(item.type === 1 || item.type === 2) && !enableEdit ? (
+                            <Button variant="ghost" onClick={() => setEnableEdit(true)}>
+                              <IconPen />{" "}
+                            </Button>
+                          ) : (
+                            ""
+                          )}
+                          {(item.type === 1 || item.type === 2) && enableEdit ? (
+                            <Button variant="ghost" onClick={() => finishDelayEdit()} className="pl-3">
+                              <IconCheckmark size="md" />{" "}
+                            </Button>
+                          ) : (
+                            ""
+                          )}
+                        </div>
                       </div>
                       <div className="keyFunctions py-[12px] px-[12px] bg-gray-50/40 dark:bg-gray-800 border-t-[1px] border-gray-50 dark:border-gray-700">
                         <Heading

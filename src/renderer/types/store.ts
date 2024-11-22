@@ -6,6 +6,7 @@ export interface StorageType {
     darkMode: string;
     hideBluetoothExperimental?: boolean;
     showDefaults: boolean;
+    version: string;
   };
   neurons: unknown[];
 }

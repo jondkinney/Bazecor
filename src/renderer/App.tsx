@@ -43,8 +43,10 @@ import BazecorDevtools from "@Renderer/views/BazecorDevtools";
 import { showDevtools } from "@Renderer/devMode";
 
 import Store from "@Renderer/utils/Store";
+import { VersionUpdateDialog } from "@Renderer/components/molecules/CustomModal/VersionUpdateDialog";
 import getTranslator from "@Renderer/utils/translator";
 import { Neuron } from "@Types/neurons";
+import { version } from "../../package.json";
 import "../api/keymap";
 import "../api/colormap";
 import { DeviceTools, useDevice } from "./DeviceContext";
@@ -67,6 +69,7 @@ function App() {
   const [restoredOk, setRestoredOk] = useState(true);
   const [fwUpdate, setFwUpdate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [notifyNewVersion, setNotifyNewVersion] = useState(false);
 
   const saveButtonRef = useRef(null);
   const discardChangesButtonRef = useRef(null);
@@ -75,10 +78,11 @@ function App() {
   const navigate = useNavigate();
   const varFlashing = React.useRef(false);
   const device: any = React.useRef();
+  const oldSettings = store.get("settings");
 
   const updateStorageSchema = async () => {
     // Update stored settings schema
-    log.verbose("Retrieving settings: ", store.get("settings"));
+    log.verbose("Retrieving settings: ", oldSettings);
     const locale = await ipcRenderer.invoke("get-Locale");
     if (store.get("settings.language") !== undefined) {
       i18n.setLanguage(store.get("settings.language").toString());
@@ -123,6 +127,9 @@ function App() {
   useEffect(() => {
     const init = async () => {
       await updateStorageSchema();
+      if (oldSettings.version === undefined || oldSettings.version !== version) {
+        setNotifyNewVersion(true);
+      }
       let isDark: boolean;
       const mode = store.get("settings.darkMode") as string;
       isDark = mode === "dark";
@@ -162,6 +169,7 @@ function App() {
       localStorage.clear();
     };
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startContext = () => {
@@ -383,6 +391,10 @@ function App() {
     setRestoredOk(status);
   };
 
+  const handleUpdateVersion = () => {
+    store.set("settings.version", version);
+  };
+
   return (
     <ThemeProvider theme={darkMode ? Dark : Light}>
       <GlobalStyles />
@@ -506,6 +518,13 @@ function App() {
           />
         </Routes>
       </div>
+      <VersionUpdateDialog
+        open={notifyNewVersion}
+        oldVersion={oldSettings.version}
+        newVersion={version}
+        handleUpdate={handleUpdateVersion}
+        onCancel={() => setNotifyNewVersion(false)}
+      />
     </ThemeProvider>
   );
 }

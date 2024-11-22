@@ -1,16 +1,14 @@
-# Focus API documentation
+# Serial API documentation
 
 ## Concept
 
-The Focus API is a two-way communication mechanism between the Raise and any computer software that wants to get information or configure/activate the raise\'s plugins.
+The Serial API is a two-way communication mechanism between the Raise and any computer software that wants to get information or configure/activate the raise\'s plugins.
 
 It discovers all the EEPROM assigned positions of the memory with specific commands to update or trigger them depending on the kind of plugin that uses them.
 
 This means for example being capable of storing the macros or to be able to trigger them through the serial interface without touching the keyboard or Bazecor.
 
-The focus library is a part of the Keyboard's Firmware but also has a helper class created in JavaScript for the Bazecor, we will show here the commands for the JavaScript Focus API and how to trigger them through the serial interface also, just as an example if you want to retrieve all available commands you have to send the keyboard the string "help".
-
-**For JavaScript:** `focus.command("help")`
+The serial library is a part of the Keyboard's Firmware but also has a helper class created in JavaScript for the Bazecor, we will show here the commands for the JavaScript Serial API and how to trigger them through the serial interface also, just as an example if you want to retrieve all available commands you have to send the keyboard the string "help".
 
 **Serial Command (Unix):** `echo 'help' > /dev/ttyACM0`
 
@@ -20,11 +18,11 @@ You can expand on this knowledge in the docs about the [kaleidoscope Firmware](h
 
 ## ⚠ Memory usage disclaimer ⚠
 
-When sending focus commands to the keyboard, keep in mind that every time you put data after the command, that stores the information in the keyboard, this means that the flash memory is using up it's lifespan, so avoid loops that save data to the keyboard frequently, so that the chip will last you as long as possible.
+When sending serial commands to the keyboard, keep in mind that every time you put data after the command, that stores the information in the keyboard, this means that the flash memory is using up it's lifespan, so avoid loops that save data to the keyboard frequently, so that the chip will last you as long as possible.
 
 ## Available Methods
 
-Running `focus.command("help")` will get you the following list of available commands:
+Running ` state.currentDevice.command("help")` will get you the following list of available commands:
 
 **Version**
 
@@ -74,7 +72,11 @@ Commands to help you with the testing and settings of the raise's leds
 
 [led.brightness](#ledbrightness)
 
+[led.brightness.wireless](#ledbrightnesswireless)
+
 [led.brightnessUG](#ledbrightnessUG)
+
+[led.brightnessUG.wireless](#ledbrightnessUGwireless)
 
 [led.theme](#ledtheme)
 
@@ -91,6 +93,12 @@ Commands to read/write the color palette and colorMap from the raise to change i
 Time to wait until turning the led's off
 
 [idleleds.time_limit](#idleledstime_limit)
+
+[idleleds.wireless](#idleledswireless)
+
+[idleleds.true_sleep](#idleledstrue_sleep)
+
+[idleleds.true_sleep_time](#idleledstrue_sleep_time)
 
 **Hardware Section**
 
@@ -170,6 +178,26 @@ Layer commands to switch between them (for example when changing a from a progra
 
 [layer.state](#layerstate)
 
+**Wireless Section**
+
+Wireless commands are only supported on the wireless hardware devices, like the Defy wireless and the Raise 2 wireless, other products should not enumerate these commands when using ```help```
+
+[wireless.battery.left.level](#wirelessbatteryleftlevel)
+
+[wireless.battery.left.status](#wirelessbatteryleftstatus)
+
+[wireless.battery.right.level](#wirelessbatteryrightlevel)
+
+[wireless.battery.right.status](#wirelessbatteryrightstatus)
+
+[wireless.battery.savingMode](#wirelessbatterysavingMode)
+
+[wireless.battery.forceRead](#wirelessbatteryforceRead)
+
+[wireless.rf.syncPairing](#wirelessrfsyncPairing)
+
+[wireless.rf.power](#wirelessrfpower)
+
 ### version
 
 Returns the version of the Raise firmware stored in the keyboard's EEPROM
@@ -178,7 +206,7 @@ Returns the version of the Raise firmware stored in the keyboard's EEPROM
 
 - JavaScript:
   ```js
-  focus.command("version")
+   state.currentDevice.command("version")
   ```
 - Serial Command (Unix):
   ```shell
@@ -205,7 +233,7 @@ it should give back 3 strings,
 
 ### keymap.custom
 
-This command of the focus API has two functions, when sent alone, it retrieves the whole custom keymap stored in the keyboard, when sent with the map as trailing numbers (in the same format as received) it will update the custom keymap stored in the EEPROM.
+This command of the serial API has two functions, when sent alone, it retrieves the whole custom keymap stored in the keyboard, when sent with the map as trailing numbers (in the same format as received) it will update the custom keymap stored in the EEPROM.
 
 To know the actual correlation between the position of the map sent and the actual keys in the keyboard, [look here](https://github.com/Dygmalab/Raise-Firmware/blob/master/FOCUS_API.MD)
 
@@ -215,7 +243,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("keymap.custom")
+   state.currentDevice.command("keymap.custom")
   ```
 - Serial Command (Unix):
   ```shell
@@ -226,7 +254,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("keymap.custom N N N N N N N N N N N N N N N")
+   state.currentDevice.command("keymap.custom N N N N N N N N N N N N N N N")
   ```
 - Serial Command (Unix):
   ```shell
@@ -255,7 +283,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("keymap.default")
+   state.currentDevice.command("keymap.default")
   ```
 - Serial Command (Unix):
   ```shell
@@ -266,7 +294,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("keymap.default N N N N N N N N N N N N N N N")
+   state.currentDevice.command("keymap.default N N N N N N N N N N N N N N N")
   ```
 - Serial Command (Unix):
   ```shell
@@ -293,7 +321,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("keymap.onlyCustom")
+   state.currentDevice.command("keymap.onlyCustom")
   ```
 - Serial Command (Unix):
   ```shell
@@ -304,7 +332,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("keymap.onlyCustom true")
+   state.currentDevice.command("keymap.onlyCustom true")
   ```
 - Serial Command (Unix):
   ```shell
@@ -325,7 +353,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("keymap.defaultLayer")
+   state.currentDevice.command("keymap.defaultLayer")
   ```
 - Serial Command (Unix):
   ```shell
@@ -336,7 +364,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("keymap.defaultLayer 1")
+   state.currentDevice.command("keymap.defaultLayer 1")
   ```
 - Serial Command (Unix):
   ```shell
@@ -357,7 +385,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("settings.valid")
+   state.currentDevice.command("settings.valid")
   ```
 - Serial Command (Unix):
   ```shell
@@ -378,7 +406,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("settings.version")
+   state.currentDevice.command("settings.version")
   ```
 - Serial Command (Unix):
   ```shell
@@ -389,7 +417,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("settings.version 1")
+   state.currentDevice.command("settings.version 1")
   ```
 - Serial Command (Unix):
   ```shell
@@ -410,7 +438,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("settings.crc")
+   state.currentDevice.command("settings.crc")
   ```
 - Serial Command (Unix):
   ```shell
@@ -431,7 +459,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("eeprom.contents")
+   state.currentDevice.command("eeprom.contents")
   ```
 - Serial Command (Unix):
   ```shell
@@ -442,7 +470,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("eeprom.contents NNNNNNNNNNNNN")
+   state.currentDevice.command("eeprom.contents NNNNNNNNNNNNN")
   ```
 - Serial Command (Unix):
   ```shell
@@ -463,7 +491,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("eeprom.free")
+   state.currentDevice.command("eeprom.free")
   ```
 - Serial Command (Unix):
   ```shell
@@ -484,7 +512,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("led.at 21")
+   state.currentDevice.command("led.at 21")
   ```
 - Serial Command (Unix):
   ```shell
@@ -495,7 +523,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.at 21 255 255 0")
+   state.currentDevice.command("led.at 21 255 255 0")
   ```
 - Serial Command (Unix):
   ```shell
@@ -522,7 +550,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("led.getMultiple 1 2 3 4 5")
+   state.currentDevice.command("led.getMultiple 1 2 3 4 5")
   ```
 - Serial Command (Unix):
   ```shell
@@ -551,7 +579,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.setMultiple 255 0 0 1 2 3 4 5")
+   state.currentDevice.command("led.setMultiple 255 0 0 1 2 3 4 5")
   ```
 - Serial Command (Unix):
   ```shell
@@ -572,7 +600,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.setAll 255 255 255")
+   state.currentDevice.command("led.setAll 255 255 255")
   ```
 - Serial Command (Unix):
   ```shell
@@ -593,7 +621,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("led.mode")
+   state.currentDevice.command("led.mode")
   ```
 - Serial Command (Unix):
   ```shell
@@ -604,7 +632,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.mode 2")
+   state.currentDevice.command("led.mode 2")
   ```
 - Serial Command (Unix):
   ```shell
@@ -628,9 +656,7 @@ The keyboard will either return the current effect being displayed following it'
 
 ### led.brightness
 
-This command reads/writes the brightness setting for the Backlight LEDs stored in the EEPROM
-
-When applied to the Defy keyboard, additional commands are available to modify the behavior when in wireless mode, this one remains and only affects wired mode.
+This command reads/writes the brightness setting for the Backlight LEDs stored in the EEPROM for wired operation
 
 #### Commands
 
@@ -638,7 +664,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("led.brightness")
+   state.currentDevice.command("led.brightness")
   ```
 - Serial Command (Unix):
   ```shell
@@ -649,7 +675,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.brightness 210")
+   state.currentDevice.command("led.brightness 210")
   ```
 - Serial Command (Unix):
   ```shell
@@ -661,11 +687,10 @@ To set:
 This function allows you to get/set the current brightness of the backlight LEDs of your keyboard.
 
 the return value will be the same as the sent one, a 8 bit integer (number between 0 and 255)
-### led.brightnessUG
 
-This command reads/writes the brightness setting for the Underglow stored in the EEPROM
+### led.brightness.wireless
 
-When applied to the Defy keyboard, additional commands are available to modify the behavior when in wireless mode, these one remain and only affect wired mode.
+This command reads/writes the wireless brightness setting for the Backlight LEDs stored in the EEPROM, this command modifies the behavior only when in wireless mode, when in wired the ``led.brightness`` value is applied.
 
 #### Commands
 
@@ -673,7 +698,41 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("led.brightnessUG")
+   state.currentDevice.command("led.brightness.wireless")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'led.brightness.wireless' > /dev/ttyACM0
+  ```
+
+To set:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("led.brightness.wireless 210")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'led.brightness.wireless 210' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+This function allows you to get/set the current wireless brightness of the backlight LEDs for your keyboard.
+
+the return value will be the same as the sent one, a 8 bit integer (number between 0 and 255)
+
+### led.brightnessUG
+
+This command reads/writes the brightness setting for the Underglow stored in the EEPROM for wired operation
+
+#### Commands
+
+To retrieve:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("led.brightnessUG")
   ```
 - Serial Command (Unix):
   ```shell
@@ -684,11 +743,45 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.brightnessUG 210")
+   state.currentDevice.command("led.brightnessUG 210")
   ```
 - Serial Command (Unix):
   ```shell
   echo 'led.brightnessUG 210' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+This function allows you to get/set the current brightness of the Underglow LEDs of your keyboard.
+
+the return value will be the same as the sent one, a 8 bit integer (number between 0 and 255)
+
+### led.brightnessUG.wireless
+
+This command reads/writes the wireless brightness setting for the Underglow stored in the EEPROM, this command modifies the behavior only when in wireless mode, when in wired the ``led.brightnessUG`` value is applied.
+
+#### Commands
+
+To retrieve:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("led.brightnessUG.wireless")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'led.brightnessUG.wireless' > /dev/ttyACM0
+  ```
+
+To set:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("led.brightnessUG.wireless 210")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'led.brightnessUG.wireless 210' > /dev/ttyACM0
   ```
 
 #### Expected output
@@ -707,7 +800,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("led.theme")
+   state.currentDevice.command("led.theme")
   ```
 - Serial Command (Unix):
   ```shell
@@ -718,7 +811,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.theme NNN NNN NNN NNN NNN NNN")
+   state.currentDevice.command("led.theme NNN NNN NNN NNN NNN NNN")
   ```
 - Serial Command (Unix):
   ```shell
@@ -746,7 +839,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("palette")
+   state.currentDevice.command("palette")
   ```
 - Serial Command (Unix):
   ```shell
@@ -757,7 +850,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("led.palete NNN NNN NNN NNN NNN NNN")
+   state.currentDevice.command("led.palete NNN NNN NNN NNN NNN NNN")
   ```
 - Serial Command (Unix):
   ```shell
@@ -780,7 +873,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("colormap.map")
+   state.currentDevice.command("colormap.map")
   ```
 - Serial Command (Unix):
   ```shell
@@ -791,7 +884,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("colormap.map N N N N N N N N N N N N N N N N N N")
+   state.currentDevice.command("colormap.map N N N N N N N N N N N N N N N N N N")
   ```
 - Serial Command (Unix):
   ```shell
@@ -812,7 +905,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("idleleds.time_limit")
+   state.currentDevice.command("idleleds.time_limit")
   ```
 - Serial Command (Unix):
   ```shell
@@ -823,7 +916,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("idleleds.time_limit 600")
+   state.currentDevice.command("idleleds.time_limit 600")
   ```
 - Serial Command (Unix):
   ```shell
@@ -833,6 +926,102 @@ To set:
 #### Expected output
 
 returns the current time stored in the EEPROM and allows you to set it to another time, not exceding 65k seconds
+
+### idleleds.wireless
+
+This command reads/writes the idle led time for keyboards connected through wireless to be turned off in N seconds, replaces the time_limit for wireless operation mode, letting you have a different time to disable the LEDs on wired or wireless modes.
+
+#### Commands
+
+To retrieve:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("idleleds.wireless")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'idleleds.wireless' > /dev/ttyACM0
+  ```
+
+To set:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("idleleds.wireless 600")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'idleleds.wireless 600' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+returns the current time stored in the EEPROM and allows you to set it to another time, not exceding 65k seconds
+
+### idleleds.true_sleep
+
+This command reads/writes the enable/disable of the true sleep function, in which the deivce sleeps deeper. This deep sleep is triggered after ``idleleds.wireless`` seconds when it's already beyond the ``idleleds.time_limit`` time.
+
+#### Commands
+
+To retrieve:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("idleleds.true_sleep")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'idleleds.true_sleep' > /dev/ttyACM0
+  ```
+
+To set:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("idleleds.true_sleep 1")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'idleleds.true_sleep 1' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+returns true_sleep enable/disable as 1 / 0 values and allows you to set it back.
+
+### idleleds.true_sleep_time
+
+This command reads/writes the true sleep time for keyboards connected through wireless. the function puts into deep sleep the keyboard to save energy when not in use, this function, once enabled, it will start counting this time to trigger deep sleep after ``idleleds.time_limit`` seconds.
+
+#### Commands
+
+To retrieve:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("idleleds.true_sleep_time")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'idleleds.true_sleep_time' > /dev/ttyACM0
+  ```
+
+To set:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("idleleds.true_sleep_time 600")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'idleleds.true_sleep_time 600' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+returns the current true_sleep_time stored in the EEPROM and allows you to set it to another time, not exceding 65k seconds
 
 ### hardware.version
 
@@ -908,12 +1097,12 @@ We repeat this for each action we want to perform until we finish the whole macr
 
 To retrieve:
 
-- JavaScript: `focus.command("macros.map")`
+- JavaScript: ` state.currentDevice.command("macros.map")`
 - Serial Command (Unix): `echo 'macros.map' > /dev/ttyACM0`
 
 To set:
 
-- JavaScript: `focus.command("macros.map 8 4 8 5 8 6 0 8 7 8 8 0 0")`
+- JavaScript: ` state.currentDevice.command("macros.map 8 4 8 5 8 6 0 8 7 8 8 0 0")`
 - Serial Command (Unix): `echo 'macros.map 8 4 8 5 8 6 0 8 7 8 8 0 0' > /dev/ttyACM0`
 
 #### Expected output
@@ -928,7 +1117,7 @@ This command triggers a stored macro programatically.
 
 To use:
 
-- JavaScript: `focus.command("macros.trigger 0")`
+- JavaScript: ` state.currentDevice.command("macros.trigger 0")`
 - Serial Command (Unix): `echo 'macros.trigger 0' > /dev/ttyACM0`
 
 #### Expected output
@@ -961,12 +1150,12 @@ To end a superkey, place the number of actions you want to use as keyCodes and t
 
 To retrieve:
 
-- JavaScript: `focus.command("superkeys.map")`
+- JavaScript: ` state.currentDevice.command("superkeys.map")`
 - Serial Command (Unix): `echo 'superkeys.map' > /dev/ttyACM0`
 
 To set:
 
-- JavaScript: `focus.command("superkeys.map 4 5 6 44 7 0 4 224 225 6 226 0 0")`
+- JavaScript: ` state.currentDevice.command("superkeys.map 4 5 6 44 7 0 4 224 225 6 226 0 0")`
 - Serial Command (Unix): `echo 'superkeys.map 4 5 6 44 7 0 4 224 225 6 226 0 0' > /dev/ttyACM0`
 
 #### Expected output
@@ -983,12 +1172,12 @@ waitfor value specifies the time between the first and subsequent releases of th
 
 To retrieve:
 
-- JavaScript: `focus.command("superkeys.waitfor")`
+- JavaScript: ` state.currentDevice.command("superkeys.waitfor")`
 - Serial Command (Unix): `echo 'superkeys.waitfor' > /dev/ttyACM0`
 
 To set:
 
-- JavaScript: `focus.command("superkeys.waitfor 500")`
+- JavaScript: ` state.currentDevice.command("superkeys.waitfor 500")`
 - Serial Command (Unix): `echo 'superkeys.waitfor 500' > /dev/ttyACM0`
 
 #### Expected output
@@ -1011,12 +1200,12 @@ timeout value specifies the time the keyboard waits after a superkey is pressed 
 
 To retrieve:
 
-- JavaScript: `focus.command("superkeys.timeout")`
+- JavaScript: ` state.currentDevice.command("superkeys.timeout")`
 - Serial Command (Unix): `echo 'superkeys.timeout' > /dev/ttyACM0`
 
 To set:
 
-- JavaScript: `focus.command("superkeys.timeout 250")`
+- JavaScript: ` state.currentDevice.command("superkeys.timeout 250")`
 - Serial Command (Unix): `echo 'superkeys.timeout 250' > /dev/ttyACM0`
 
 #### Expected output
@@ -1033,12 +1222,12 @@ the repeat value specifies the time between the second and subsequent keyCode re
 
 To retrieve:
 
-- JavaScript: `focus.command("superkeys.repeat")`
+- JavaScript: ` state.currentDevice.command("superkeys.repeat")`
 - Serial Command (Unix): `echo 'superkeys.repeat' > /dev/ttyACM0`
 
 To set:
 
-- JavaScript: `focus.command("superkeys.repeat 250")`
+- JavaScript: ` state.currentDevice.command("superkeys.repeat 250")`
 - Serial Command (Unix): `echo 'superkeys.repeat 250' > /dev/ttyACM0`
 
 #### Expected output
@@ -1057,7 +1246,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("superkeys.holdstart")
+   state.currentDevice.command("superkeys.holdstart")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1068,7 +1257,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("superkeys.holdstart 200")
+   state.currentDevice.command("superkeys.holdstart 200")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1091,7 +1280,7 @@ To retrieve:
 
 - JavaScript:
   ```js
-  focus.command("superkeys.overlap")
+   state.currentDevice.command("superkeys.overlap")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1102,7 +1291,7 @@ To set:
 
 - JavaScript:
   ```js
-  focus.command("superkeys.overlap 80")
+   state.currentDevice.command("superkeys.overlap 80")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1129,7 +1318,7 @@ The help command returns all the available commands in the current version of th
 
 - JavaScript:
   ```js
-  focus.command("help")
+   state.currentDevice.command("help")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1150,7 +1339,7 @@ To use:
 
 - JavaScript:
   ```js
-  focus.command("layer.activate 1")
+   state.currentDevice.command("layer.activate 1")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1171,7 +1360,7 @@ To use:
 
 - JavaScript:
   ```js
-  focus.command("layer.deactivate")
+   state.currentDevice.command("layer.deactivate")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1192,7 +1381,7 @@ To use:
 
 - JavaScript:
   ```js
-  focus.command("layer.isActive")
+   state.currentDevice.command("layer.isActive")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1217,7 +1406,7 @@ To use:
 
 - JavaScript:
   ```js
-  focus.command("layer.moveTo 1")
+   state.currentDevice.command("layer.moveTo 1")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1238,7 +1427,7 @@ To use:
 
 - JavaScript:
   ```js
-  focus.command("layer.state")
+   state.currentDevice.command("layer.state")
   ```
 - Serial Command (Unix):
   ```shell
@@ -1250,4 +1439,214 @@ To use:
 This is the typical answer when the first layer is active:
 ```shell
 '1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 '
-``````
+```
+
+### wireless.battery.left.level
+
+This command allows the user to check the remaining battery level of the left side of a wireless keyboard like the Defy or the Raise 2.
+
+#### Commands
+
+To use:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.battery.left.level")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.battery.left.level' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+the output will be a charge percentage between 0 and 100%.
+
+### wireless.battery.left.status
+
+This command allows the user to check the battery status of the left side of a wireless keyboard like the Defy or the Raise 2.
+
+#### Commands
+
+To use:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.battery.left.status")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.battery.left.status' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+the status command will give back a status code, this code will be a number between 0 and 4:
+
+0. The battery is in normal/drain mode, being actively discharged
+1. The battery is charging
+2. The battery is fully charged
+3. The battery is faulty or has some reading error
+4. The battery is physically disconnected from the RF Board
+
+any other number is considered an error.
+
+### wireless.battery.right.level
+
+This command allows the user to check the remaining battery level of the right side of a wireless keyboard like the Defy or the Raise 2.
+
+#### Commands
+
+To use:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.battery.right.level")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.battery.right.level' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+the output will be a charge percentage between 0 and 100%.
+
+### wireless.battery.right.status
+
+This command allows the user to check the battery status of the right side of a wireless keyboard like the Defy or the Raise 2.
+
+#### Commands
+
+To use:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.battery.right.status")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.battery.right.status' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+the status command will give back a status code, this code will be a number between 0 and 4:
+
+0. The battery is in normal/drain mode, being actively discharged
+1. The battery is charging
+2. The battery is fully charged
+3. The battery is faulty or has some reading error
+4. The battery is physically disconnected from the RF Board
+
+any other number is considered an error.
+
+### wireless.battery.savingMode
+
+This command allows you to get/set the battery.savingMode of the side, this will be automatically enabled when remaining battery charge is low but it can be manually enabled earlier by the user.
+
+#### Commands
+
+To retrieve:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.battery.savingMode")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.battery.savingMode' > /dev/ttyACM0
+  ```
+
+To set:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.battery.savingMode 1")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.battery.savingMode 1' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+Modifies/Retrieves the value stored in the keyboard for the ``wireless.battery.savingMode`` mode.
+
+### wireless.battery.forceRead
+
+This command allows the user to force the neuron to retrieve the battery data of a wireless keyboard like the Defy or the Raise 2, after a second or two, the neuron values of the battery state of each side will be updated and can be retrieved through the typical commands.
+
+#### Commands
+
+To use:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.battery.forceRead")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.battery.forceRead' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+there is no direct output, after a couple seconds the values of each side for battery status and level should be updated from the current status of each side.
+
+### wireless.rf.syncPairing
+
+This command allows the user to re-sync the neuron with both sides via wireless (RF) comms, this command can only be succesfully used when in wired mode with all cables connected, as the RF Link will be broken if the sides and the neuron do not share the same ID (which is what this sync pairing operation re-creates).
+
+#### Commands
+
+To use:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.rf.syncPairing")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.rf.syncPairing' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+there is no direct output, the keyboards should work in RF mode correctly after performing this opeartion.
+
+### wireless.rf.power
+
+This command allows you to get/set the rf.power strength of the RF signal used to communicate between the sides and the neuron, lower signal strength will mean worse coverage and operational range but more battery life, and vice versa.
+
+#### Commands
+
+To retrieve:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.rf.power")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.rf.power' > /dev/ttyACM0
+  ```
+
+To set:
+
+- JavaScript:
+  ```js
+   state.currentDevice.command("wireless.rf.power 1")
+  ```
+- Serial Command (Unix):
+  ```shell
+  echo 'wireless.rf.power 1' > /dev/ttyACM0
+  ```
+
+#### Expected output
+
+Modifies/Retrieves the value stored in the keyboard for the ``wireless.rf.power`` signal strength, expected and valid values are:
+
+0. Low signal power
+1. Medium signal power
+2. High signal power
