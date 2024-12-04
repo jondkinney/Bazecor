@@ -1,5 +1,6 @@
 import { PaletteType } from "@Types/layout";
 import { rgbw2b } from "../color";
+import { parseAndGroupByCount } from "./parseAndGroupByCount";
 
 /**
  * Converts a string of space delimited numbers from 0-255 representing R, G, B and possibly W channels to an array of PaletteType objects.
@@ -15,24 +16,13 @@ import { rgbw2b } from "../color";
  * @param isRGBW If true then 4 numbers will be used to create one PaletteType with RGBW color specified, otherwise 3 numbers will be used as the RGB color.
  */
 export function parsePaletteRaw(palette: string, isRGBW: boolean): PaletteType[] {
-  const rawPaletteAsNumbers = palette
-    .trim()
-    .split(/ +/)
-    .map((value: string) => parseInt(value, 10))
-    .map((value: number) => Math.max(0, Math.min(255, value)));
-
-  const result: PaletteType[] = [];
-  for (let i = 0; i < rawPaletteAsNumbers.length; ) {
-    const r = rawPaletteAsNumbers[i++];
-    const g = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
-    const b = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
-
+  return parseAndGroupByCount(palette, isRGBW ? 4 : 3, 0, 255).map(colorArray => {
     if (isRGBW) {
-      const w = i < rawPaletteAsNumbers.length ? rawPaletteAsNumbers[i++] : 0;
-      result.push(rgbw2b({ r, g, b, w }));
+      const [r,g,b,w] = colorArray;
+      return rgbw2b({ r, g, b, w });
     } else {
-      result.push({ r, g, b, rgb: `rgb(${r}, ${g}, ${b})` });
+      const [r,g,b] = colorArray;
+      return { r, g, b, rgb: `rgb(${r}, ${g}, ${b})` };
     }
-  }
-  return result;
+  });
 }

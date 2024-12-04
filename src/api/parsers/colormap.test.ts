@@ -9,8 +9,8 @@ describe("parseColormapRaw", () => {
     ]);
   });
 
-  it("should normalize numbers data", () => {
-    expect(parseColormapRaw("-10 400 10", 3)).toEqual([[0, 255, 10]]);
+  it("should ensure all numbers are at least 0", () => {
+    expect(parseColormapRaw("-10 400 10", 3)).toEqual([[0, 400, 10]]);
   });
 
   it("should fill in missing numbers with zeros", () => {

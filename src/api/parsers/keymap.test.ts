@@ -9,8 +9,8 @@ describe("parseKeymapRaw", () => {
     ]);
   });
 
-  it("should NOT normalize numbers data", () => {
-    expect(parseKeymapRaw("-10 400 10", 3)).toEqual([[-10, 400, 10]]);
+  it("should ensure non-negative numbers", () => {
+    expect(parseKeymapRaw("-10 400 10", 3)).toEqual([[0, 400, 10]]);
   });
 
   it("should fill in missing numbers with zeros", () => {

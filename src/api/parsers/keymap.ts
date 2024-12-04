@@ -1,23 +1,11 @@
 import { KeyType } from "@Types/layout";
 import { KeymapDB } from "../keymap";
+import { parseAndGroupByCount } from "./parseAndGroupByCount";
 
 const keymapDB = new KeymapDB();
 
 export function parseKeymapRaw(keymap: string, keyLayerSize: number): number[][] {
-  const rawColorMapAsNumbers = keymap
-    .trim()
-    .split(/ +/)
-    .map((value: string) => parseInt(value, 10));
-
-  const result: number[][] = [];
-  for (let i = 0; i < rawColorMapAsNumbers.length; ) {
-    const keys: number[] = [];
-    for (let c = 0; c < keyLayerSize; c++) {
-      keys.push(i < rawColorMapAsNumbers.length ? rawColorMapAsNumbers[i++] : 0);
-    }
-    result.push(keys);
-  }
-  return result;
+  return parseAndGroupByCount(keymap, keyLayerSize, 0, undefined);
 }
 
 export const serializeKeymap = (keymap: KeyType[][]) =>
