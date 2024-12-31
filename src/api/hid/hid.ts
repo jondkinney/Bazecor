@@ -226,7 +226,7 @@ class HID {
           this.connectedDevice.removeEventListener("inputreport", receiveDataHandler);
         }
         reject(new HIDError("HID send data took too much time"));
-      }, 5000);
+      }, 8000);
       receiveDataHandler = (event: HIDInputReportEvent) => {
         // we cannot differentiate if the user has several defys
         const { data, device, reportId } = event;

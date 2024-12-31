@@ -21,11 +21,11 @@ import { Octokit } from "@octokit/core";
 import SemVer from "semver";
 import parse, { domToReact } from "html-react-parser";
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@Renderer/components/atoms/Dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@Renderer/components/atoms/Dialog";
 import { i18n } from "@Renderer/i18n";
-import { Button } from "@Renderer/components/atoms/Button";
 import Heading from "@Renderer/components/atoms/Heading";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@Renderer/components/atoms/Accordion";
+import LogoLoader from "@Renderer/components/atoms/loader/LogoLoader";
 
 interface VersionUpdateProps {
   open: boolean;
@@ -95,7 +95,7 @@ const options = {
 
 export function VersionUpdateDialog(props: VersionUpdateProps) {
   const { open, onCancel, newVersion, oldVersion, handleUpdate } = props;
-  const [data, setData] = useState<Releases[]>([]);
+  const [data, setData] = useState<Releases[]>(undefined);
 
   useEffect(() => {
     async function fetchData() {
@@ -129,61 +129,50 @@ export function VersionUpdateDialog(props: VersionUpdateProps) {
   }, []);
 
   return (
-    <Dialog open={open} onOpenChange={onCancel}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        handleUpdate();
+        onCancel();
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{i18n.app.updateChanges.title}</DialogTitle>
         </DialogHeader>
-        <div className="px-6 pb-2 mt-2">
-          <div
-            className={`toggleButtonsInner flex flex-col items-center justify-start gap-1 p-[4px] rounded-regular border-[1px] border-solid border-gray-100/60 bg-white/30 dark:border-transparent dark:bg-gray-900/25 w-full [&_.button-config]:w-full [&_.button-config]:basis-full [&_.button-config]:text-left [&_.button-config.disabled]:opacity-25 [&_.button-config.disabled]:pointer-events-none"}`}
-          >
-            <Accordion type="single" collapsible className="w-full" defaultValue="item0">
-              {data.map((elem, i) => (
-                <AccordionItem
-                  value={`item${i}`}
-                  className="bg-[#fff]/50 dark:bg-gray-700 rounded border-none border-0"
-                  key={elem.version}
-                >
-                  <div>
-                    <AccordionTrigger className="px-2 py-3 bg-transparent bg-dark:bg-black/5 mb-[-1px] hover:no-underline">
-                      <Heading className="pl-[22px]">
-                        <div className="flex items-center">
-                          {elem.name}
-                          <p className="ml-4 font-extralight text-sm text-gray-200">{new Date(elem.date).toDateString()}</p>
-                        </div>
-                      </Heading>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="h-40v overflow-auto pl-8 pr-8">{parse(elem.content, options)}</div>
-                    </AccordionContent>
-                  </div>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+        <div className="px-6 pb-6 mt-2">
+          {data === undefined ? (
+            <LogoLoader firmwareLoader />
+          ) : (
+            <div
+              className={`toggleButtonsInner flex flex-col items-center justify-start gap-1 p-[4px] rounded-regular border-[1px] border-solid border-gray-100/60 bg-white/30 dark:border-transparent dark:bg-gray-900/25 w-full [&_.button-config]:w-full [&_.button-config]:basis-full [&_.button-config]:text-left [&_.button-config.disabled]:opacity-25 [&_.button-config.disabled]:pointer-events-none"}`}
+            >
+              <Accordion type="single" collapsible className="w-full" defaultValue="item0">
+                {data.map((elem, i) => (
+                  <AccordionItem
+                    value={`item${i}`}
+                    className="bg-[#fff]/50 dark:bg-gray-700 rounded border-none border-0"
+                    key={elem.version}
+                  >
+                    <div>
+                      <AccordionTrigger className="px-2 py-3 bg-transparent bg-dark:bg-black/5 mb-[-1px] hover:no-underline">
+                        <Heading className="pl-[22px]">
+                          <div className="flex items-center">
+                            {elem.name}
+                            <p className="ml-4 font-extralight text-sm text-gray-200">{new Date(elem.date).toDateString()}</p>
+                          </div>
+                        </Heading>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="h-40v overflow-auto pl-8 pr-8">{parse(elem.content, options)}</div>
+                      </AccordionContent>
+                    </div>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          )}
         </div>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              onCancel();
-            }}
-          >
-            {i18n.app.updateChanges.close}
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => {
-              handleUpdate();
-              onCancel();
-            }}
-          >
-            {i18n.app.updateChanges.accept}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
