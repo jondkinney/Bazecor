@@ -1,0 +1,7730 @@
+{
+  "bkp": [
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 2,
+          "keyCode": 50
+        }
+      ],
+      "name": "Best",
+      "macro": "SHIFT B SHIFT E S T , ENTER #50",
+      "id": 0
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H1",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 1 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 1
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H2",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 2 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 2
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Bullet",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / B U L L E T E D SPACE L I S T ENTER",
+      "id": 3
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Yellow Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / Y E L L O W SPACE B A N N E R ENTER",
+      "id": 4
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 32
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H3",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 3 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 5
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 33
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H4",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 4 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 6
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Check",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / C H E C K L I S T ENTER",
+      "id": 7
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Green Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / G R E E N SPACE B A N N E R ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 8
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Red Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / R E D SPACE B A N N E R ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 9
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Blue Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / B L U E SPACE B A N N E R ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 10
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        }
+      ],
+      "name": "Best",
+      "macro": "SHIFT B SHIFT E S T , ENTER SHIFT M SHIFT I Q U E L",
+      "id": 11
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 43
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Alt TAB",
+      "macro": "LEFT ⌘ <> TAB <> LEFT ⌘",
+      "id": 12
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        }
+      ],
+      "name": "Assist",
+      "macro": "SHIFT P SHIFT L E A S E SPACE L E T SPACE M E SPACE K N O W SPACE I F SPACE SHIFT I SHIFT SPACE C A N SPACE A S S I S T SPACE Y O U SPACE W I T H SPACE A N Y T H I N G SPACE E L S E . SPACE ENTER ENTER SHIFT B SHIFT E S T , ENTER SHIFT M SHIFT I Q U E L",
+      "id": 13
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 29
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 2,
+          "keyCode": 50
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Paste 3",
+      "macro": "SHIFT LEFT ⌘ Z LEFT ⌘ SHIFT #50 LEFT ⌘ 2 LEFT ⌘",
+      "id": 14
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 1000
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Copy 3",
+      "macro": "LEFT ⌘ C LEFT ⌘ #1000 → LEFT ⌘ C LEFT ⌘",
+      "id": 15
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        }
+      ],
+      "name": "Keycaps",
+      "macro": "SHIFT F SHIFT R E E SPACE K E Y C A P S SPACE T O SPACE R E P L A C E",
+      "id": 16
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        }
+      ],
+      "name": "Switches",
+      "macro": "SHIFT F SHIFT R E E SPACE S W I T C H E S SPACE T O SPACE R E P L A C E",
+      "id": 17
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 56
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        }
+      ],
+      "name": "Discount",
+      "macro": "SHIFT P SHIFT R E / S S A L E SPACE D I C O U N T",
+      "id": 18
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 2,
+          "keyCode": 200
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        }
+      ],
+      "name": "Keycaps2",
+      "macro": "K #200 E Y C A P S",
+      "id": 19
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 2,
+          "keyCode": 200
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        }
+      ],
+      "name": "Switches2",
+      "macro": "S #200 W I T C H E S",
+      "id": 20
+    },
+    {
+      "actions": [
+        {
+          "type": 5,
+          "keyCode": 22733
+        }
+      ],
+      "name": "Media",
+      "macro": "[object Object]",
+      "id": 21
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Red",
+      "macro": "/ R E D ENTER",
+      "id": 22
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        }
+      ],
+      "name": "Highlight",
+      "macro": "LEFT ⌥ ← LEFT ⌥ SHIFT LEFT ⌥ → LEFT ⌥ SHIFT",
+      "id": 23
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 5,
+          "keyCode": 17494
+        }
+      ],
+      "name": "Blue",
+      "macro": "/ B L U E ENTER ",
+      "id": 24
+    },
+    {
+      "actions": [
+        {
+          "type": 5,
+          "keyCode": 17454
+        }
+      ],
+      "name": "Test Layers",
+      "macro": "",
+      "id": 25
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 45
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Under W",
+      "macro": "SHIFT R SHIFT E P L A C E M E N T SPACE U N D E R SPACE W A R R A N T Y . SPACE SHIFT Y SHIFT O U SPACE W O N - T SPACE B E SPACE C H A R G E D SPACE F O R SPACE T H I S .",
+      "id": 26
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 224
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 7,
+          "keyCode": 224
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 8,
+          "keyCode": 38
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 6,
+          "keyCode": 224
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 7,
+          "keyCode": 224
+        }
+      ],
+      "name": "Unicode",
+      "macro": "CTRL SPACE CTRL <> LEFT ⌥ 2 1 9 1 LEFT ⌥ <> CTRL SPACE CTRL",
+      "id": 27
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 8,
+          "keyCode": 38
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        }
+      ],
+      "name": "Arrow up",
+      "macro": "LEFT ⌥ 2 1 9 1 LEFT ⌥",
+      "id": 28
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 87
+        },
+        {
+          "type": 8,
+          "keyCode": 39
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 36
+        },
+        {
+          "type": 8,
+          "keyCode": 37
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        }
+      ],
+      "name": "Test Unicode",
+      "macro": "LEFT ⌥ + 0 2 7 8 LEFT ⌥",
+      "id": 29
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 87
+        },
+        {
+          "type": 8,
+          "keyCode": 98
+        },
+        {
+          "type": 8,
+          "keyCode": 98
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 93
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        }
+      ],
+      "name": "Test uni 2",
+      "macro": "LEFT ⌥ + 0 0 D 5 LEFT ⌥",
+      "id": 30
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 77
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 6,
+          "keyCode": 40
+        }
+      ],
+      "name": "Uni 1",
+      "macro": "LEFT ⌘ V LEFT ⌘ <> END <> ENTER",
+      "id": 31
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 77
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 82
+        },
+        {
+          "type": 6,
+          "keyCode": 40
+        }
+      ],
+      "name": "Uni2",
+      "macro": "LEFT ⌘ V LEFT ⌘ <> END <> ↑ ENTER",
+      "id": 32
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        }
+      ],
+      "name": "Thumbkey",
+      "macro": "SHIFT B SHIFT R O K E N SPACE SHIFT T SHIFT H U M B K E Y S",
+      "id": 33
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        }
+      ],
+      "name": "Warranty",
+      "macro": "SHIFT W SHIFT A R R A N T Y",
+      "id": 34
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        }
+      ],
+      "name": "Low Profile",
+      "macro": "SHIFT E SHIFT N V I A R SPACE S O L O SPACE L A S SPACE T H U M B SPACE K E Y S SPACE L O W SPACE P R O F I L E SPACE",
+      "id": 35
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 56
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 56
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Address",
+      "macro": "SHIFT P SHIFT L E A S E SPACE P R O V I D E SPACE A N SPACE U P / T O / D A T E SPACE S H I P P I N G SPACE A D D R E S S SPACE A N D SPACE P H O N E SPACE N U M B E R .",
+      "id": 36
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        }
+      ],
+      "name": "Reach",
+      "macro": "SHIFT F SHIFT E E L SPACE F R E E SPACE T O SPACE R E A C H SPACE O U T SPACE I F SPACE Y O U SPACE H A V E SPACE A N Y SPACE M O R E SPACE Q U E S T I O N S . ENTER ENTER SHIFT B SHIFT E S T , ENTER SHIFT M SHIFT I Q U E L",
+      "id": 37
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Order",
+      "macro": "SHIFT I SHIFT SPACE W I L L SPACE C R E A T E SPACE T H E SPACE O R D E R SPACE A N D SPACE E M A I L SPACE Y O U SPACE A SPACE L I N K SPACE T O SPACE C O M P L E T E SPACE T H E SPACE P U R C H A S E SPACE O N SPACE O U R SPACE S H O P .",
+      "id": 38
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 45
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Track",
+      "macro": "SHIFT Y SHIFT O U - L L SPACE R E C E I V E SPACE A N O T H E R SPACE E M A I L SPACE W I T H SPACE T H E SPACE T R A C K I N G SPACE N U M B E R SPACE W H E N SPACE T H E SPACE O R D E R SPACE I S SPACE S H I P P E D .",
+      "id": 39
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        }
+      ],
+      "name": "Test",
+      "macro": "SHIFT T SHIFT E S T",
+      "id": 40
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 1
+        },
+        {
+          "type": 2,
+          "keyCode": 1000
+        },
+        {
+          "type": 7,
+          "keyCode": 1
+        }
+      ],
+      "name": "Mouse",
+      "macro": "#1 #1000 #1",
+      "id": 41
+    },
+    {
+      "actions": [
+        {
+          "keyCode": 225,
+          "type": 6,
+          "id": 0
+        },
+        {
+          "keyCode": 227,
+          "type": 6,
+          "id": 1
+        },
+        {
+          "keyCode": 29,
+          "type": 8,
+          "id": 2
+        },
+        {
+          "keyCode": 227,
+          "type": 6,
+          "id": 3
+        },
+        {
+          "keyCode": 225,
+          "type": 7,
+          "id": 4
+        },
+        {
+          "keyCode": 50,
+          "type": 2,
+          "id": 5
+        },
+        {
+          "keyCode": 227,
+          "type": 6,
+          "id": 6
+        },
+        {
+          "keyCode": 31,
+          "type": 8,
+          "id": 7
+        },
+        {
+          "keyCode": 227,
+          "type": 7,
+          "id": 8
+        }
+      ],
+      "name": "Paste 2",
+      "macro": "SHIFT LEFT ⌘ Z LEFT ⌘ SHIFT #50 LEFT ⌘ 2 LEFT ⌘ TAB",
+      "id": 42
+    }
+  ],
+  "tester": "6 225 8 5 7 225 8 8 8 22 8 23 8 54 8 40 2 0 50 0 6 227 8 80 7 227 8 84 8 11 8 30 8 40 6 227 8 79 7 227 0 6 227 8 80 7 227 8 84 8 11 8 31 8 40 6 227 8 79 7 227 0 6 227 8 80 7 227 8 84 8 5 8 24 8 15 8 15 8 8 8 23 8 8 8 7 8 44 8 15 8 12 8 22 8 23 8 40 0 6 227 8 80 7 227 8 84 8 28 8 8 8 15 8 15 8 18 8 26 8 44 8 5 8 4 8 17 8 17 8 8 8 21 8 40 0 6 227 8 80 7 227 8 84 8 11 8 32 8 40 6 227 8 79 7 227 0 6 227 8 80 7 227 8 84 8 11 8 33 8 40 6 227 8 79 7 227 0 6 227 8 80 7 227 8 84 8 6 8 11 8 8 8 6 8 14 8 15 8 12 8 22 8 23 8 40 0 6 227 8 80 7 227 8 84 8 10 8 21 8 8 8 8 8 17 8 44 8 5 8 4 8 17 8 17 8 8 8 21 8 40 6 227 8 79 7 227 0 6 227 8 80 7 227 8 84 8 21 8 8 8 7 8 44 8 5 8 4 8 17 8 17 8 8 8 21 8 40 6 227 8 79 7 227 0 6 227 8 80 7 227 8 84 8 5 8 15 8 24 8 8 8 44 8 5 8 4 8 17 8 17 8 8 8 21 8 40 6 227 8 79 7 227 0 6 225 8 5 7 225 8 8 8 22 8 23 8 54 8 40 6 225 8 16 7 225 8 12 8 20 8 24 8 8 8 15 0 6 227 2 0 100 8 43 2 0 100 7 227 0 6 225 8 19 7 225 8 15 8 8 8 4 8 22 8 8 8 44 8 15 8 8 8 23 8 44 8 16 8 8 8 44 8 14 8 17 8 18 8 26 8 44 8 12 8 9 8 44 6 225 8 12 7 225 8 44 8 6 8 4 8 17 8 44 8 4 8 22 8 22 8 12 8 22 8 23 8 44 8 28 8 18 8 24 8 44 8 26 8 12 8 23 8 11 8 44 8 4 8 17 8 28 8 23 8 11 8 12 8 17 8 10 8 44 8 8 8 15 8 22 8 8 8 55 8 44 8 40 8 40 6 225 8 5 7 225 8 8 8 22 8 23 8 54 8 40 6 225 8 16 7 225 8 12 8 20 8 24 8 8 8 15 0 6 225 6 227 8 29 6 227 7 225 2 0 50 6 227 8 31 7 227 0 6 227 8 6 7 227 2 3 232 8 79 6 227 8 6 7 227 0 6 225 8 9 7 225 8 21 8 8 8 8 8 44 8 14 8 8 8 28 8 6 8 4 8 19 8 22 8 44 8 23 8 18 8 44 8 21 8 8 8 19 8 15 8 4 8 6 8 8 0 6 225 8 9 7 225 8 21 8 8 8 8 8 44 8 22 8 26 8 12 8 23 8 6 8 11 8 8 8 22 8 44 8 23 8 18 8 44 8 21 8 8 8 19 8 15 8 4 8 6 8 8 0 6 225 8 19 7 225 8 21 8 8 8 56 8 22 8 22 8 4 8 15 8 8 8 44 8 7 8 12 8 6 8 18 8 24 8 17 8 23 0 8 14 2 0 200 8 8 8 28 8 6 8 4 8 19 8 22 0 8 22 2 0 200 8 26 8 12 8 23 8 6 8 11 8 8 8 22 0 5 88 205 0 8 84 8 21 8 8 8 7 8 40 0 6 226 8 80 7 226 6 225 6 226 8 79 7 226 7 225 0 8 84 8 5 8 15 8 24 8 8 8 40 5 68 86 0 5 68 46 0 6 225 8 21 7 225 8 8 8 19 8 15 8 4 8 6 8 8 8 16 8 8 8 17 8 23 8 44 8 24 8 17 8 7 8 8 8 21 8 44 8 26 8 4 8 21 8 21 8 4 8 17 8 23 8 28 8 55 8 44 6 225 8 28 7 225 8 18 8 24 8 44 8 26 8 18 8 17 8 45 8 23 8 44 8 5 8 8 8 44 8 6 8 11 8 4 8 21 8 10 8 8 8 7 8 44 8 9 8 18 8 21 8 44 8 23 8 11 8 12 8 22 8 55 0 6 224 8 44 7 224 2 0 100 6 226 8 31 8 30 8 38 8 30 7 226 2 0 100 6 224 8 44 7 224 0 6 226 8 31 8 30 8 38 8 30 7 226 0 6 226 8 87 8 39 8 31 8 36 8 37 7 226 0 6 226 8 87 8 98 8 98 8 7 8 93 7 226 0 6 227 8 25 7 227 2 0 100 8 77 2 0 100 6 40 0 6 227 8 25 7 227 2 0 100 8 77 2 0 100 8 82 6 40 0 6 225 8 5 7 225 8 21 8 18 8 14 8 8 8 17 8 44 6 225 8 23 7 225 8 11 8 24 8 16 8 5 8 14 8 8 8 28 8 22 0 6 225 8 26 7 225 8 4 8 21 8 21 8 4 8 17 8 23 8 28 0 6 225 8 8 7 225 8 17 8 25 8 12 8 4 8 21 8 44 8 22 8 18 8 15 8 18 8 44 8 15 8 4 8 22 8 44 8 23 8 11 8 24 8 16 8 5 8 44 8 14 8 8 8 28 8 22 8 44 8 15 8 18 8 26 8 44 8 19 8 21 8 18 8 9 8 12 8 15 8 8 8 44 0 6 225 8 19 7 225 8 15 8 8 8 4 8 22 8 8 8 44 8 19 8 21 8 18 8 25 8 12 8 7 8 8 8 44 8 4 8 17 8 44 8 24 8 19 8 56 8 23 8 18 8 56 8 7 8 4 8 23 8 8 8 44 8 22 8 11 8 12 8 19 8 19 8 12 8 17 8 10 8 44 8 4 8 7 8 7 8 21 8 8 8 22 8 22 8 44 8 4 8 17 8 7 8 44 8 19 8 11 8 18 8 17 8 8 8 44 8 17 8 24 8 16 8 5 8 8 8 21 8 55 0 6 225 8 9 7 225 8 8 8 8 8 15 8 44 8 9 8 21 8 8 8 8 8 44 8 23 8 18 8 44 8 21 8 8 8 4 8 6 8 11 8 44 8 18 8 24 8 23 8 44 8 12 8 9 8 44 8 28 8 18 8 24 8 44 8 11 8 4 8 25 8 8 8 44 8 4 8 17 8 28 8 44 8 16 8 18 8 21 8 8 8 44 8 20 8 24 8 8 8 22 8 23 8 12 8 18 8 17 8 22 8 55 8 40 8 40 6 225 8 5 7 225 8 8 8 22 8 23 8 54 8 40 6 225 8 16 7 225 8 12 8 20 8 24 8 8 8 15 0 6 225 8 12 7 225 8 44 8 26 8 12 8 15 8 15 8 44 8 6 8 21 8 8 8 4 8 23 8 8 8 44 8 23 8 11 8 8 8 44 8 18 8 21 8 7 8 8 8 21 8 44 8 4 8 17 8 7 8 44 8 8 8 16 8 4 8 12 8 15 8 44 8 28 8 18 8 24 8 44 8 4 8 44 8 15 8 12 8 17 8 14 8 44 8 23 8 18 8 44 8 6 8 18 8 16 8 19 8 15 8 8 8 23 8 8 8 44 8 23 8 11 8 8 8 44 8 19 8 24 8 21 8 6 8 11 8 4 8 22 8 8 8 44 8 18 8 17 8 44 8 18 8 24 8 21 8 44 8 22 8 11 8 18 8 19 8 55 0 6 225 8 28 7 225 8 18 8 24 8 45 8 15 8 15 8 44 8 21 8 8 8 6 8 8 8 12 8 25 8 8 8 44 8 4 8 17 8 18 8 23 8 11 8 8 8 21 8 44 8 8 8 16 8 4 8 12 8 15 8 44 8 26 8 12 8 23 8 11 8 44 8 23 8 11 8 8 8 44 8 23 8 21 8 4 8 6 8 14 8 12 8 17 8 10 8 44 8 17 8 24 8 16 8 5 8 8 8 21 8 44 8 26 8 11 8 8 8 17 8 44 8 23 8 11 8 8 8 44 8 18 8 21 8 7 8 8 8 21 8 44 8 12 8 22 8 44 8 22 8 11 8 12 8 19 8 19 8 8 8 7 8 55 0 6 225 8 23 7 225 8 8 8 22 8 23 0 6 1 2 3 232 7 1 0 6 225 6 227 8 29 6 227 7 225 2 0 50 6 227 8 31 7 227 0 0 0 0 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255",
+  "result": [
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 2,
+          "keyCode": 50
+        }
+      ],
+      "name": "Best",
+      "macro": "SHIFT B SHIFT E S T , ENTER #50",
+      "id": 0
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H1",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 1 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 1
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H2",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 2 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 2
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Bullet",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / B U L L E T E D SPACE L I S T ENTER",
+      "id": 3
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Yellow Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / Y E L L O W SPACE B A N N E R ENTER",
+      "id": 4
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 32
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H3",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 3 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 5
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 33
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "H4",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / H 4 ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 6
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Check",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / C H E C K L I S T ENTER",
+      "id": 7
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Green Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / G R E E N SPACE B A N N E R ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 8
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Red Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / R E D SPACE B A N N E R ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 9
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Blue Banner",
+      "macro": "LEFT ⌘ ← LEFT ⌘ / B L U E SPACE B A N N E R ENTER LEFT ⌘ → LEFT ⌘",
+      "id": 10
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        }
+      ],
+      "name": "Best",
+      "macro": "SHIFT B SHIFT E S T , ENTER SHIFT M SHIFT I Q U E L",
+      "id": 11
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 43
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Alt TAB",
+      "macro": "LEFT ⌘ < TAB < LEFT ⌘",
+      "id": 12
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        }
+      ],
+      "name": "Assist",
+      "macro": "SHIFT P SHIFT L E A S E SPACE L E T SPACE M E SPACE K N O W SPACE I F SPACE SHIFT I SHIFT SPACE C A N SPACE A S S I S T SPACE Y O U SPACE W I T H SPACE A N Y T H I N G SPACE E L S E . SPACE ENTER ENTER SHIFT B SHIFT E S T , ENTER SHIFT M SHIFT I Q U E L",
+      "id": 13
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 29
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 2,
+          "keyCode": 50
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Paste 3",
+      "macro": "SHIFT LEFT ⌘ Z LEFT ⌘ SHIFT #50 LEFT ⌘ 2 LEFT ⌘",
+      "id": 14
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 1000
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Copy 3",
+      "macro": "LEFT ⌘ C LEFT ⌘ #1000 → LEFT ⌘ C LEFT ⌘",
+      "id": 15
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        }
+      ],
+      "name": "Keycaps",
+      "macro": "SHIFT F SHIFT R E E SPACE K E Y C A P S SPACE T O SPACE R E P L A C E",
+      "id": 16
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        }
+      ],
+      "name": "Switches",
+      "macro": "SHIFT F SHIFT R E E SPACE S W I T C H E S SPACE T O SPACE R E P L A C E",
+      "id": 17
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 56
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        }
+      ],
+      "name": "Discount",
+      "macro": "SHIFT P SHIFT R E - S S A L E SPACE D I C O U N T",
+      "id": 18
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 2,
+          "keyCode": 200
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        }
+      ],
+      "name": "Keycaps2",
+      "macro": "K #200 E Y C A P S",
+      "id": 19
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 2,
+          "keyCode": 200
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        }
+      ],
+      "name": "Switches2",
+      "macro": "S #200 W I T C H E S",
+      "id": 20
+    },
+    {
+      "actions": [
+        {
+          "type": 5,
+          "keyCode": 22733
+        }
+      ],
+      "name": "Media",
+      "macro": "[object Object]",
+      "id": 21
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        }
+      ],
+      "name": "Red",
+      "macro": "/ R E D ENTER",
+      "id": 22
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 80
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 79
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        }
+      ],
+      "name": "Highlight",
+      "macro": "LEFT ⌥ ← LEFT ⌥ SHIFT LEFT ⌥ → LEFT ⌥ SHIFT",
+      "id": 23
+    },
+    {
+      "actions": [
+        {
+          "type": 8,
+          "keyCode": 84
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 5,
+          "keyCode": 17494
+        }
+      ],
+      "name": "Blue",
+      "macro": "/ B L U E ENTER ",
+      "id": 24
+    },
+    {
+      "actions": [
+        {
+          "type": 5,
+          "keyCode": 17454
+        }
+      ],
+      "name": "Test Layers",
+      "macro": "",
+      "id": 25
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 45
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Under W",
+      "macro": "SHIFT R SHIFT E P L A C E M E N T SPACE U N D E R SPACE W A R R A N T Y . SPACE SHIFT Y SHIFT O U SPACE W O N ' T SPACE B E SPACE C H A R G E D SPACE F O R SPACE T H I S .",
+      "id": 26
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 224
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 7,
+          "keyCode": 224
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 8,
+          "keyCode": 38
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 6,
+          "keyCode": 224
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 7,
+          "keyCode": 224
+        }
+      ],
+      "name": "Unicode",
+      "macro": "CTRL SPACE CTRL < LEFT ⌥ 2 1 9 1 LEFT ⌥ < CTRL SPACE CTRL",
+      "id": 27
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 8,
+          "keyCode": 38
+        },
+        {
+          "type": 8,
+          "keyCode": 30
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        }
+      ],
+      "name": "Arrow up",
+      "macro": "LEFT ⌥ 2 1 9 1 LEFT ⌥",
+      "id": 28
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 87
+        },
+        {
+          "type": 8,
+          "keyCode": 39
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 8,
+          "keyCode": 36
+        },
+        {
+          "type": 8,
+          "keyCode": 37
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        }
+      ],
+      "name": "Test Unicode",
+      "macro": "LEFT ⌥ + 0 2 7 8 LEFT ⌥",
+      "id": 29
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 226
+        },
+        {
+          "type": 8,
+          "keyCode": 87
+        },
+        {
+          "type": 8,
+          "keyCode": 98
+        },
+        {
+          "type": 8,
+          "keyCode": 98
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 93
+        },
+        {
+          "type": 7,
+          "keyCode": 226
+        }
+      ],
+      "name": "Test uni 2",
+      "macro": "LEFT ⌥ + 0 0 D 5 LEFT ⌥",
+      "id": 30
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 77
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 6,
+          "keyCode": 40
+        }
+      ],
+      "name": "Uni 1",
+      "macro": "LEFT ⌘ V LEFT ⌘ < END < ENTER",
+      "id": 31
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 77
+        },
+        {
+          "type": 2,
+          "keyCode": 100
+        },
+        {
+          "type": 8,
+          "keyCode": 82
+        },
+        {
+          "type": 6,
+          "keyCode": 40
+        }
+      ],
+      "name": "Uni2",
+      "macro": "LEFT ⌘ V LEFT ⌘ < END < ↑ ENTER",
+      "id": 32
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        }
+      ],
+      "name": "Thumbkey",
+      "macro": "SHIFT B SHIFT R O K E N SPACE SHIFT T SHIFT H U M B K E Y S",
+      "id": 33
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        }
+      ],
+      "name": "Warranty",
+      "macro": "SHIFT W SHIFT A R R A N T Y",
+      "id": 34
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        }
+      ],
+      "name": "Low Profile",
+      "macro": "SHIFT E SHIFT N V I A R SPACE S O L O SPACE L A S SPACE T H U M B SPACE K E Y S SPACE L O W SPACE P R O F I L E SPACE",
+      "id": 35
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 56
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 56
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Address",
+      "macro": "SHIFT P SHIFT L E A S E SPACE P R O V I D E SPACE A N SPACE U P - T O - D A T E SPACE S H I P P I N G SPACE A D D R E S S SPACE A N D SPACE P H O N E SPACE N U M B E R .",
+      "id": 36
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 9
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 54
+        },
+        {
+          "type": 8,
+          "keyCode": 40
+        },
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 20
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        }
+      ],
+      "name": "Reach",
+      "macro": "SHIFT F SHIFT E E L SPACE F R E E SPACE T O SPACE R E A C H SPACE O U T SPACE I F SPACE Y O U SPACE H A V E SPACE A N Y SPACE M O R E SPACE Q U E S T I O N S . ENTER ENTER SHIFT B SHIFT E S T , ENTER SHIFT M SHIFT I Q U E L",
+      "id": 37
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Order",
+      "macro": "SHIFT I SHIFT SPACE W I L L SPACE C R E A T E SPACE T H E SPACE O R D E R SPACE A N D SPACE E M A I L SPACE Y O U SPACE A SPACE L I N K SPACE T O SPACE C O M P L E T E SPACE T H E SPACE P U R C H A S E SPACE O N SPACE O U R SPACE S H O P .",
+      "id": 38
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 28
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 45
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 25
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 15
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 4
+        },
+        {
+          "type": 8,
+          "keyCode": 6
+        },
+        {
+          "type": 8,
+          "keyCode": 14
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 10
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 24
+        },
+        {
+          "type": 8,
+          "keyCode": 16
+        },
+        {
+          "type": 8,
+          "keyCode": 5
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 26
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 17
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 18
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 21
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 44
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 11
+        },
+        {
+          "type": 8,
+          "keyCode": 12
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 19
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 7
+        },
+        {
+          "type": 8,
+          "keyCode": 55
+        }
+      ],
+      "name": "Track",
+      "macro": "SHIFT Y SHIFT O U ' L L SPACE R E C E I V E SPACE A N O T H E R SPACE E M A I L SPACE W I T H SPACE T H E SPACE T R A C K I N G SPACE N U M B E R SPACE W H E N SPACE T H E SPACE O R D E R SPACE I S SPACE S H I P P E D .",
+      "id": 39
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 8,
+          "keyCode": 8
+        },
+        {
+          "type": 8,
+          "keyCode": 22
+        },
+        {
+          "type": 8,
+          "keyCode": 23
+        }
+      ],
+      "name": "Test",
+      "macro": "SHIFT T SHIFT E S T",
+      "id": 40
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 1
+        },
+        {
+          "type": 2,
+          "keyCode": 1000
+        },
+        {
+          "type": 7,
+          "keyCode": 1
+        }
+      ],
+      "name": "Mouse",
+      "macro": "#1 #1000 #1",
+      "id": 41
+    },
+    {
+      "actions": [
+        {
+          "type": 6,
+          "keyCode": 225
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 29
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 7,
+          "keyCode": 225
+        },
+        {
+          "type": 2,
+          "keyCode": 50
+        },
+        {
+          "type": 6,
+          "keyCode": 227
+        },
+        {
+          "type": 8,
+          "keyCode": 31
+        },
+        {
+          "type": 7,
+          "keyCode": 227
+        }
+      ],
+      "name": "Paste 2",
+      "macro": "SHIFT LEFT ⌘ Z LEFT ⌘ SHIFT #50 LEFT ⌘ 2 LEFT ⌘",
+      "id": 42
+    }
+  ]
+}
