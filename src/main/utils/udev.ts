@@ -4,20 +4,26 @@ import * as sudo from "sudo-prompt";
 import log from "electron-log/main";
 
 const udevRulesToWrite = `\
-# Dygma Raise
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2200", MODE="0660", TAG+="uaccess"
-# bootloader mode
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2201", MODE="0660", TAG+="uaccess"
+# Dygma Raise - Normal operation mode (USB)
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2200", MODE="0660", TAG+="uaccess", GROUP="plugdev"
 
-# Dygma USB Keyboards Vendor ID
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess"
-# bootloader mode
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess"
+# Dygma Raise - Bootloader mode (USB)
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2201", MODE="0660", TAG+="uaccess", GROUP="plugdev"
 
-# Dygma HID Keyboards Vendor ID
-KERNEL=="hidraw*", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess"
-# bootloader mode
-KERNEL=="hidraw*", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess"
+# Dygma USB Keyboards - All products by vendor ID
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess", GROUP="plugdev"
+
+# Dygma HID Keyboards - All products by vendor ID
+KERNEL=="hidraw*", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess", GROUP="plugdev"
+
+# Dygma Bluetooth Keyboards - Normal operation mode
+KERNELS=="hci*", SUBSYSTEMS=="bluetooth", ATTRS{name}=="Dygma*", MODE="0660", TAG+="uaccess", GROUP="plugdev"
+
+# Dygma Bluetooth HID devices - Using the same vendor IDs
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="*:35ef:*.*", MODE="0660", TAG+="uaccess", GROUP="plugdev"
+
+# Dygma Bluetooth devices - rfcomm interface
+KERNEL=="rfcomm[0-9]*", ATTRS{name}=="Dygma*", MODE="0660", TAG+="uaccess", GROUP="plugdev"
 `;
 
 const filename = "/etc/udev/rules.d/60-dygma.rules";
