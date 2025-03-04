@@ -64,6 +64,56 @@ const config: ForgeConfig = {
         },
       },
     },
+    {
+      name: "@electron-forge/maker-flatpak",
+      config: {
+        options: {
+          id: "com.dygmalab.bazecor",
+          productName: "Bazecor",
+          branch: "stable",
+          base: "org.electronjs.Electron2.BaseApp",
+          baseVersion: "23.08",
+          runtime: "org.freedesktop.Platform",
+          runtimeVersion: "23.08",
+          sdk: "org.freedesktop.Sdk",
+          arch: ["x86_64", "aarch64"],
+          finishArgs: [
+            "--share=ipc",
+            "--share=network",
+            "--socket=x11",
+            "--socket=wayland",
+            "--socket=pulseaudio",
+            "--device=all", // Important for USB access
+            "--filesystem=home",
+          ],
+          modules: [
+            {
+              name: "bazecor",
+              sources: [
+                {
+                  type: "dir",
+                  path: ".",
+                },
+              ],
+            },
+          ],
+        },
+      },
+    },
+    {
+      name: "@electron-forge/maker-rpm",
+      config: {
+        options: {
+          icon: "./build/logo.png",
+        },
+      },
+    },
+    {
+      name: "@electron-forge/maker-dmg",
+      config: {
+        icon: "./build/logo.icns",
+      },
+    },
   ],
   plugins: [
     new WebpackPlugin({

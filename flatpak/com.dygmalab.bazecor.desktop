@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Bazecor
+Comment=Configuration tool for Dygma keyboards
+Exec=bazecor
+Terminal=false
+Type=Application
+Icon=com.dygmalab.bazecor
+Categories=Utility;
+StartupWMClass=Bazecor
+Keywords=keyboard;configuration;dygma;[Desktop Entry]
+Name=Bazecor
+Comment=Configuration tool for Dygma keyboards
+Exec=bazecor
+Terminal=false
+Type=Application
+Icon=com.dygmalab.bazecor
+Categories=Utility;
+StartupWMClass=Bazecor
+Keywords=keyboard;configuration;dygma;

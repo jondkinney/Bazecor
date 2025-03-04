@@ -1,0 +1,48 @@
+{
+  "id": "com.dygmalab.bazecor",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "23.08",
+  "sdk": "org.freedesktop.Sdk",
+  "base": "org.electronjs.Electron2.BaseApp",
+  "base-version": "23.08",
+  "command": "bazecor",
+  "separate-locales": false,
+  "finish-args": [
+    "--share=ipc",
+    "--share=network",
+    "--socket=x11",
+    "--socket=wayland",
+    "--socket=pulseaudio",
+    "--device=all",
+    "--filesystem=home"
+  ],
+  "modules": [
+    {
+      "name": "bazecor",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -D bazecor /app/bin/bazecor",
+        "install -D com.dygmalab.bazecor.desktop /app/share/applications/com.dygmalab.bazecor.desktop",
+        "install -D com.dygmalab.bazecor.appdata.xml /app/share/appdata/com.dygmalab.bazecor.appdata.xml",
+        "install -D build/logo.png /app/share/icons/hicolor/512x512/apps/com.dygmalab.bazecor.png"
+      ],
+      "sources": [
+        {
+          "type": "file",
+          "path": "flatpak/bazecor",
+          "dest-filename": "bazecor"
+        },
+        {
+          "type": "file",
+          "path": "flatpak/com.dygmalab.bazecor.desktop",
+          "dest-filename": "com.dygmalab.bazecor.desktop"
+        },
+        {
+          "type": "file",
+          "path": "flatpak/com.dygmalab.bazecor.appdata.xml",
+          "dest-filename": "com.dygmalab.bazecor.appdata.xml"
+        }
+      ]
+    }
+  ]
+}

@@ -15,10 +15,10 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess"
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="35ef", MODE="0660", TAG+="uaccess"
 
 # Broader rule targeting all virtual HIDRAW devices from this vendor
-KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="35ef", GROUP="plugdev", MODE="0660"
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="35ef", GROUP="plugdev", MODE="0666"
 
 # Fallback rule using the device name pattern
-KERNEL=="hidraw[0-9]*", ATTRS{idVendor}=="35ef", GROUP="plugdev", MODE="0660"
+KERNEL=="hidraw[0-9]*", ATTRS{idVendor}=="35ef", GROUP="plugdev", MODE="0666"
 `;
 
 const filename = "/etc/udev/rules.d/60-dygma.rules";
