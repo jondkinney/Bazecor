@@ -18,7 +18,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Routes, Navigate, Route, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ThemeProvider, DefaultTheme } from "styled-components";
+import { ThemeProvider } from "styled-components";
 import { ipcRenderer } from "electron";
 import path from "path";
 import log from "electron-log/renderer";

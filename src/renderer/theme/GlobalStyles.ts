@@ -1,11 +1,11 @@
-import { DefaultTheme, createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 
 import iconChevronDown from "@Assets/base/icon-arrow--chevron-down.svg";
 import iconChevronDownWhite from "@Assets/base/icon-arrow--chevron-down_white.svg";
 import LibreFranklin from "./fonts/LibreFranklin/LibreFranklin-VariableFont_wght.ttf";
 import LibreFranklinItalic from "./fonts/LibreFranklin/LibreFranklin-Italic-VariableFont_wght.ttf";
 
-const GlobalStyles = createGlobalStyle<{ theme: DefaultTheme }>`
+const GlobalStyles = createGlobalStyle`
   @font-face {
     font-family: "Libre Franklin";
     font-weight: 100 900;

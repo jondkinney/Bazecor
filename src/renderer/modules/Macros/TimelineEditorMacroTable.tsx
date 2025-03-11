@@ -255,7 +255,7 @@ const TimelineEditorMacroTable = (props: Props) => {
     return <></>;
   }
   return (
-    <Styles className="trackingWrapper" style={cssObjectWidth} ref={horizontalWheel} id="hwTracker">
+    <Styles className="trackingWrapper" style={cssObjectWidth} ref={horizontalWheel as any} id="hwTracker">
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable" direction="horizontal">
           {provided => (
