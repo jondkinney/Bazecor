@@ -1,13 +1,11 @@
 import type { ForgeConfig, ForgePackagerOptions } from "@electron-forge/shared-types";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
-import { WebpackPlugin } from "@electron-forge/plugin-webpack";
+import { VitePlugin } from "@electron-forge/plugin-vite";
 import fs from "fs";
 import path from "path";
 import { globSync } from "glob";
 import { spawnSync } from "child_process";
-import rendererConfig from "./webpack.renderer.config";
-import mainConfig from "./webpack.main.config";
 
 const packagerConfig: ForgePackagerOptions = {
   appBundleId: "com.dygmalab.bazecor",
@@ -66,22 +64,26 @@ const config: ForgeConfig = {
     },
   ],
   plugins: [
-    new WebpackPlugin({
-      mainConfig,
-      devContentSecurityPolicy: "connect-src 'self' *.github.com github.com objects.githubusercontent.com 'unsafe-eval';",
-      renderer: {
-        config: rendererConfig,
-        entryPoints: [
-          {
-            html: "./src/renderer/index.html",
-            js: "./src/renderer/index.tsx",
-            name: "main_window",
-            preload: {
-              js: "./src/preload/preload.ts",
-            },
-          },
-        ],
-      },
+    new VitePlugin({
+      // devContentSecurityPolicy: "connect-src 'self' *.github.com github.com objects.githubusercontent.com 'unsafe-eval';",
+      build: [
+        {
+          entry: "src/main/index.ts",
+          config: "vite.main.config.mts",
+          target: "main",
+        },
+        {
+          entry: "src/preload/preload.ts",
+          config: "vite.preload.config.mts",
+          target: "preload",
+        },
+      ],
+      renderer: [
+        {
+          name: "main_window",
+          config: "vite.renderer.config.mts",
+        },
+      ],
     }),
   ],
   hooks: {
@@ -96,7 +98,7 @@ const config: ForgeConfig = {
 
       packageJson.dependencies = {
         serialport: "^12.0.0",
-        usb: "^2.9.0",
+        usb: "^2.13.0",
         "uiohook-napi": "^1.5.4",
       };
 
