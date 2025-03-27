@@ -246,6 +246,7 @@ interface Props {
   code: SegmentedKeyType;
   macros: MacrosType[];
   superkeys: SuperkeysType[];
+  action?: number;
   keyIndex: number;
   actTab: string;
   selectedlanguage: string;
@@ -260,7 +261,19 @@ interface State {
 }
 
 function KeyPickerKeyboard(props: Props) {
-  const { selectedlanguage, macros, actTab, superkeys, code, onKeySelect, isWireless, keyIndex, mouseWheel, resetScroll } = props;
+  const {
+    selectedlanguage,
+    macros,
+    actTab,
+    superkeys,
+    action,
+    code,
+    onKeySelect,
+    isWireless,
+    keyIndex,
+    mouseWheel,
+    resetScroll,
+  } = props;
   const prevProps = useRef(props);
   const overflowRef = React.createRef<HTMLElement>();
 
@@ -507,7 +520,8 @@ function KeyPickerKeyboard(props: Props) {
                   activeTab={actTab}
                   selectedlanguage={selectedlanguage}
                   keyCode={code}
-                  macros={macros}
+                  macro={macros[KC - 53852]}
+                  action={action}
                 />
               </motion.div>
             </TabsContent>

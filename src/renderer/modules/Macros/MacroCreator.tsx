@@ -478,7 +478,7 @@ const MacroCreator = (props: Props) => {
                             <LayersTab
                               onKeySelect={onLayerPress}
                               activeTab="macro"
-                              macros={macros[selected]}
+                              macro={macros[selected]}
                               triggerDeleteLastItem={triggerDeleteLastItem}
                             />
                           </motion.div>
