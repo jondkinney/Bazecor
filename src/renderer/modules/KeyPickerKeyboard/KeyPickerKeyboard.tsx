@@ -123,7 +123,7 @@ width: -webkit-fill-available;
 
 }
 .ball-inner {
-  display: ruby-text;
+  display: flex;
   flex-wrap: wrap;
   text-align: left;
   padding: 8px;
