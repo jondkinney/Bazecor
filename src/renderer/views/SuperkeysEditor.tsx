@@ -562,6 +562,7 @@ function SuperkeysEditor(props: SuperkeysEditorProps) {
         >
           <p>{i18n.editor.superkeys.callout1}</p>
           <p>{i18n.editor.superkeys.callout2}</p>
+          <p>{i18n.editor.superkeys.callout3}</p>
         </Callout>
 
         <SuperkeyActions
