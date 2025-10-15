@@ -297,7 +297,7 @@ function KeyPickerKeyboard(props: Props) {
     const tabList = [];
     tabList.push("tabKeys");
     tabList.push("tabLayers");
-    if (actTab === "editor" && !sk20) tabList.push("tabModifiers");
+    if (actTab === "editor") tabList.push("tabModifiers");
     tabList.push("tabMacro");
     if (actTab !== "super") tabList.push("tabSuperKeys");
     tabList.push("tabMedia");
@@ -333,8 +333,7 @@ function KeyPickerKeyboard(props: Props) {
     log.info("detectedTab", keyCode, tab);
 
     if (state.currentTab === "tabModifiers" && tab === "tabKeys" && keyCode > 223) tab = "tabModifiers";
-    // If SK 2.0, hide Advanced Modifiers: fallback to Keys when detection suggests Modifiers
-    if (sk20 && tab === "tabModifiers") tab = "tabKeys";
+    /* keep Advanced Modifiers enabled regardless of sk20 */
     return tab;
   };
 
@@ -414,11 +413,11 @@ function KeyPickerKeyboard(props: Props) {
                 <TabsTrigger value="tabLayers" variant="tab" className="text-sm [&_svg]:w-[20px] py-2" disabled={disable}>
                   <IconLayers size="sm" /> {i18n.editor.standardView.layers.title}
                 </TabsTrigger>
-                {actTab === "editor" && !sk20 ? (
+                {actTab === "editor" ? (
                   <>
                     <TabsTrigger value="tabModifiers" variant="tab" className="text-sm [&_svg]:w-[20px] py-2" disabled={disable}>
                       <>
-                        <IconSplitView size="sm" /> Advanced Modifiers
+                        <IconSplitView size="sm" /> {sk20 ? "OneShot modifier" : "Advanced Modifiers"}
                       </>
                     </TabsTrigger>
                   </>
@@ -531,7 +530,7 @@ function KeyPickerKeyboard(props: Props) {
                 />
               </motion.div>
             </TabsContent>
-            {actTab === "editor" && !sk20 ? (
+            {actTab === "editor" ? (
               <TabsContent value="tabModifiers" key="tabModifiers">
                 <motion.div initial="hidden" animate="visible" key="tabKeys" variants={tabVariants}>
                   <ModifiersTab
