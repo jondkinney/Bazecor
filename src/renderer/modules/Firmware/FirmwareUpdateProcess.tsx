@@ -19,6 +19,7 @@ import React, { useState, useEffect } from "react";
 import Styled from "styled-components";
 import log from "electron-log/renderer";
 import { useMachine } from "@xstate/react";
+import { useNavigate } from "react-router-dom";
 import { i18n } from "@Renderer/i18n";
 import { useDevice, DeviceTools } from "@Renderer/DeviceContext";
 import { toast } from "react-toastify";
@@ -121,6 +122,7 @@ interface FirmwareUpdateProcessProps {
 function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
   const { nextBlock, retryBlock, context, toggleFlashing, toggleFwUpdate, onDisconnect, setRestoredOk } = props;
   const { state: deviceState, dispatch } = useDevice();
+  const navigate = useNavigate();
   const [toggledFlashing, sendToggledFlashing] = useState(false);
   const [performingRestore, setPerformingRestore] = useState(false);
   const [readyForRestore, setReadyForRestore] = useState(false);
@@ -189,6 +191,7 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
           log.info("closing flashin process");
           toggleFlashing();
           toggleFwUpdate(false);
+          navigate("/editor");
         },
       },
     }),
