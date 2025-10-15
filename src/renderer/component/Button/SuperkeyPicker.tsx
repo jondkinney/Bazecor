@@ -297,7 +297,7 @@ function SuperkeyPicker(props: SuperkeyPickerProps) {
                 </div>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs" side="bottom" size="sm">
-                Fast Superkeys are enable when you only setup tap and hold actions. Any other combination will be a slow superkey
+               Fast Superkeys are enabled when you only set up TAP and HOLD actions. Any other combination will be a normal Superkey.
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
