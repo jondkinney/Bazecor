@@ -420,7 +420,8 @@ const English = {
       },
       callout1: "Wow! Superpowers, my friend!",
       callout2:
-        "Superkeys allow up to 5 different functions in a single key. You activate each function with a tap, hold, tap and hold, double-tap or double-tap and hold. This allows you to create crazy combinations to boost your workflow.",
+        "Superkeys allow up to 5 different functions in a single key.",
+      callout3: "Use only TAP and HOLD to get Fast Superkeys (best for layers and modifiers) or use all five functions for things like shortcuts, macros or media keys. ", 
       tooltip:
         "You can edit keys in two different ways. Advanced users may prefer Single View which is designed for quick key editing.",
       collapse: {
