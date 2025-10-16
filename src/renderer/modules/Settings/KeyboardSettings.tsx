@@ -157,7 +157,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
   const [localKBData, setLocalKBData] = useState(kbData);
   const store = Store.getStore();
   const sk20 = Boolean(store.get("capabilities.sk20"));
-  const labelWithFastSuper = (text: string) => (sk20 ? text.replace("Add Key on Tap", "Fast Superkey") : text);
+  const labelWithFastSuper = (text: string) => (sk20 ? text.replace("Add Key on Tap", "Fast Superkeys") : text);
 
   useEffect(() => {
     const { kbData: newKBData } = props;

@@ -647,9 +647,9 @@ const English = {
       overlapThreshold: "Add Key on Tap - Overlap Threshold",
       overlapThresholdTip1: "This setting adjusts how much chording you are allowed without triggering the hold function.",
       overlapThresholdTip2:
-        "High values let you press the next key before releasing the Dual-Function key without triggering the hold function.",
+        "High values let you press another key before fully releasing the previous one without triggering the hold function.",
       overlapThresholdTip3:
-        "Low values will mean that you’ll trigger the hold function whenever pressing a key without having totally released a Dual-Function key.",
+        "Low values will mean that you'll trigger the hold function whenever pressing another key without releasing the previous one.",
       overlapThresholdTipDefault: "Default value: 80",
       overlapThresholdsub: " - Percentage from 0 to 100",
       holdTimeoutTip1: "This setting determines the amount of time it takes for the “hold” function to activate.",

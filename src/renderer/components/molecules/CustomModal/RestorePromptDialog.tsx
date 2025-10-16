@@ -30,7 +30,7 @@ const RestorePromptDialog = ({ open, onRestore, disabled }: RestorePromptDialogP
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent className="[&>button]:hidden">
         <DialogHeader className="text-center items-center pt-12 space-y-3">
-          <DialogTitle className="text-center">Load you amazing layers!</DialogTitle>
+          <DialogTitle className="text-center">Load your amazing layers!</DialogTitle>
           <DialogDescription className="text-center">
             Restore your last backup to bring back your keymaps, lighting and settings.
           </DialogDescription>

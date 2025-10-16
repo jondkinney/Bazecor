@@ -417,7 +417,7 @@ function KeyPickerKeyboard(props: Props) {
                   <>
                     <TabsTrigger value="tabModifiers" variant="tab" className="text-sm [&_svg]:w-[20px] py-2" disabled={disable}>
                       <>
-                        <IconSplitView size="sm" /> {sk20 ? "OneShot modifier" : "Advanced Modifiers"}
+                        <IconSplitView size="sm" /> {sk20 ? "OneShot Modifiers" : "Advanced Modifiers"}
                       </>
                     </TabsTrigger>
                   </>
@@ -431,8 +431,10 @@ function KeyPickerKeyboard(props: Props) {
                   <>
                     <TabsTrigger value="tabSuperKeys" variant="tab" className="text-sm [&_svg]:w-[20px] py-2" disabled={disable}>
                       <>
-                        <IconThunder size="sm" /> {i18n.editor.standardView.superkeys.title}{" "}
-                        <div className="badge badge-primary leading-none ml-1 font-bold text-[9px] text-white">BETA</div>
+                        <IconThunder size="sm" /> {i18n.editor.standardView.superkeys.title}
+                        {!sk20 && (
+                          <div className="badge badge-primary leading-none ml-1 font-bold text-[9px] text-white">BETA</div>
+                        )}
                       </>
                     </TabsTrigger>
                   </>
