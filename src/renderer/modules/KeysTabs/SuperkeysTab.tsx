@@ -37,7 +37,7 @@ h4 {
     background-color: ${({ theme }) => theme.styles.standardView.superkeys.info.background};
     position: relative;
 }
-.superkeyHint:after {
+.superkeyHint:before {
   content: "";
   position: absolute;
   top: -8px;

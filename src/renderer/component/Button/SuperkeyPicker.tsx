@@ -287,8 +287,8 @@ function SuperkeyPicker(props: SuperkeyPickerProps) {
   if (superkeys === null) return null;
   return (
     <Style>
-      <div className={`superkeyAction ${elementActive ? "active" : ""} ${[0,1].includes(index) ? "highlight" : ""} ${variant === "subtle" ? "!py-2" : ""}`}>
-        {[0,1].includes(index) && (
+      <div className={`superkeyAction ${elementActive ? "active" : ""} ${[0,1].includes(index) && variant === "regular" ? "highlight" : ""} ${variant === "subtle" ? "!py-2" : ""}`}>
+        {[0,1].includes(index) && variant === "regular" && (
           <TooltipProvider delayDuration={50}>
             <Tooltip>
               <TooltipTrigger asChild>
