@@ -343,9 +343,8 @@ const English = {
       },
       superkeys: {
         title: "Superkeys",
-        callout1: "You are about to create crazy combinations to boost your workflow! 🔥",
-        callout2:
-          "Superkeys allow up to 5 different functions in a single key. You activate each function with a tap, hold, tap and hold, double-tap or double-tap and hold.",
+        callout1: "Superkeys allow up to 5 different functions in a single key! 🔥",
+        callout2: "You activate each function with a tap, hold, tap and hold, double-tap or double-tap and hold.",
         label: "Select Superkey",
       },
       wireless: {
@@ -418,10 +417,10 @@ const English = {
         doubleTapAndHoldLabel: "2Tap & hold",
         doubleTapAndHold: "Tap twice fast and hold to see others keyboards crying.",
       },
-      callout1: "Wow! Superpowers, my friend!",
+      callout1: "Superkeys allow up to 5 different functions in a single key.",
       callout2:
-        "Superkeys allow up to 5 different functions in a single key.",
-      callout3: "Use only TAP and HOLD to get Fast Superkeys (best for layers and modifiers) or use all five functions for things like shortcuts, macros or media keys. ", 
+        "Use only TAP and HOLD to get Fast Superkeys, ideal for layers and modifiers. Use all five functions for shortcuts, macros or media keys.",
+      callout3: "Update your firmware to get the most out of Superkeys.", 
       tooltip:
         "You can edit keys in two different ways. Advanced users may prefer Single View which is designed for quick key editing.",
       collapse: {
