@@ -296,7 +296,7 @@ const LayersTab = ({
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className="flex flex-col gap-2 mt-3">
+          <div className="flex flex-col gap-2 mt-1 mb-1">
             <Heading renderAs="h4" headingLevel={3} className="text-base flex">
               Advanced options
             </Heading>
