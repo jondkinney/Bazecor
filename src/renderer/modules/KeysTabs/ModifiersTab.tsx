@@ -217,7 +217,7 @@ const ModifiersTab = ({
         <div className="w-full flex flex-col gap-2">
           <div className="w-full flex flex-row flex-wrap gap-6">
             <div className="flex flex-col gap-2">
-              <Heading renderAs="h4" headingLevel={3} className="text-base flex leading-6 gap-1">
+              <Heading renderAs="h4" headingLevel={3} className="text-base flex leading-6 gap-1 pt-4">
                 {activeModifierTab === "None" && <>Select a Modifier</>}
                 {activeModifierTab === "dualModifier" && (
                   <>
@@ -316,10 +316,7 @@ const ModifiersTab = ({
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className="flex flex-col gap-2 mt-3">
-            <Heading renderAs="h4" headingLevel={3} className="text-base flex">
-              Advanced options
-            </Heading>
+          <div className="flex flex-col gap-2 mt-0">
             <div className="flex flex-wrap gap-6">
               {!sk20 && (
                 <CustomRadioCheckBox
@@ -354,7 +351,7 @@ const ModifiersTab = ({
                       </p>
                     </>
                   }
-                  className=""
+                  className="self-start mt-2"
                   disabled={activeModifier === "ros" || activeModifier === "rcontrol" || activeModifier === "rshift"}
                 />
               )}
@@ -384,7 +381,7 @@ const ModifiersTab = ({
                     </p>
                   </>
                 }
-                className=""
+                className="self-start mt-2"
                 disabled={false}
               />
             </div>

@@ -186,7 +186,7 @@ const LayersTab = ({
         <div className="w-full flex flex-col gap-2">
           <div className="w-full flex flex-row flex-wrap gap-6">
             <div className="flex flex-col gap-2">
-              <Heading renderAs="h4" headingLevel={3} className="text-base flex leading-6 gap-1">
+              <Heading renderAs="h4" headingLevel={3} className="text-base flex leading-6 gap-1 pt-2">
                 {activeLayerNumber === 0 && <>Select a layer</>}
                 {activeLayerTab === "layerShift" && activeLayerNumber > 0 ? (
                   <>
@@ -297,9 +297,6 @@ const LayersTab = ({
             </AnimatePresence>
           </div>
           <div className="flex flex-col gap-2 mt-1 mb-1">
-            <Heading renderAs="h4" headingLevel={3} className="text-base flex">
-              Advanced options
-            </Heading>
             <div className="flex flex-wrap gap-6">
               <CustomRadioCheckBox
                 label={
