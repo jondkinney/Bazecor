@@ -205,6 +205,8 @@ function SuperkeysEditor(props: SuperkeysEditorProps) {
       state.keymap = keymap;
       state.kbtype = kbtype;
       setState({ ...state });
+      // Ensure the first action is fully selected and its content displayed
+      changeAction(0);
       cancelContext();
       setLoading(false);
     } catch (e) {
