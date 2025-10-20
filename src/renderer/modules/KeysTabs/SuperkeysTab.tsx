@@ -191,6 +191,7 @@ const SuperkeysTab = ({ macros, keyCode, onKeySelect, superkeys, disabled }: Sup
               </div>
               <Button
                 variant="short"
+                size="lg"
                 onClick={goToSuperkeysEditor}
                 disabled={disabled || (document.querySelector('a[href="/superkeys"]') as HTMLAnchorElement | null)?.classList.contains("disabled")}
               >
