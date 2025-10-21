@@ -316,7 +316,7 @@ const ModifiersTab = ({
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className="flex flex-col gap-2 mt-0">
+          <div className="flex flex-col gap-2 mt-1">
             <div className="flex flex-wrap gap-6">
               {!sk20 && (
                 <CustomRadioCheckBox
@@ -351,7 +351,7 @@ const ModifiersTab = ({
                       </p>
                     </>
                   }
-                  className="self-start mt-2"
+                  className="self-start mt-0"
                   disabled={activeModifier === "ros" || activeModifier === "rcontrol" || activeModifier === "rshift"}
                 />
               )}
@@ -381,7 +381,7 @@ const ModifiersTab = ({
                     </p>
                   </>
                 }
-                className="self-start mt-2"
+                className="self-start mt-0"
                 disabled={false}
               />
             </div>
