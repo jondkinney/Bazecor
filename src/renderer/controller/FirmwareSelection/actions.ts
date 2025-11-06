@@ -8,7 +8,7 @@ import fs from "fs";
 import { ReleaseType } from "@Renderer/types/releases";
 import * as Context from "./context";
 
-const FWMAJORVERSION = "*"; // Major version restriction of the firmware to be downloaded
+const FWMAJORVERSION = "<3.0.0"; // Major version restriction of the firmware to be downloaded (excludes 3.x and above)
 
 export const FocusAPIRead = async (context: Context.ContextType): Promise<Context.ContextType> => {
   try {
