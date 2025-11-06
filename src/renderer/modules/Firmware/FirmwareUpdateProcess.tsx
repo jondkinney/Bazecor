@@ -23,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 import { i18n } from "@Renderer/i18n";
 import { useDevice, DeviceTools } from "@Renderer/DeviceContext";
 import { toast } from "react-toastify";
+import { ipcRenderer } from "electron";
+import fs from "fs";
 
 // State machine
 import FlashDevice from "@Renderer/controller/FlashingProcedure/machine";
@@ -460,6 +462,137 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
           <RestorePromptDialog
             open={state.value === "reportSucess" && readyForRestore}
             disabled={performingRestore}
+            onLoadBackup={async () => {
+              try {
+                setPerformingRestore(true);
+                const store = Store.getStore();
+                const backupFolder = store.get("settings.backupFolder") as string;
+                let connected: Device | undefined;
+                let connectedWasNew = false;
+                let ok = false;
+                try {
+                  if (
+                    deviceState.currentDevice &&
+                    deviceState.currentDevice.type === "serial" &&
+                    !deviceState.currentDevice.isClosed &&
+                    (deviceState.currentDevice.device?.info?.product === context.device?.info?.product)
+                  ) {
+                    connected = deviceState.currentDevice as Device;
+                  } else {
+                    const list = await DeviceTools.list();
+                    const target = list.find(
+                      d => d.type === "serial" && d.device?.info?.product === context.device?.info?.product,
+                    );
+                    if (!target) throw new Error("Keyboard not found after update");
+                    try {
+                      if (
+                        deviceState.currentDevice &&
+                        deviceState.currentDevice.type === "serial" &&
+                        !deviceState.currentDevice.isClosed
+                      ) {
+                        const currPath = (deviceState.currentDevice.port as any)?.path || deviceState.currentDevice.device?.path;
+                        const tgtPath = (target as any)?.device?.path;
+                        if (currPath && tgtPath && currPath !== tgtPath) {
+                          await DeviceTools.disconnect(deviceState.currentDevice as Device);
+                        }
+                      }
+                    } catch (e) {
+                      // ignore disconnect errors
+                    }
+                    const maxTries = 6;
+                    let lastErr: any;
+                    for (let i = 0; i < maxTries; i += 1) {
+                      try {
+                        connected = (await DeviceTools.connect(target)) as Device;
+                        lastErr = undefined;
+                        break;
+                      } catch (err: any) {
+                        lastErr = err;
+                        const msg = String(err?.message || err);
+                        if (/denied|busy|EBUSY|EACCES/i.test(msg)) {
+                          await new Promise(r => setTimeout(r, 800));
+                          continue;
+                        }
+                        throw err;
+                      }
+                    }
+                    if (!connected) throw lastErr || new Error("Could not open serial port");
+                    connectedWasNew = true;
+                  }
+
+                  const options = {
+                    title: i18n.keyboardSettings.backupFolder.restoreTitle,
+                    buttonLabel: i18n.keyboardSettings.backupFolder.windowRestore,
+                    defaultPath: backupFolder,
+                    filters: [
+                      { name: "Json", extensions: ["json"] },
+                      { name: i18n.dialog.allFiles, extensions: ["*"] },
+                    ],
+                  } as any;
+                  const resp = await ipcRenderer.invoke("open-dialog", options);
+                  if (resp?.canceled) {
+                    setPerformingRestore(false);
+                    return;
+                  }
+
+                  let loadedFile: any;
+                  try {
+                    loadedFile = JSON.parse(fs.readFileSync(resp.filePaths[0], "utf-8"));
+                  } catch (e) {
+                    throw new Error("The file is not a valid global backup");
+                  }
+
+                  if (loadedFile.virtual !== undefined) {
+                    await Backup.restoreVirtual(loadedFile, connected);
+                    ok = true;
+                  } else if (loadedFile.backup !== undefined || loadedFile[0]?.command !== undefined) {
+                    let chipID = await connected.command("hardware.chip_id");
+                    chipID = (chipID as string).replace(/\s/g, "");
+                    const neurons = store.get("neurons") as Neuron[];
+                    ok = await Backup.restoreBackup(neurons, chipID, loadedFile, connected);
+                  } else {
+                    throw new Error("The file is not a valid global backup");
+                  }
+
+                  if (ok) {
+                    toast.success(
+                      <ToastMessage
+                        title="Backup restored successfully"
+                        content="Your backup was restored successfully to the device!"
+                        icon={<IconArrowDownWithLine />}
+                      />,
+                      { autoClose: 2000, icon: "" },
+                    );
+                  } else {
+                    toast.warn(
+                      <ToastMessage title="Could not restore backup" content="Could not restore backup" icon={<IconArrowDownWithLine />} />,
+                      { autoClose: 2500, icon: "" },
+                    );
+                  }
+                } finally {
+                  if (connected && connectedWasNew) {
+                    try {
+                      dispatch({ type: "addDevice", payload: connected });
+                      dispatch({ type: "changeCurrent", payload: { selected: deviceState.deviceList.length, device: connected } });
+                    } catch (e) {
+                      // ignore context update errors
+                    }
+                  }
+                }
+                setPerformingRestore(false);
+                if (ok) {
+                  setReadyForRestore(false);
+                  send({ type: "finish-event", restoreResult: true } as any);
+                }
+              } catch (e) {
+                log.error(e);
+                setPerformingRestore(false);
+                toast.warn(
+                  <ToastMessage title="Could not restore backup" content={`Error: ${e}`} icon={<IconArrowDownWithLine />} />,
+                  { autoClose: 2500, icon: "" },
+                );
+              }
+            }}
             onRestore={async () => {
               try {
                 setPerformingRestore(true);
