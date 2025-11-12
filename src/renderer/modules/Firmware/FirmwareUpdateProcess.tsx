@@ -462,6 +462,15 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
           <RestorePromptDialog
             open={state.value === "reportSucess" && readyForRestore}
             disabled={performingRestore}
+            onClose={() => {
+              setReadyForRestore(false);
+              if (!toggledFlashing) return;
+              sendToggledFlashing(false);
+              log.info("closing flashing process from dialog close");
+              toggleFlashing();
+              toggleFwUpdate(false);
+              navigate("/editor");
+            }}
             onLoadBackup={async () => {
               try {
                 setPerformingRestore(true);
