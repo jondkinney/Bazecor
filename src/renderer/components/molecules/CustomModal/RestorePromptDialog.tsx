@@ -23,31 +23,27 @@ interface RestorePromptDialogProps {
   open: boolean;
   onRestore: () => void;
   onLoadBackup: () => void;
+  onClose: () => void;
   disabled?: boolean;
 }
 
-const RestorePromptDialog = ({ open, onRestore, onLoadBackup, disabled }: RestorePromptDialogProps): JSX.Element => {
+const RestorePromptDialog = ({ open, onRestore, onLoadBackup, onClose, disabled }: RestorePromptDialogProps): JSX.Element => {
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="[&>button]:hidden">
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent>
         <DialogHeader className="text-center items-center pt-12 space-y-3">
           <DialogTitle className="text-center">Load your amazing layers!</DialogTitle>
           <DialogDescription className="text-center">
             Restore your last backup to bring back your keymaps, lighting and settings.
           </DialogDescription>
         </DialogHeader>
-        <div className="px-6 mt-2 text-center flex justify-center gap-3">
+        <div className="px-6 pb-10 mt-2 text-center flex justify-center gap-3">
           <Button variant="short" className="whitespace-nowrap border-0" onClick={onLoadBackup} disabled={disabled}>
             Load backup
           </Button>
           <Button variant="primary" className="whitespace-nowrap" onClick={onRestore} disabled={disabled}>
             Restore last backup
           </Button>
-        </div>
-        <div className="px-6 pb-10 mt-2 text-center">
-          <p className="text-xs text-gray-400 dark:text-gray-200">
-            If you have any issues restoring a backup, close Bazecor and restore the backup manually in Preferences &gt; Backups.
-          </p>
         </div>
       </DialogContent>
     </Dialog>
