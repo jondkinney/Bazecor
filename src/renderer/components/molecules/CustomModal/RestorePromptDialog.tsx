@@ -30,7 +30,12 @@ interface RestorePromptDialogProps {
 const RestorePromptDialog = ({ open, onRestore, onLoadBackup, onClose, disabled }: RestorePromptDialogProps): JSX.Element => {
   return (
     <Dialog open={open}>
-      <DialogContent className="[&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+      <DialogContent
+        className="[&>button]:hidden"
+        onPointerDownOutside={e => e.preventDefault()}
+        onEscapeKeyDown={e => e.preventDefault()}
+        onOpenAutoFocus={e => e.preventDefault()}
+      >
         <DialogHeader className="text-center items-center pt-12 space-y-3">
           <DialogTitle className="text-center">Load your amazing layers!</DialogTitle>
           <DialogDescription className="text-center">
