@@ -467,6 +467,15 @@ const English = {
         othersTitle: "Others",
         othersDescription: "Control your media, apps and brightness. Safe and sound!",
       },
+      memoryUsage: {
+        title: "Superkeys Memory Usage",
+        errorTitle: "You exceeded the maximum capacity of Superkeys.",
+        errordBody:
+          "Please decrease the number of Superkeys until the Memory Usage indicator is no longer red.",
+        alertTitle: "You are almost out of Superkeys",
+        alertBody:
+          "Everything will still work perfectly but consider deleting Superkeys you don't use to continue adding more.",
+      },
     },
     oldMacroModal: {
       title: "Update your macros",

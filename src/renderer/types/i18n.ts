@@ -409,6 +409,7 @@ export interface EditorSuperkeys {
   tooltip: string;
   collapse: Collapse;
   specialKeys: SpecialKeys;
+  memoryUsage: MemoryUsage;
 }
 
 export interface Actions {

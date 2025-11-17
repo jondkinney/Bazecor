@@ -37,6 +37,7 @@ import { IconFloppyDisk } from "@Renderer/components/atoms/icons";
 // Modules
 import { PageHeader } from "@Renderer/modules/PageHeader";
 import { SuperKeysFeatures, SuperkeyActions } from "@Renderer/modules/Superkeys";
+import MacrosMemoryUsage from "@Renderer/modules/Macros/MacrosMemoryUsage";
 import { KeyPickerKeyboard } from "@Renderer/modules/KeyPickerKeyboard";
 
 // Types
@@ -87,7 +88,7 @@ const Styles = Styled.div`
 }
 `;
 
-const MAX_SUPERKEYS = 69;
+const MAX_SUPERKEYS = 70;
 
 function SuperkeysEditor(props: SuperkeysEditorProps) {
   let keymapDB = new KeymapDB();
@@ -449,7 +450,7 @@ function SuperkeysEditor(props: SuperkeysEditorProps) {
   const checkLimit = () => {
     const { superkeys } = state;
     // Check if we've reached the limit of superkeys.
-    if (superkeys.length > MAX_SUPERKEYS) {
+    if (superkeys.length >= MAX_SUPERKEYS) {
       setShowLimitModal(true);
       return true; // Limit reached
     }
@@ -546,17 +547,20 @@ function SuperkeysEditor(props: SuperkeysEditorProps) {
           text="Superkeys Editor"
           showSaving
           contentSelector={
-            <SuperkeysSelector
-              itemList={superkeys}
-              selectedItem={selectedSuper}
-              subtitle="Superkeys"
-              onSelect={changeSelected}
-              addItem={addSuperkey}
-              deleteItem={deleteSuperkey}
-              updateItem={saveName}
-              cloneItem={duplicateSuperkey}
-              checkLimit={checkLimit}
-            />
+            <>
+              <SuperkeysSelector
+                itemList={superkeys}
+                selectedItem={selectedSuper}
+                subtitle="Superkeys"
+                onSelect={changeSelected}
+                addItem={addSuperkey}
+                deleteItem={deleteSuperkey}
+                updateItem={saveName}
+                cloneItem={duplicateSuperkey}
+                checkLimit={checkLimit}
+              />
+              <MacrosMemoryUsage context="superkeys" mem={superkeys.length} tMem={70} />
+            </>
           }
           saveContext={writeSuper}
           destroyContext={destroyThisContext}
