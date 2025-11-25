@@ -678,6 +678,7 @@ const English = {
       minPriorTip2:
         "If the value is high, the hold function won't be triggered if you press this key shortly after pressing another key.",
       minPriorTipDefault: "Default value: 75",
+      superkeysAffectsNote: "Only affects superkeys with Layers or Modifiers on Hold.",
     },
     superkeys: {
       title: "Typing",
@@ -685,6 +686,7 @@ const English = {
       timeoutTip1: "This setting determines how much a Superkey waits for the next tap.",
       timeoutTip2: "With a low value, you need to be fast pressing the next tap, or the Superkey will output the previous tap.",
       timeoutTip3: "With a high value, it will take more time for the Superkey to output the second tap.",
+      timeoutTip4: "Only affects superkeys with anything beyond Hold.",
       timeoutTipDefault: "Default value: 250",
       chordingTip1: "This setting determines the amount of time it takes for the “hold” function to activate.",
       chordingTip2: "With a high value, it’ll take more time to activate the hold function.",

@@ -701,6 +701,7 @@ export interface Qukeys {
   holdTimeoutTip2: string;
   holdTimeoutTip3: string;
   holdTimeoutTip4: string;
+  superkeysAffectsNote: string;
 }
 
 export interface ResetEEPROM {

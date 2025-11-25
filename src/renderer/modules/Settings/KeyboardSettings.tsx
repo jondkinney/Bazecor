@@ -156,8 +156,13 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
   const { kbData, setKbData, connected } = props;
   const [localKBData, setLocalKBData] = useState(kbData);
   const store = Store.getStore();
-  const sk20 = Boolean(store.get("capabilities.sk20"));
-  const labelWithFastSuper = (text: string) => (sk20 ? text.replace("Add Key on Tap", "Fast Superkeys") : text);
+  const sk20Raw = store.get("capabilities.sk20");
+  const sk20 =
+    sk20Raw === true ||
+    sk20Raw === "true" ||
+    sk20Raw === 1 ||
+    sk20Raw === "1";
+  const labelWithFastSuper = (text: string) => (sk20 ? text.replace("Add Key on Tap", "Superkeys") : text);
 
   useEffect(() => {
     const { kbData: newKBData } = props;
@@ -168,8 +173,13 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
     setLocalKBData(data => ({
       ...data,
       qukeysHoldTimeout: value[0],
+      SuperHoldstart: sk20 ? value[0] : data.SuperHoldstart,
     }));
-    setKbData({ ...localKBData, qukeysHoldTimeout: value[0] });
+    setKbData({
+      ...localKBData,
+      qukeysHoldTimeout: value[0],
+      SuperHoldstart: sk20 ? value[0] : localKBData.SuperHoldstart,
+    });
   };
 
   const setOverlapThreshold = (value: number[]) => {
@@ -181,11 +191,12 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
   };
 
   const setMinHold = (value: number[]) => {
+    const clamped = value[0] > 255 ? 255 : value[0];
     setLocalKBData(data => ({
       ...data,
-      qukeysMinHold: value[0],
+      qukeysMinHold: clamped,
     }));
-    setKbData({ ...localKBData, qukeysMinHold: value[0] });
+    setKbData({ ...localKBData, qukeysMinHold: clamped });
   };
 
   const setMinPrior = (value: number[]) => {
@@ -344,7 +355,9 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                   <div className="w-full flex gap-2">
                     <div className="w-full">
                       <Heading headingLevel={3} renderAs="paragraph-sm" className="flex items-center gap-2">
-                        {labelWithFastSuper(i18n.keyboardSettings.qukeys.holdTimeout)}
+                        {sk20
+                          ? i18n.keyboardSettings.superkeys.holdstart
+                          : labelWithFastSuper(i18n.keyboardSettings.qukeys.holdTimeout)}
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger className="[&_svg]:text-purple-100 [&_svg]:dark:text-purple-200">
@@ -397,6 +410,9 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                               <ul className="list-disc pl-4">
                                 <li className="text-left">{i18n.keyboardSettings.qukeys.overlapThresholdTip2}</li>
                                 <li className="text-left">{i18n.keyboardSettings.qukeys.overlapThresholdTip3}</li>
+                                {sk20 && (
+                                  <li className="text-left">{i18n.keyboardSettings.qukeys.superkeysAffectsNote}</li>
+                                )}
                                 <li className="text-left">{i18n.keyboardSettings.qukeys.overlapThresholdTipDefault}</li>
                               </ul>
                             </TooltipContent>
@@ -435,6 +451,9 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                               </Heading>
                               <ul className="list-disc pl-4">
                                 <li className="text-left">{i18n.keyboardSettings.qukeys.minHoldTip2}</li>
+                                {sk20 && (
+                                  <li className="text-left">{i18n.keyboardSettings.qukeys.superkeysAffectsNote}</li>
+                                )}
                                 <li className="text-left">{i18n.keyboardSettings.qukeys.minHoldTipDefault}</li>
                               </ul>
                             </TooltipContent>
@@ -473,6 +492,9 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                               </Heading>
                               <ul className="list-disc pl-4">
                                 <li className="text-left">{i18n.keyboardSettings.qukeys.minPriorTip2}</li>
+                                {sk20 && (
+                                  <li className="text-left">{i18n.keyboardSettings.qukeys.superkeysAffectsNote}</li>
+                                )}
                                 <li className="text-left">{i18n.keyboardSettings.qukeys.minPriorTipDefault}</li>
                               </ul>
                             </TooltipContent>
@@ -494,7 +516,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                   </div>
                 </div>
               )}
-              {SuperHoldstart >= 0 && (
+              {SuperHoldstart >= 0 && !sk20 && (
                 <div className="w-full">
                   <div className="w-full flex gap-2">
                     <div className="w-full">
@@ -590,6 +612,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                               <ul className="list-disc pl-4">
                                 <li className="text-left">{i18n.keyboardSettings.superkeys.timeoutTip2}</li>
                                 <li className="text-left">{i18n.keyboardSettings.superkeys.timeoutTip3}</li>
+                                <li className="text-left">{i18n.keyboardSettings.superkeys.timeoutTip4}</li>
                                 <li className="text-left">{i18n.keyboardSettings.superkeys.timeoutTipDefault}</li>
                               </ul>
                             </TooltipContent>
