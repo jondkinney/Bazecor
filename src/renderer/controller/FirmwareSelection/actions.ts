@@ -31,6 +31,7 @@ export const FocusAPIRead = async (context: Context.ContextType): Promise<Contex
   return context;
 };
 
+// TODO: when Sonshi has its own release repo, update GitHub owner/repo and asset filters accordingly.
 const loadAvailableFirmwareVersions = async (allowBeta: boolean) => {
   const Releases: ReleaseType[] = [];
   try {
@@ -86,12 +87,11 @@ export const GitHubRead = async (context: Context.ContextType): Promise<Context.
   let isBeta;
   try {
     const fwReleases = await loadAvailableFirmwareVersions(context.allowBeta);
+    const productName = context.device.info.product === "Sonshi" ? "Defy" : context.device.info.product;
     finalReleases = fwReleases.filter(
       release =>
-        release.name === context.device.info.product &&
-        (context.device.info.product !== "Raise"
-          ? SemVer.satisfies(release.version ? release.version : "", FWMAJORVERSION, { includePrerelease: true })
-          : true),
+        release.name === productName &&
+        (productName !== "Raise" ? SemVer.satisfies(release.version ? release.version : "", FWMAJORVERSION, { includePrerelease: true }) : true),
     );
     finalReleases.sort((a, b) => (SemVer.lt(SemVer.clean(a.version) as string, SemVer.clean(b.version) as string) ? 1 : -1));
     if (context.device.bootloader) {
@@ -208,21 +208,27 @@ export const downloadFirmware = async (
   let filenameSides: Uint8Array;
   log.info("Data to download FW: ", typeSelected, info, firmwareList, selectedFirmware);
   try {
-    if (info.product === "Raise") {
+    const productName = info.product === "Sonshi" ? "Defy" : info.product;
+    const firmwareAssets = firmwareList[selectedFirmware]?.assets ?? [];
+    if (productName === "Sonshi") {
+      log.warn("Sonshi firmware downloads currently reuse Defy repository assets. Update URLs once Sonshi repo exists.");
+    }
+
+    if (productName === "Raise") {
       filename =
         typeSelected === "default"
           ? ((await obtainFWFiles(
               "firmware.hex",
-              firmwareList[selectedFirmware].assets.find((asset: { name: string }) => asset.name === "firmware.hex").url,
+              firmwareAssets.find((asset: { name: string }) => asset.name === "firmware.hex").url,
             )) as Array<string>)
           : (obtainLocalFWFiles(path.join(customFirmwareFolder, "firmware.hex")) as Array<string>);
     } else {
-      if (info.keyboardType === "wireless" || info.product === "Raise2") {
+      if (info.keyboardType === "wireless" || productName === "Raise2") {
         filename =
           typeSelected === "default"
             ? ((await obtainFWFiles(
                 "Wireless_neuron.hex",
-                firmwareList[selectedFirmware].assets.find((asset: { name: string }) => asset.name === "Wireless_neuron.hex").url,
+                firmwareAssets.find((asset: { name: string }) => asset.name === "Wireless_neuron.hex").url,
               )) as Array<string>)
             : (obtainLocalFWFiles(path.join(customFirmwareFolder, "Wireless_neuron.hex")) as Array<string>);
       } else {
@@ -230,7 +236,7 @@ export const downloadFirmware = async (
           typeSelected === "default"
             ? ((await obtainFWFiles(
                 "Wired_neuron.uf2",
-                firmwareList[selectedFirmware].assets.find((asset: { name: string }) => asset.name === "Wired_neuron.uf2").url,
+                firmwareAssets.find((asset: { name: string }) => asset.name === "Wired_neuron.uf2").url,
               )) as Array<string>)
             : [obtainLocalFWFiles(path.join(customFirmwareFolder, "Wired_neuron.uf2")) as string];
       }
@@ -238,7 +244,7 @@ export const downloadFirmware = async (
         typeSelected === "default"
           ? ((await obtainFWFiles(
               "keyscanner.bin",
-              firmwareList[selectedFirmware].assets.find((asset: { name: string }) => asset.name === "keyscanner.bin").url,
+              firmwareAssets.find((asset: { name: string }) => asset.name === "keyscanner.bin").url,
             )) as Uint8Array)
           : new Uint8Array(obtainLocalFWFiles(path.join(customFirmwareFolder, "keyscanner.bin")) as any);
     }
