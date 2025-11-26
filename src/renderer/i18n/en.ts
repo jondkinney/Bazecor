@@ -420,7 +420,7 @@ const English = {
       callout1: "Superkeys allow up to 5 different functions in a single key.",
       callout2:
         "Use only TAP and HOLD to get Fast Superkeys, ideal for layers and modifiers. Use all five functions for shortcuts, macros or media keys.",
-      callout3: "Update your firmware to get the most out of Superkeys.", 
+      callout3: "Update your firmware to get the most out of Superkeys.",
       tooltip:
         "You can edit keys in two different ways. Advanced users may prefer Single View which is designed for quick key editing.",
       collapse: {
@@ -664,7 +664,7 @@ const English = {
       holdTimeoutTip2: "With a high value, it’ll take more time to activate the hold function.",
       holdTimeoutTip3: "With a low value, you might trigger the hold function if you linger on the key too much while typing.",
       holdTimeoutTip4:
-        "Note: Pressing another key at the same time triggers the hold function for this key. Adjust the Overlap Threshold and Minimum Hold Time to adjust that behavior.",
+        "Note: If you have a Layer or Modifier on hold, pressing another key at the same time triggers the hold function for this key. Adjust the Overlap Threshold and Minimum Hold Time to modify this behavior.",
       holdTimeoutTipDefault: "Default value: 250",
       minHold: "Add Key on Tap - Minimum Hold time",
       minHoldsub: "Low values will",
@@ -803,7 +803,7 @@ const English = {
       versionOutdatedTitle: "New update is available",
       calloutIntroText: "Updating your device firmware is how we implement new cool features and bug fixes.",
       calloutIntroText2:
-        "Make sure your keyboard is connected directly to your computer using the original Dygma cables; no hubs or KVMs, please 😊",
+        "Make sure your keyboard is connected directly to your computer using the original short Dygma cables; no hubs or KVMs, please 😊",
       neuronUpdatedText: "[Solid as a rock!]",
       neuronOutdatedText: "[Almost is never enough]",
       versionExists: "Device Firmware Update",
