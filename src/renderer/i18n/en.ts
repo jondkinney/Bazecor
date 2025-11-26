@@ -420,7 +420,7 @@ const English = {
       callout1: "Superkeys allow up to 5 different functions in a single key.",
       callout2:
         "Use only TAP and HOLD to get Fast Superkeys, ideal for layers and modifiers. Use all five functions for shortcuts, macros or media keys.",
-      callout3: "Update your firmware to get the most out of Superkeys.", 
+      callout3: "Update your firmware to get the most out of Superkeys.",
       tooltip:
         "You can edit keys in two different ways. Advanced users may prefer Single View which is designed for quick key editing.",
       collapse: {
@@ -664,7 +664,7 @@ const English = {
       holdTimeoutTip2: "With a high value, it’ll take more time to activate the hold function.",
       holdTimeoutTip3: "With a low value, you might trigger the hold function if you linger on the key too much while typing.",
       holdTimeoutTip4:
-        "Note: Pressing another key at the same time triggers the hold function for this key. Adjust the Overlap Threshold and Minimum Hold Time to adjust that behavior.",
+        "Note: If you have a Layer or Modifier on hold, pressing another key at the same time triggers the hold function for this key. Adjust the Overlap Threshold and Minimum Hold Time to modify this behavior.",
       holdTimeoutTipDefault: "Default value: 250",
       minHold: "Add Key on Tap - Minimum Hold time",
       minHoldsub: "Low values will",
@@ -678,6 +678,7 @@ const English = {
       minPriorTip2:
         "If the value is high, the hold function won't be triggered if you press this key shortly after pressing another key.",
       minPriorTipDefault: "Default value: 75",
+      superkeysAffectsNote: "Only affects superkeys with Layers or Modifiers on Hold.",
     },
     superkeys: {
       title: "Typing",
@@ -685,6 +686,7 @@ const English = {
       timeoutTip1: "This setting determines how much a Superkey waits for the next tap.",
       timeoutTip2: "With a low value, you need to be fast pressing the next tap, or the Superkey will output the previous tap.",
       timeoutTip3: "With a high value, it will take more time for the Superkey to output the second tap.",
+      timeoutTip4: "Only affects superkeys with anything beyond Hold.",
       timeoutTipDefault: "Default value: 250",
       chordingTip1: "This setting determines the amount of time it takes for the “hold” function to activate.",
       chordingTip2: "With a high value, it’ll take more time to activate the hold function.",
@@ -801,7 +803,7 @@ const English = {
       versionOutdatedTitle: "New update is available",
       calloutIntroText: "Updating your device firmware is how we implement new cool features and bug fixes.",
       calloutIntroText2:
-        "Make sure your keyboard is connected directly to your computer using the original Dygma cables; no hubs or KVMs, please 😊",
+        "Make sure your keyboard is connected directly to your computer using the original short Dygma cables; no hubs or KVMs, please 😊",
       neuronUpdatedText: "[Solid as a rock!]",
       neuronOutdatedText: "[Almost is never enough]",
       versionExists: "Device Firmware Update",
