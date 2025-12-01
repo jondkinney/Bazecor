@@ -170,6 +170,12 @@ select:focus {
 .Raise2.on {
   @apply bg-cardRaiseOnLight dark:bg-cardRaiseOnDark;
 }
+.Sonshi {
+  @apply bg-cardSonshiOffLight dark:bg-cardSonshiOffDark;
+}
+.Sonshi.on {
+  @apply bg-cardSonshiOnLight dark:bg-cardSonshiOnDark;
+}
 
 .dragged .card-device-knob,
 .dragged .card-device-knob:hover {

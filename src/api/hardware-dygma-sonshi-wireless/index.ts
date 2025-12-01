@@ -16,7 +16,7 @@
 
 import log from "electron-log/renderer";
 import { DygmaDeviceType } from "@Renderer/types/dygmaDefs";
-import KeymapDEFY from "../hardware-dygma-defy-wireless/components/Keymap";
+import KeymapSONSHI from "./components/Keymap";
 import aFN from "../arrayFillNum";
 
 const sonshiKeyboard = {
@@ -58,7 +58,7 @@ const SonshiWireless: DygmaDeviceType = {
   keyboardUnderglow: sonshiUnderglow,
   RGBWMode: true,
   components: {
-    keymap: KeymapDEFY,
+    keymap: KeymapSONSHI,
   },
   instructions: {
     en: {
