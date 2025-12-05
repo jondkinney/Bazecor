@@ -42,7 +42,7 @@ const SonshiWireless: DygmaDeviceType = {
     vendor: "Dygma",
     product: "Sonshi",
     keyboardType: "wireless",
-    displayName: "Dygma Sonshi wireless",
+    displayName: "Dygma Sonshi",
     urls: [
       {
         name: "Homepage",
@@ -83,7 +83,7 @@ const SonshiWirelessBootloader: DygmaDeviceType = {
     vendor: "Dygma",
     product: "Sonshi",
     keyboardType: "wireless",
-    displayName: "Dygma Sonshi wireless (bootloader)",
+    displayName: "Dygma Sonshi (bootloader)",
     urls: [
       {
         name: "Homepage",

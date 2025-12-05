@@ -31,7 +31,6 @@ export const FocusAPIRead = async (context: Context.ContextType): Promise<Contex
   return context;
 };
 
-// TODO: when Sonshi has its own release repo, update GitHub owner/repo and asset filters accordingly.
 const loadAvailableFirmwareVersions = async (allowBeta: boolean) => {
   const Releases: ReleaseType[] = [];
   try {
@@ -87,7 +86,7 @@ export const GitHubRead = async (context: Context.ContextType): Promise<Context.
   let isBeta;
   try {
     const fwReleases = await loadAvailableFirmwareVersions(context.allowBeta);
-    const productName = context.device.info.product === "Sonshi" ? "Defy" : context.device.info.product;
+    const productName = context.device.info.product;
     finalReleases = fwReleases.filter(
       release =>
         release.name === productName &&
@@ -208,11 +207,8 @@ export const downloadFirmware = async (
   let filenameSides: Uint8Array;
   log.info("Data to download FW: ", typeSelected, info, firmwareList, selectedFirmware);
   try {
-    const productName = info.product === "Sonshi" ? "Defy" : info.product;
+    const productName = info.product;
     const firmwareAssets = firmwareList[selectedFirmware]?.assets ?? [];
-    if (productName === "Sonshi") {
-      log.warn("Sonshi firmware downloads currently reuse Defy repository assets. Update URLs once Sonshi repo exists.");
-    }
 
     if (productName === "Raise") {
       filename =

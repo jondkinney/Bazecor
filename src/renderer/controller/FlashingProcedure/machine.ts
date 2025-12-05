@@ -59,6 +59,7 @@ const FlashDevice = setup({
       (context.device?.bootloader === true || context.sideLeftBL === true) && context.loadedComms === true,
     isDefywired: ({ context }) => context.DeviceVariant === "Defywired",
     isDefywireless: ({ context }) => context.DeviceVariant === "Defywireless",
+    isSonshiwireless: ({ context }) => context.DeviceVariant === "Sonshiwireless",
     isRaise2: ({ context }) => context.DeviceVariant === "Raise2ISO" || context.DeviceVariant === "Raise2ANSI",
   },
 }).createMachine({
@@ -127,7 +128,8 @@ const FlashDevice = setup({
       on: {
         "*": [
           { target: "flashDefyWired", guard: "doNotFlashSidesW" },
-          { target: "resetDefyWireless", guard: "doNotFlashSidesWi" },
+          { target: "resetDefyWireless", guard: { type: "doNotFlashSidesWi" } },
+          { target: "resetDefyWireless", guard: { type: "isSonshiwireless" } },
           { target: "resetRaise2", guard: "doNotFlashSidesR2" },
           { target: "resetRaiseNeuron", guard: "flashRaise" },
           { target: "flashRightSide", guard: "flashSides" },
@@ -216,6 +218,7 @@ const FlashDevice = setup({
         "*": [
           { target: "flashDefyWired", guard: "isDefywired" },
           { target: "resetDefyWireless", guard: "isDefywireless" },
+          { target: "resetDefyWireless", guard: "isSonshiwireless" },
           { target: "resetRaise2", guard: "isRaise2" },
         ],
       },

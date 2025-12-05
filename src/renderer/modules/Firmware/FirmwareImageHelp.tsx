@@ -133,7 +133,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     if (deviceProduct === "Raise" && videoIntro.current) {
       videoIntro.current.currentTime = 3;
       videoIntro.current.play();
-    } else if (deviceProduct === "Defy" && videoIntroDefy.current) {
+    } else if ((deviceProduct === "Defy" || deviceProduct === "Sonshi") && videoIntroDefy.current) {
       videoIntroDefy.current.currentTime = 3;
       videoIntroDefy.current.play();
     }
@@ -149,7 +149,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
       if (productName === "Raise") {
         internalVideoIntro.addEventListener("ended", playVideo, false);
         internalVideoRelease.pause();
-      } else if (productName === "Defy") {
+      } else if (productName === "Defy" || productName === "Sonshi") {
         internalVideoIntroDefy.addEventListener("ended", playVideo, false);
         internalVideoReleaseDefy.pause();
       }
@@ -159,7 +159,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
       if (productName === "Raise") {
         internalVideoIntro.classList.add("animOut");
         internalVideoRelease.classList.add("animPressDown");
-      } else if (productName === "Defy") {
+      } else if (productName === "Defy" || productName === "Sonshi") {
         internalVideoIntroDefy.classList.add("animOut");
         internalVideoReleaseDefy.classList.add("animIn");
         internalVideoReleaseDefy.play();
@@ -179,7 +179,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     return () => {
       if (internalVideoIntro && countdown === 0 && productName === "Raise") {
         internalVideoIntro.removeEventListener("ended", playVideo, false);
-      } else if (internalVideoIntroDefy && countdown === 0 && productName === "Defy") {
+      } else if (internalVideoIntroDefy && countdown === 0 && (productName === "Defy" || productName === "Sonshi")) {
         internalVideoIntroDefy.removeEventListener("ended", playVideo, false);
       }
     };
@@ -239,8 +239,8 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
               <canvas className="" width={340} height={259} />
             </div>
           ) : (
-            <div className={`${deviceProduct === "Defy" ? "updatingDefy" : ""} updatingRaise`}>
-              {deviceProduct === "Defy" ? (
+            <div className={`${deviceProduct === "Defy" || deviceProduct === "Sonshi" ? "updatingDefy" : ""} updatingRaise`}>
+              {deviceProduct === "Defy" || deviceProduct === "Sonshi" ? (
                 <FirmwareDefyUpdatingStatus
                   countdown={countdown}
                   keyboardType={keyboardType}

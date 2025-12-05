@@ -8,7 +8,7 @@ const SonshiWireless: VirtualType = {
     info: {
       ...DefyWireless.device.info,
       product: "Sonshi",
-      displayName: "Dygma Sonshi wireless",
+      displayName: "Dygma Sonshi",
       urls: [
         {
           name: "Homepage",
