@@ -21,103 +21,19 @@ import Neuron from "../../hardware/Neuron";
 import Key from "../../hardware/Key";
 
 const XX = 255;
-const LEDS_LEFT_KEYS = 35;
-const UNDERGLOW = 70;
 const led_map = [
-  // LHS                            RHS
-  [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    XX,
-    XX,
-    6 + LEDS_LEFT_KEYS,
-    5 + LEDS_LEFT_KEYS,
-    4 + LEDS_LEFT_KEYS,
-    3 + LEDS_LEFT_KEYS,
-    2 + LEDS_LEFT_KEYS,
-    1 + LEDS_LEFT_KEYS,
-    0 + LEDS_LEFT_KEYS,
-  ],
-  [
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    XX,
-    XX,
-    13 + LEDS_LEFT_KEYS,
-    12 + LEDS_LEFT_KEYS,
-    11 + LEDS_LEFT_KEYS,
-    10 + LEDS_LEFT_KEYS,
-    9 + LEDS_LEFT_KEYS,
-    8 + LEDS_LEFT_KEYS,
-    7 + LEDS_LEFT_KEYS,
-  ],
-  [
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    XX,
-    XX,
-    20 + LEDS_LEFT_KEYS,
-    19 + LEDS_LEFT_KEYS,
-    18 + LEDS_LEFT_KEYS,
-    17 + LEDS_LEFT_KEYS,
-    16 + LEDS_LEFT_KEYS,
-    15 + LEDS_LEFT_KEYS,
-    14 + LEDS_LEFT_KEYS,
-  ],
-  [
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    XX,
-    XX,
-    XX,
-    XX,
-    26 + LEDS_LEFT_KEYS,
-    25 + LEDS_LEFT_KEYS,
-    24 + LEDS_LEFT_KEYS,
-    23 + LEDS_LEFT_KEYS,
-    22 + LEDS_LEFT_KEYS,
-    21 + LEDS_LEFT_KEYS,
-  ],
-  [
-    27,
-    28,
-    29,
-    30,
-    31,
-    32,
-    33,
-    34,
-    34 + LEDS_LEFT_KEYS,
-    33 + LEDS_LEFT_KEYS,
-    32 + LEDS_LEFT_KEYS,
-    31 + LEDS_LEFT_KEYS,
-    30 + LEDS_LEFT_KEYS,
-    29 + LEDS_LEFT_KEYS,
-    28 + LEDS_LEFT_KEYS,
-    27 + LEDS_LEFT_KEYS,
-  ],
+  // Left side only - 12 columns, 5 rows
+  // Row 0: c0-c11 (12 keys)
+  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  // Row 1: c0-c11 (12 keys)
+  [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+  // Row 2: c0-c11 (12 keys)
+  [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35],
+  // Row 3: c0-c11 (12 keys)
+  [36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47],
+  // Row 4: c0-c3, c8-c11 (8 keys - c4, c5, c6, c7 don't exist)
+  [48, 49, 50, 51, XX, XX, XX, XX, 52, 53, 54, 55],
 ];
-
-const no_key_led_map = [...Array.apply(0, Array(107)).map((_, i) => i + UNDERGLOW)];
 
 const keysRowsPosition = {
   row1: 35,
@@ -182,7 +98,7 @@ class KeymapSONSHI extends React.Component {
     const { underglowIndex } = this.state;
     const keymap =
       this.props.keymap ||
-      Array(80)
+      Array(56)
         .fill()
         .map(() => 0);
 
@@ -200,7 +116,7 @@ class KeymapSONSHI extends React.Component {
       }
       return aux;
     };
-    const keyIndex = (row, col) => (col !== undefined ? row * 16 + col : row + 11);
+    const keyIndex = (row, col) => (col !== undefined ? row * 12 + col : row + 11);
 
     const getLabel = (row, col) => keymap[keyIndex(row, col)];
 
@@ -215,7 +131,7 @@ class KeymapSONSHI extends React.Component {
 
     const colormap =
       this.props.colormap ||
-      Array(177)
+      Array(56)
         .fill()
         .map(() => 0);
     const palette =
@@ -380,26 +296,6 @@ class KeymapSONSHI extends React.Component {
         height={560}
         width={1270}
       >
-        <Neuron
-          selectedLED={this.props.selectedLED}
-          visibility={false}
-          clickAble={!(this.props.isStandardView && !this.props.showUnderglow)}
-          color="#b4b4b4"
-          id="neuron_led"
-          onClick={e => {
-            setUndeglowIndex(176, e);
-          }}
-          className="key"
-          fill={getColor(176)}
-          stroke={stroke(176)}
-          strokeWidth={getStrokeWidth(176)}
-          dataLedIndex={getLEDIndex(176)}
-          dataKeyIndex={keyIndex(176)}
-          dataLayer={layer}
-          translateX={50}
-          translateY={72}
-        />
-
         <g id="keyshapes">
           <Key
             keyType="regularKey"
@@ -529,13 +425,99 @@ class KeymapSONSHI extends React.Component {
           />
           <Key
             keyType="regularKey"
-            id="R0C10_keyshape"
+            id="R0C6_keyshape"
             onClick={onClick}
             className="key"
             width={57}
             height={57}
             x={keysColumnsPosition.x8}
             y={keysRowsDefyPosition.row1.y1}
+            fill={getColor(0, 6)}
+            stroke={stroke(0, 6)}
+            strokeWidth={getStrokeWidth(0, 6)}
+            dataLedIndex={getLEDIndex(0, 6)}
+            dataKeyIndex={keyIndex(0, 6)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(0, 6))}
+            centerPrimary={getCenterPrimary(0, 6, 0, 0, true)}
+            centerExtra={getCenterExtra(0, 6, 0, 0, true)}
+            keyCode={getLabel(0, 6).keyCode}
+            selectedKey={getLabel(0, 6)}
+          />
+          <Key
+            keyType="regularKey"
+            id="R0C7_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x9}
+            y={keysRowsDefyPosition.row1.y1}
+            fill={getColor(0, 7)}
+            stroke={stroke(0, 7)}
+            strokeWidth={getStrokeWidth(0, 7)}
+            dataLedIndex={getLEDIndex(0, 7)}
+            dataKeyIndex={keyIndex(0, 7)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(0, 7))}
+            centerPrimary={getCenterPrimary(0, 7, 0, 0, true)}
+            centerExtra={getCenterExtra(0, 7, 0, 0, true)}
+            keyCode={getLabel(0, 7).keyCode}
+            selectedKey={getLabel(0, 7)}
+          />
+          <Key
+            keyType="regularKey"
+            id="R0C8_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x10}
+            y={keysRowsDefyPosition.row1.y2}
+            fill={getColor(0, 8)}
+            stroke={stroke(0, 8)}
+            strokeWidth={getStrokeWidth(0, 8)}
+            dataLedIndex={getLEDIndex(0, 8)}
+            dataKeyIndex={keyIndex(0, 8)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(0, 8))}
+            centerPrimary={getCenterPrimary(0, 8, 0, 0, true)}
+            centerExtra={getCenterExtra(0, 8, 0, 0, true)}
+            keyCode={getLabel(0, 8).keyCode}
+            selectedKey={getLabel(0, 8)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R0C9_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x11}
+            y={keysRowsDefyPosition.row1.y1}
+            fill={getColor(0, 9)}
+            stroke={stroke(0, 9)}
+            strokeWidth={getStrokeWidth(0, 9)}
+            dataLedIndex={getLEDIndex(0, 9)}
+            dataKeyIndex={keyIndex(0, 9)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(0, 9))}
+            centerPrimary={getCenterPrimary(0, 9, 0, 0, true)}
+            centerExtra={getCenterExtra(0, 9, 0, 0, true)}
+            keyCode={getLabel(0, 9).keyCode}
+            selectedKey={getLabel(0, 9)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R0C10_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x12}
+            y={keysRowsDefyPosition.row1.y0}
             fill={getColor(0, 10)}
             stroke={stroke(0, 10)}
             strokeWidth={getStrokeWidth(0, 10)}
@@ -548,6 +530,7 @@ class KeymapSONSHI extends React.Component {
             keyCode={getLabel(0, 10).keyCode}
             selectedKey={getLabel(0, 10)}
           />
+
           <Key
             keyType="regularKey"
             id="R0C11_keyshape"
@@ -555,8 +538,8 @@ class KeymapSONSHI extends React.Component {
             className="key"
             width={57}
             height={57}
-            x={keysColumnsPosition.x9}
-            y={keysRowsDefyPosition.row1.y1}
+            x={keysColumnsPosition.x13}
+            y={keysRowsDefyPosition.row1.y0}
             fill={getColor(0, 11)}
             stroke={stroke(0, 11)}
             strokeWidth={getStrokeWidth(0, 11)}
@@ -568,93 +551,6 @@ class KeymapSONSHI extends React.Component {
             centerExtra={getCenterExtra(0, 11, 0, 0, true)}
             keyCode={getLabel(0, 11).keyCode}
             selectedKey={getLabel(0, 11)}
-          />
-          <Key
-            keyType="regularKey"
-            id="R0C12_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x10}
-            y={keysRowsDefyPosition.row1.y2}
-            fill={getColor(0, 12)}
-            stroke={stroke(0, 12)}
-            strokeWidth={getStrokeWidth(0, 12)}
-            dataLedIndex={getLEDIndex(0, 12)}
-            dataKeyIndex={keyIndex(0, 12)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(0, 12))}
-            centerPrimary={getCenterPrimary(0, 12, 0, 0, true)}
-            centerExtra={getCenterExtra(0, 12, 0, 0, true)}
-            keyCode={getLabel(0, 12).keyCode}
-            selectedKey={getLabel(0, 12)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R0C13_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x11}
-            y={keysRowsDefyPosition.row1.y1}
-            fill={getColor(0, 13)}
-            stroke={stroke(0, 13)}
-            strokeWidth={getStrokeWidth(0, 13)}
-            dataLedIndex={getLEDIndex(0, 13)}
-            dataKeyIndex={keyIndex(0, 13)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(0, 13))}
-            centerPrimary={getCenterPrimary(0, 13, 0, 0, true)}
-            centerExtra={getCenterExtra(0, 13, 0, 0, true)}
-            keyCode={getLabel(0, 13).keyCode}
-            selectedKey={getLabel(0, 13)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R0C14_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x12}
-            y={keysRowsDefyPosition.row1.y0}
-            fill={getColor(0, 14)}
-            stroke={stroke(0, 14)}
-            strokeWidth={getStrokeWidth(0, 14)}
-            dataLedIndex={getLEDIndex(0, 14)}
-            dataKeyIndex={keyIndex(0, 14)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(0, 14))}
-            centerPrimary={getCenterPrimary(0, 14, 0, 0, true)}
-            centerExtra={getCenterExtra(0, 14, 0, 0, true)}
-            keyCode={getLabel(0, 14).keyCode}
-            selectedKey={getLabel(0, 14)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R0C15_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x13}
-            y={keysRowsDefyPosition.row1.y0}
-            fill={getColor(0, 15)}
-            stroke={stroke(0, 15)}
-            strokeWidth={getStrokeWidth(0, 15)}
-            dataLedIndex={getLEDIndex(0, 15)}
-            dataKeyIndex={keyIndex(0, 15)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(0, 15))}
-            centerPrimary={getCenterPrimary(0, 15, 0, 0, true)}
-            centerExtra={getCenterExtra(0, 15, 0, 0, true)}
-            keyCode={getLabel(0, 15).keyCode}
-            selectedKey={getLabel(0, 15)}
           />
 
           <Key
@@ -786,13 +682,99 @@ class KeymapSONSHI extends React.Component {
           />
           <Key
             keyType="regularKey"
-            id="R1C10_keyshape"
+            id="R1C6_keyshape"
             onClick={onClick}
             className="key"
             width={57}
             height={57}
             x={keysColumnsPosition.x8}
             y={keysRowsDefyPosition.row2.y1}
+            fill={getColor(1, 6)}
+            stroke={stroke(1, 6)}
+            strokeWidth={getStrokeWidth(1, 6)}
+            dataLedIndex={getLEDIndex(1, 6)}
+            dataKeyIndex={keyIndex(1, 6)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(1, 6))}
+            centerPrimary={getCenterPrimary(1, 6, 0, 0, true)}
+            centerExtra={getCenterExtra(1, 6, 0, 0, true)}
+            keyCode={getLabel(1, 6).keyCode}
+            selectedKey={getLabel(1, 6)}
+          />
+          <Key
+            keyType="regularKey"
+            id="R1C7_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x9}
+            y={keysRowsDefyPosition.row2.y1}
+            fill={getColor(1, 7)}
+            stroke={stroke(1, 7)}
+            strokeWidth={getStrokeWidth(1, 7)}
+            dataLedIndex={getLEDIndex(1, 7)}
+            dataKeyIndex={keyIndex(1, 7)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(1, 7))}
+            centerPrimary={getCenterPrimary(1, 7, 0, 0, true)}
+            centerExtra={getCenterExtra(1, 7, 0, 0, true)}
+            keyCode={getLabel(1, 7).keyCode}
+            selectedKey={getLabel(1, 7)}
+          />
+          <Key
+            keyType="regularKey"
+            id="R1C8_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x10}
+            y={keysRowsDefyPosition.row2.y2}
+            fill={getColor(1, 8)}
+            stroke={stroke(1, 8)}
+            strokeWidth={getStrokeWidth(1, 8)}
+            dataLedIndex={getLEDIndex(1, 8)}
+            dataKeyIndex={keyIndex(1, 8)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(1, 8))}
+            centerPrimary={getCenterPrimary(1, 8, 0, 0, true)}
+            centerExtra={getCenterExtra(1, 8, 0, 0, true)}
+            keyCode={getLabel(1, 8).keyCode}
+            selectedKey={getLabel(1, 8)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R1C9_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x11}
+            y={keysRowsDefyPosition.row2.y1}
+            fill={getColor(1, 9)}
+            stroke={stroke(1, 9)}
+            strokeWidth={getStrokeWidth(1, 9)}
+            dataLedIndex={getLEDIndex(1, 9)}
+            dataKeyIndex={keyIndex(1, 9)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(1, 9))}
+            centerPrimary={getCenterPrimary(1, 9, 0, 0, true)}
+            centerExtra={getCenterExtra(1, 9, 0, 0, true)}
+            keyCode={getLabel(1, 9).keyCode}
+            selectedKey={getLabel(1, 9)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R1C10_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x12}
+            y={keysRowsDefyPosition.row2.y0}
             fill={getColor(1, 10)}
             stroke={stroke(1, 10)}
             strokeWidth={getStrokeWidth(1, 10)}
@@ -805,6 +787,7 @@ class KeymapSONSHI extends React.Component {
             keyCode={getLabel(1, 10).keyCode}
             selectedKey={getLabel(1, 10)}
           />
+
           <Key
             keyType="regularKey"
             id="R1C11_keyshape"
@@ -812,8 +795,8 @@ class KeymapSONSHI extends React.Component {
             className="key"
             width={57}
             height={57}
-            x={keysColumnsPosition.x9}
-            y={keysRowsDefyPosition.row2.y1}
+            x={keysColumnsPosition.x13}
+            y={keysRowsDefyPosition.row2.y0}
             fill={getColor(1, 11)}
             stroke={stroke(1, 11)}
             strokeWidth={getStrokeWidth(1, 11)}
@@ -825,93 +808,6 @@ class KeymapSONSHI extends React.Component {
             centerExtra={getCenterExtra(1, 11, 0, 0, true)}
             keyCode={getLabel(1, 11).keyCode}
             selectedKey={getLabel(1, 11)}
-          />
-          <Key
-            keyType="regularKey"
-            id="R1C12_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x10}
-            y={keysRowsDefyPosition.row2.y2}
-            fill={getColor(1, 12)}
-            stroke={stroke(1, 12)}
-            strokeWidth={getStrokeWidth(1, 12)}
-            dataLedIndex={getLEDIndex(1, 12)}
-            dataKeyIndex={keyIndex(1, 12)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(1, 12))}
-            centerPrimary={getCenterPrimary(1, 12, 0, 0, true)}
-            centerExtra={getCenterExtra(1, 12, 0, 0, true)}
-            keyCode={getLabel(1, 12).keyCode}
-            selectedKey={getLabel(1, 12)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R1C13_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x11}
-            y={keysRowsDefyPosition.row2.y1}
-            fill={getColor(1, 13)}
-            stroke={stroke(1, 13)}
-            strokeWidth={getStrokeWidth(1, 13)}
-            dataLedIndex={getLEDIndex(1, 13)}
-            dataKeyIndex={keyIndex(1, 13)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(1, 13))}
-            centerPrimary={getCenterPrimary(1, 13, 0, 0, true)}
-            centerExtra={getCenterExtra(1, 13, 0, 0, true)}
-            keyCode={getLabel(1, 13).keyCode}
-            selectedKey={getLabel(1, 13)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R1C14_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x12}
-            y={keysRowsDefyPosition.row2.y0}
-            fill={getColor(1, 14)}
-            stroke={stroke(1, 14)}
-            strokeWidth={getStrokeWidth(1, 14)}
-            dataLedIndex={getLEDIndex(1, 14)}
-            dataKeyIndex={keyIndex(1, 14)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(1, 14))}
-            centerPrimary={getCenterPrimary(1, 14, 0, 0, true)}
-            centerExtra={getCenterExtra(1, 14, 0, 0, true)}
-            keyCode={getLabel(1, 14).keyCode}
-            selectedKey={getLabel(1, 14)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R1C15_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x13}
-            y={keysRowsDefyPosition.row2.y0}
-            fill={getColor(1, 15)}
-            stroke={stroke(1, 15)}
-            strokeWidth={getStrokeWidth(1, 15)}
-            dataLedIndex={getLEDIndex(1, 15)}
-            dataKeyIndex={keyIndex(1, 15)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(1, 15))}
-            centerPrimary={getCenterPrimary(1, 15, 0, 0, true)}
-            centerExtra={getCenterExtra(1, 15, 0, 0, true)}
-            keyCode={getLabel(1, 15).keyCode}
-            selectedKey={getLabel(1, 15)}
           />
 
           <Key
@@ -1044,13 +940,101 @@ class KeymapSONSHI extends React.Component {
 
           <Key
             keyType="regularKey"
-            id="R2C10_keyshape"
+            id="R2C6_keyshape"
             onClick={onClick}
             className="key"
             width={57}
             height={57}
             x={keysColumnsPosition.x8}
             y={keysRowsDefyPosition.row3.y1}
+            fill={getColor(2, 6)}
+            stroke={stroke(2, 6)}
+            strokeWidth={getStrokeWidth(2, 6)}
+            dataLedIndex={getLEDIndex(2, 6)}
+            dataKeyIndex={keyIndex(2, 6)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(2, 6))}
+            centerPrimary={getCenterPrimary(2, 6, 0, 0, true)}
+            centerExtra={getCenterExtra(2, 6, 0, 0, true)}
+            keyCode={getLabel(2, 6).keyCode}
+            selectedKey={getLabel(2, 6)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R2C7_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x9}
+            y={keysRowsDefyPosition.row3.y1}
+            fill={getColor(2, 7)}
+            stroke={stroke(2, 7)}
+            strokeWidth={getStrokeWidth(2, 7)}
+            dataLedIndex={getLEDIndex(2, 7)}
+            dataKeyIndex={keyIndex(2, 7)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(2, 7))}
+            centerPrimary={getCenterPrimary(2, 7, 0, 0, true)}
+            centerExtra={getCenterExtra(2, 7, 0, 0, true)}
+            keyCode={getLabel(2, 7).keyCode}
+            selectedKey={getLabel(2, 7)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R2C8_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x10}
+            y={keysRowsDefyPosition.row3.y2}
+            fill={getColor(2, 8)}
+            stroke={stroke(2, 8)}
+            strokeWidth={getStrokeWidth(2, 8)}
+            dataLedIndex={getLEDIndex(2, 8)}
+            dataKeyIndex={keyIndex(2, 8)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(2, 8))}
+            centerPrimary={getCenterPrimary(2, 8, 0, 0, true)}
+            centerExtra={getCenterExtra(2, 8, 0, 0, true)}
+            keyCode={getLabel(2, 8).keyCode}
+            selectedKey={getLabel(2, 8)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R2C9_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x11}
+            y={keysRowsDefyPosition.row3.y1}
+            fill={getColor(2, 9)}
+            stroke={stroke(2, 9)}
+            strokeWidth={getStrokeWidth(2, 9)}
+            dataLedIndex={getLEDIndex(2, 9)}
+            dataKeyIndex={keyIndex(2, 9)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(2, 9))}
+            centerPrimary={getCenterPrimary(2, 9, 0, 0, true)}
+            centerExtra={getCenterExtra(2, 9, 0, 0, true)}
+            keyCode={getLabel(2, 9).keyCode}
+            selectedKey={getLabel(2, 9)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R2C10_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x12}
+            y={keysRowsDefyPosition.row3.y0}
             fill={getColor(2, 10)}
             stroke={stroke(2, 10)}
             strokeWidth={getStrokeWidth(2, 10)}
@@ -1071,8 +1055,8 @@ class KeymapSONSHI extends React.Component {
             className="key"
             width={57}
             height={57}
-            x={keysColumnsPosition.x9}
-            y={keysRowsDefyPosition.row3.y1}
+            x={keysColumnsPosition.x13}
+            y={keysRowsDefyPosition.row3.y0}
             fill={getColor(2, 11)}
             stroke={stroke(2, 11)}
             strokeWidth={getStrokeWidth(2, 11)}
@@ -1084,94 +1068,6 @@ class KeymapSONSHI extends React.Component {
             centerExtra={getCenterExtra(2, 11, 0, 0, true)}
             keyCode={getLabel(2, 11).keyCode}
             selectedKey={getLabel(2, 11)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R2C12_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x10}
-            y={keysRowsDefyPosition.row3.y2}
-            fill={getColor(2, 12)}
-            stroke={stroke(2, 12)}
-            strokeWidth={getStrokeWidth(2, 12)}
-            dataLedIndex={getLEDIndex(2, 12)}
-            dataKeyIndex={keyIndex(2, 12)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(2, 12))}
-            centerPrimary={getCenterPrimary(2, 12, 0, 0, true)}
-            centerExtra={getCenterExtra(2, 12, 0, 0, true)}
-            keyCode={getLabel(2, 12).keyCode}
-            selectedKey={getLabel(2, 12)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R2C13_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x11}
-            y={keysRowsDefyPosition.row3.y1}
-            fill={getColor(2, 13)}
-            stroke={stroke(2, 13)}
-            strokeWidth={getStrokeWidth(2, 13)}
-            dataLedIndex={getLEDIndex(2, 13)}
-            dataKeyIndex={keyIndex(2, 13)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(2, 13))}
-            centerPrimary={getCenterPrimary(2, 13, 0, 0, true)}
-            centerExtra={getCenterExtra(2, 13, 0, 0, true)}
-            keyCode={getLabel(2, 13).keyCode}
-            selectedKey={getLabel(2, 13)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R2C14_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x12}
-            y={keysRowsDefyPosition.row3.y0}
-            fill={getColor(2, 14)}
-            stroke={stroke(2, 14)}
-            strokeWidth={getStrokeWidth(2, 14)}
-            dataLedIndex={getLEDIndex(2, 14)}
-            dataKeyIndex={keyIndex(2, 14)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(2, 14))}
-            centerPrimary={getCenterPrimary(2, 14, 0, 0, true)}
-            centerExtra={getCenterExtra(2, 14, 0, 0, true)}
-            keyCode={getLabel(2, 14).keyCode}
-            selectedKey={getLabel(2, 14)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R2C15_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x13}
-            y={keysRowsDefyPosition.row3.y0}
-            fill={getColor(2, 15)}
-            stroke={stroke(2, 15)}
-            strokeWidth={getStrokeWidth(2, 15)}
-            dataLedIndex={getLEDIndex(2, 15)}
-            dataKeyIndex={keyIndex(2, 15)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(2, 15))}
-            centerPrimary={getCenterPrimary(2, 15, 0, 0, true)}
-            centerExtra={getCenterExtra(2, 15, 0, 0, true)}
-            keyCode={getLabel(2, 15).keyCode}
-            selectedKey={getLabel(2, 15)}
           />
 
           <Key
@@ -1308,13 +1204,101 @@ class KeymapSONSHI extends React.Component {
 
           <Key
             keyType="regularKey"
-            id="R3C10_keyshape"
+            id="R3C6_keyshape"
             onClick={onClick}
             className="key"
             width={57}
             height={57}
             x={keysColumnsPosition.x8}
             y={keysRowsDefyPosition.row4.y1}
+            fill={getColor(3, 6)}
+            stroke={stroke(3, 6)}
+            strokeWidth={getStrokeWidth(3, 6)}
+            dataLedIndex={getLEDIndex(3, 6)}
+            dataKeyIndex={keyIndex(3, 6)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(3, 6))}
+            centerPrimary={getCenterPrimary(3, 6, 0, 0, true)}
+            centerExtra={getCenterExtra(3, 6, 0, 0, true)}
+            keyCode={getLabel(3, 6).keyCode}
+            selectedKey={getLabel(3, 6)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R3C7_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x9}
+            y={keysRowsDefyPosition.row4.y1}
+            fill={getColor(3, 7)}
+            stroke={stroke(3, 7)}
+            strokeWidth={getStrokeWidth(3, 7)}
+            dataLedIndex={getLEDIndex(3, 7)}
+            dataKeyIndex={keyIndex(3, 7)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(3, 7))}
+            centerPrimary={getCenterPrimary(3, 7, 0, 0, true)}
+            centerExtra={getCenterExtra(3, 7, 0, 0, true)}
+            keyCode={getLabel(3, 7).keyCode}
+            selectedKey={getLabel(3, 7)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R3C8_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x10}
+            y={keysRowsDefyPosition.row4.y2}
+            fill={getColor(3, 8)}
+            stroke={stroke(3, 8)}
+            strokeWidth={getStrokeWidth(3, 8)}
+            dataLedIndex={getLEDIndex(3, 8)}
+            dataKeyIndex={keyIndex(3, 8)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(3, 8))}
+            centerPrimary={getCenterPrimary(3, 8, 0, 0, true)}
+            centerExtra={getCenterExtra(3, 8, 0, 0, true)}
+            keyCode={getLabel(3, 8).keyCode}
+            selectedKey={getLabel(3, 8)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R3C9_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x11}
+            y={keysRowsDefyPosition.row4.y1}
+            fill={getColor(3, 9)}
+            stroke={stroke(3, 9)}
+            strokeWidth={getStrokeWidth(3, 9)}
+            dataLedIndex={getLEDIndex(3, 9)}
+            dataKeyIndex={keyIndex(3, 9)}
+            dataLayer={layer}
+            contrastText={getContrastText(getColor(3, 9))}
+            centerPrimary={getCenterPrimary(3, 9, 0, 0, true)}
+            centerExtra={getCenterExtra(3, 9, 0, 0, true)}
+            keyCode={getLabel(3, 9).keyCode}
+            selectedKey={getLabel(3, 9)}
+          />
+
+          <Key
+            keyType="regularKey"
+            id="R3C10_keyshape"
+            onClick={onClick}
+            className="key"
+            width={57}
+            height={57}
+            x={keysColumnsPosition.x12}
+            y={keysRowsDefyPosition.row4.y0}
             fill={getColor(3, 10)}
             stroke={stroke(3, 10)}
             strokeWidth={getStrokeWidth(3, 10)}
@@ -1335,8 +1319,8 @@ class KeymapSONSHI extends React.Component {
             className="key"
             width={57}
             height={57}
-            x={keysColumnsPosition.x9}
-            y={keysRowsDefyPosition.row4.y1}
+            x={keysColumnsPosition.x13}
+            y={keysRowsDefyPosition.row4.y0}
             fill={getColor(3, 11)}
             stroke={stroke(3, 11)}
             strokeWidth={getStrokeWidth(3, 11)}
@@ -1350,94 +1334,6 @@ class KeymapSONSHI extends React.Component {
             selectedKey={getLabel(3, 11)}
           />
 
-          <Key
-            keyType="regularKey"
-            id="R3C12_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x10}
-            y={keysRowsDefyPosition.row4.y2}
-            fill={getColor(3, 12)}
-            stroke={stroke(3, 12)}
-            strokeWidth={getStrokeWidth(3, 12)}
-            dataLedIndex={getLEDIndex(3, 12)}
-            dataKeyIndex={keyIndex(3, 12)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(3, 12))}
-            centerPrimary={getCenterPrimary(3, 12, 0, 0, true)}
-            centerExtra={getCenterExtra(3, 12, 0, 0, true)}
-            keyCode={getLabel(3, 12).keyCode}
-            selectedKey={getLabel(3, 12)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R3C13_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x11}
-            y={keysRowsDefyPosition.row4.y1}
-            fill={getColor(3, 13)}
-            stroke={stroke(3, 13)}
-            strokeWidth={getStrokeWidth(3, 13)}
-            dataLedIndex={getLEDIndex(3, 13)}
-            dataKeyIndex={keyIndex(3, 13)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(3, 13))}
-            centerPrimary={getCenterPrimary(3, 13, 0, 0, true)}
-            centerExtra={getCenterExtra(3, 13, 0, 0, true)}
-            keyCode={getLabel(3, 13).keyCode}
-            selectedKey={getLabel(3, 13)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R3C14_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x12}
-            y={keysRowsDefyPosition.row4.y0}
-            fill={getColor(3, 14)}
-            stroke={stroke(3, 14)}
-            strokeWidth={getStrokeWidth(3, 14)}
-            dataLedIndex={getLEDIndex(3, 14)}
-            dataKeyIndex={keyIndex(3, 14)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(3, 14))}
-            centerPrimary={getCenterPrimary(3, 14, 0, 0, true)}
-            centerExtra={getCenterExtra(3, 14, 0, 0, true)}
-            keyCode={getLabel(3, 14).keyCode}
-            selectedKey={getLabel(3, 14)}
-          />
-
-          <Key
-            keyType="regularKey"
-            id="R3C15_keyshape"
-            onClick={onClick}
-            className="key"
-            width={57}
-            height={57}
-            x={keysColumnsPosition.x13}
-            y={keysRowsDefyPosition.row4.y0}
-            fill={getColor(3, 15)}
-            stroke={stroke(3, 15)}
-            strokeWidth={getStrokeWidth(3, 15)}
-            dataLedIndex={getLEDIndex(3, 15)}
-            dataKeyIndex={keyIndex(3, 15)}
-            dataLayer={layer}
-            contrastText={getContrastText(getColor(3, 15))}
-            centerPrimary={getCenterPrimary(3, 15, 0, 0, true)}
-            centerExtra={getCenterExtra(3, 15, 0, 0, true)}
-            keyCode={getLabel(3, 15).keyCode}
-            selectedKey={getLabel(3, 15)}
-          />
-
           {/*
             //
             Thumbs keys
@@ -1446,7 +1342,7 @@ class KeymapSONSHI extends React.Component {
 
           <Key
             keyType="defy-t1"
-            id="R4C1_keyshape"
+            id="R4C0_keyshape"
             onClick={onClick}
             className="key"
             width={82}
@@ -1468,7 +1364,7 @@ class KeymapSONSHI extends React.Component {
 
           <Key
             keyType="defy-t2"
-            id="R4C2_keyshape"
+            id="R4C1_keyshape"
             onClick={onClick}
             className="key"
             width={57}
@@ -1489,6 +1385,7 @@ class KeymapSONSHI extends React.Component {
           />
           <Key
             keyType="defy-t3"
+            id="R4C2_keyshape"
             onClick={onClick}
             className="key"
             width={57}
@@ -1509,7 +1406,7 @@ class KeymapSONSHI extends React.Component {
           />
           <Key
             keyType="defy-t4"
-            id="R4C4_keyshape"
+            id="R4C3_keyshape"
             onClick={onClick}
             className="key"
             width={57}
@@ -1529,28 +1426,28 @@ class KeymapSONSHI extends React.Component {
             selectedKey={getLabel(4, 3)}
           />
 
-          {/* RIGHT SIDE */}
+          {/* RIGHT SIDE - Remapped to c8-c11 */}
 
           <Key
             keyType="defy-tR1"
-            id="R4C9_keyshape"
+            id="R4C11_keyshape"
             onClick={onClick}
             className="key"
             width={65}
             height={57}
             x={886}
             y={349}
-            fill={getColor(4, 15)}
-            stroke={stroke(4, 15)}
-            strokeWidth={getStrokeWidth(4, 15)}
-            dataLedIndex={getLEDIndex(4, 15)}
-            dataKeyIndex={keyIndex(4, 15)}
+            fill={getColor(4, 11)}
+            stroke={stroke(4, 11)}
+            strokeWidth={getStrokeWidth(4, 11)}
+            dataLedIndex={getLEDIndex(4, 11)}
+            dataKeyIndex={keyIndex(4, 11)}
             dataLayer={layer}
-            contrastText={getContrastText(getColor(4, 15))}
-            centerPrimary={getCenterPrimary(4, 15, 0, 0, true)}
-            centerExtra={getCenterExtra(4, 15, 0, 0, true)}
-            keyCode={getLabel(4, 15).keyCode}
-            selectedKey={getLabel(4, 15)}
+            contrastText={getContrastText(getColor(4, 11))}
+            centerPrimary={getCenterPrimary(4, 11, 0, 0, true)}
+            centerExtra={getCenterExtra(4, 11, 0, 0, true)}
+            keyCode={getLabel(4, 11).keyCode}
+            selectedKey={getLabel(4, 11)}
           />
 
           <Key
@@ -1562,61 +1459,61 @@ class KeymapSONSHI extends React.Component {
             height={57}
             x={817}
             y={349}
-            fill={getColor(4, 14)}
-            stroke={stroke(4, 14)}
-            strokeWidth={getStrokeWidth(4, 14)}
-            dataLedIndex={getLEDIndex(4, 14)}
-            dataKeyIndex={keyIndex(4, 14)}
+            fill={getColor(4, 10)}
+            stroke={stroke(4, 10)}
+            strokeWidth={getStrokeWidth(4, 10)}
+            dataLedIndex={getLEDIndex(4, 10)}
+            dataKeyIndex={keyIndex(4, 10)}
             dataLayer={layer}
-            contrastText={getContrastText(getColor(4, 14))}
-            centerPrimary={getCenterPrimary(4, 14, 0, 0, true)}
-            centerExtra={getCenterExtra(4, 14, 0, 0, true)}
-            keyCode={getLabel(4, 14).keyCode}
-            selectedKey={getLabel(4, 14)}
+            contrastText={getContrastText(getColor(4, 10))}
+            centerPrimary={getCenterPrimary(4, 10, 0, 0, true)}
+            centerExtra={getCenterExtra(4, 10, 0, 0, true)}
+            keyCode={getLabel(4, 10).keyCode}
+            selectedKey={getLabel(4, 10)}
           />
 
           <Key
             keyType="defy-tR3"
-            id="R4C14_keyshape"
+            id="R4C9_keyshape"
             onClick={onClick}
             className="key"
             width={57}
             height={57}
             x={748}
             y={350}
-            fill={getColor(4, 13)}
-            stroke={stroke(4, 13)}
-            strokeWidth={getStrokeWidth(4, 13)}
-            dataLedIndex={getLEDIndex(4, 13)}
-            dataKeyIndex={keyIndex(4, 13)}
+            fill={getColor(4, 9)}
+            stroke={stroke(4, 9)}
+            strokeWidth={getStrokeWidth(4, 9)}
+            dataLedIndex={getLEDIndex(4, 9)}
+            dataKeyIndex={keyIndex(4, 9)}
             dataLayer={layer}
-            contrastText={getContrastText(getColor(4, 13))}
-            centerPrimary={getCenterPrimary(4, 13, 0, 0, true)}
-            centerExtra={getCenterExtra(4, 13, 0, 0, true)}
-            keyCode={getLabel(4, 13).keyCode}
-            selectedKey={getLabel(4, 13)}
+            contrastText={getContrastText(getColor(4, 9))}
+            centerPrimary={getCenterPrimary(4, 9, 0, 0, true)}
+            centerExtra={getCenterExtra(4, 9, 0, 0, true)}
+            keyCode={getLabel(4, 9).keyCode}
+            selectedKey={getLabel(4, 9)}
           />
 
           <Key
             keyType="defy-tR4"
-            id="R4C13_keyshape"
+            id="R4C8_keyshape"
             onClick={onClick}
             className="key"
             width={57}
             height={57}
             x={698}
             y={372}
-            fill={getColor(4, 12)}
-            stroke={stroke(4, 12)}
-            strokeWidth={getStrokeWidth(4, 12)}
-            dataLedIndex={getLEDIndex(4, 12)}
-            dataKeyIndex={keyIndex(4, 12)}
+            fill={getColor(4, 8)}
+            stroke={stroke(4, 8)}
+            strokeWidth={getStrokeWidth(4, 8)}
+            dataLedIndex={getLEDIndex(4, 8)}
+            dataKeyIndex={keyIndex(4, 8)}
             dataLayer={layer}
-            contrastText={getContrastText(getColor(4, 12))}
-            centerPrimary={getCenterPrimary(4, 12, 0, 0, true)}
-            centerExtra={getCenterExtra(4, 12, 0, 0, true)}
-            keyCode={getLabel(4, 12).keyCode}
-            selectedKey={getLabel(4, 12)}
+            contrastText={getContrastText(getColor(4, 8))}
+            centerPrimary={getCenterPrimary(4, 8, 0, 0, true)}
+            centerExtra={getCenterExtra(4, 8, 0, 0, true)}
+            keyCode={getLabel(4, 8).keyCode}
+            selectedKey={getLabel(4, 8)}
           />
         </g>
       </svg>

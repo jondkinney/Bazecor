@@ -21,18 +21,18 @@ import aFN from "../arrayFillNum";
 
 const sonshiKeyboard = {
   rows: 5,
-  columns: 16,
-  left: [aFN(0, 7), aFN(16, 23), aFN(32, 39), aFN(48, 54), aFN(64, 72)],
-  right: [aFN(9, 16), aFN(25, 32), aFN(41, 48), aFN(57, 64), aFN(72, 80)],
-  ledsLeft: [...aFN(0, 35)],
-  ledsRight: [...aFN(35, 70)],
+  columns: 12,
+  left: [aFN(0, 12), aFN(12, 24), aFN(24, 36), aFN(36, 48), aFN(48, 56)],
+  right: [] as number[][],
+  ledsLeft: [...aFN(0, 56)],
+  ledsRight: [] as number[],
 };
 
 const sonshiUnderglow = {
-  rows: 2,
-  columns: 89,
-  ledsLeft: [...aFN(70, 123)],
-  ledsRight: [...aFN(123, 176)],
+  rows: 0,
+  columns: 0,
+  ledsLeft: [] as number[],
+  ledsRight: [] as number[],
 };
 
 const updateInstructions = `To update the firmware, the keyboard needs a special reset. When the countdown starts, press and hold the Escape key. Soon after the countdown finished, the Neuron's light should start a blue pulsing pattern, and the flashing will proceed. At this point, you should release the Escape key.`;
