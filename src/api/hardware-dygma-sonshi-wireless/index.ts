@@ -57,6 +57,7 @@ const SonshiWireless: DygmaDeviceType = {
   keyboard: sonshiKeyboard,
   keyboardUnderglow: sonshiUnderglow,
   RGBWMode: true,
+  sides: 1,
   components: {
     keymap: KeymapSONSHI,
   },
@@ -96,6 +97,7 @@ const SonshiWirelessBootloader: DygmaDeviceType = {
     productId: 0x0030,
   },
   bootloader: true,
+  sides: 1,
   instructions: {
     en: {
       updateInstructions:

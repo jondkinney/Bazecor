@@ -145,6 +145,7 @@ interface FirmwareProgressStatusType {
   restoreProgress: any;
   deviceProduct: any;
   keyboardType: any;
+  deviceSides?: number;
   steps: any;
 }
 
@@ -163,6 +164,7 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
     restoreProgress,
     deviceProduct,
     keyboardType,
+    deviceSides,
     steps,
   } = props;
   const [stepsPosition, setStepsPosition] = useState(0);
@@ -195,8 +197,8 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
           >
             {deviceProduct !== "Raise" ? (
               <>
-                <CircleLoader radius={13} percentage={rightProgress} active={stepsPosition === 1} />
-                <CircleLoader radius={13} percentage={leftProgress} active={stepsPosition === 2} />
+                {deviceSides !== 1 && <CircleLoader radius={13} percentage={rightProgress} active={stepsPosition === 1} />}
+                <CircleLoader radius={13} percentage={leftProgress} active={deviceSides === 1 ? stepsPosition === 1 : stepsPosition === 2} />
               </>
             ) : (
               ""

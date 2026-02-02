@@ -43,6 +43,7 @@ const FlashDevice = setup({
   },
   guards: {
     flashSides: ({ context }) => context.device?.bootloader !== true && context.device?.info.product !== "Raise",
+    flashOnlyLeftSide: ({ context }) => context.device?.bootloader !== true && context.device?.info.product !== "Raise" && context.device?.sides === 1,
     flashRaise: ({ context }) => context.device?.info.product === "Raise",
     doNotFlashSidesW: ({ context }) =>
       context.device?.bootloader === true &&
@@ -138,6 +139,7 @@ const FlashDevice = setup({
           { target: "resetSonshi", guard: "doNotFlashSidesSonshi" },
           { target: "resetRaise2", guard: "doNotFlashSidesR2" },
           { target: "resetRaiseNeuron", guard: "flashRaise" },
+          { target: "flashLeftSide", guard: "flashOnlyLeftSide" },
           { target: "flashRightSide", guard: "flashSides" },
         ],
       },

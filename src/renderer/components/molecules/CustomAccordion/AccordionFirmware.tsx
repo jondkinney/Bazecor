@@ -21,23 +21,13 @@ const AccordionFirmware = ({ items }: AccordionFirmwareProps) => {
   const [passedTasks, SetPassedTasks] = useState(true);
   const [counterTasks, SetCounterTasks] = useState(0);
 
-  const textList = [
-    {
-      text: i18n.firmwareUpdate.milestones.checkLeftSide,
-    },
-    {
-      text: i18n.firmwareUpdate.milestones.checkLeftSideBL,
-    },
-    {
-      text: i18n.firmwareUpdate.milestones.checkRightSide,
-    },
-    {
-      text: i18n.firmwareUpdate.milestones.checkRightSideBL,
-    },
-    {
-      text: i18n.firmwareUpdate.milestones.checkBackup,
-    },
-  ];
+  const textMap: Record<string, string> = {
+    sideLeftOk: i18n.firmwareUpdate.milestones.checkLeftSide,
+    sideLeftBL: i18n.firmwareUpdate.milestones.checkLeftSideBL,
+    sideRightOK: i18n.firmwareUpdate.milestones.checkRightSide,
+    sideRightBL: i18n.firmwareUpdate.milestones.checkRightSideBL,
+    backup: i18n.firmwareUpdate.milestones.checkBackup,
+  };
 
   useEffect(() => {
     items.forEach((item: CheckedItem, index: number) => {
@@ -98,7 +88,7 @@ const AccordionFirmware = ({ items }: AccordionFirmwareProps) => {
                   <div className="item-checked--icon w-[10px] [&_svg]:max-w-full text-xs">
                     {item.checked ? <IconCheckmark size="sm" /> : <IconClose />}
                   </div>
-                  {textList[index].text}
+                  {textMap[item.text] || item.text}
                 </div>
               ))}
             </div>

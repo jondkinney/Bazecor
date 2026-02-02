@@ -41,6 +41,7 @@ export type DygmaDeviceType = {
   chipId?: string;
   wireless?: boolean;
   bootloader?: boolean;
+  sides?: number;
   path?: string;
   filePath?: string;
   isDeviceSupported?: (port: string) => any;
