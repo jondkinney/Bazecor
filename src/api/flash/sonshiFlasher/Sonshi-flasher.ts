@@ -25,8 +25,11 @@ import { serialConnection, rawCommand, noWaitCommand } from "../serialConnection
 import { InfoType, SealType, HexType } from "../types";
 import ihexDecode from "../ihexDecode";
 import SealWithCRC from "../sealWithCRC";
+import { parseSealFromBinary, validateSealCRC } from "../parseSeal";
 
 const PACKET_SIZE = 4096;
+const FIRST_SECTOR_SIZE = 4096;
+const KEYSCANNER_SONSHI_DEVICE_ID = 0x4f53534b;
 
 const TYPE_DAT = 0x00;
 const TYPE_ESA = 0x02;
@@ -108,6 +111,54 @@ const SonshiFlash = {
     let hexCount = 0;
     let { address } = dataObjects[0];
 
+    // Validate SEAL from firmware before flashing
+    log.info("Validating firmware SEAL...");
+    if (mergedArray.length < 32) {
+      throw new Error("Firmware file too small to contain valid SEAL");
+    }
+
+    const embeddedSeal = parseSealFromBinary(mergedArray.slice(0, 32));
+    log.info("Embedded SEAL:", embeddedSeal);
+
+    // Check SEAL version
+    if (embeddedSeal.bldr_seal_header_t.version !== 2) {
+      log.error(`Wrong SEAL version. Expected: 2, Got: ${embeddedSeal.bldr_seal_header_t.version}`);
+      throw new Error("Wrong FW: Invalid SEAL version. Expected version 2 for Keyscanner Sonshi.");
+    }
+
+    // Check device_id for Keyscanner Sonshi (0x4F53534B = "KSSO")
+    if (embeddedSeal.device_id !== KEYSCANNER_SONSHI_DEVICE_ID) {
+      log.error(
+        `Wrong device_id. Expected: 0x${KEYSCANNER_SONSHI_DEVICE_ID.toString(16).toUpperCase()} (KSSO), Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`,
+      );
+      throw new Error("Wrong FW: This firmware is not for Keyscanner Sonshi.");
+    }
+
+    // Validate SEAL CRC
+    if (!validateSealCRC(embeddedSeal)) {
+      log.error("SEAL CRC validation failed");
+      throw new Error("Wrong FW: SEAL CRC validation failed.");
+    }
+
+    // Validate program size
+    const programDataSize = totalSaved - FIRST_SECTOR_SIZE;
+    if (embeddedSeal.program_size !== programDataSize) {
+      log.error(`Program size mismatch. SEAL says: ${embeddedSeal.program_size}, Actual: ${programDataSize}`);
+      throw new Error("Wrong FW: Program size mismatch.");
+    }
+
+    // Validate program CRC (skip first 4kB sector which contains the SEAL)
+    const programData = mergedArray.slice(FIRST_SECTOR_SIZE);
+    const calculatedProgramCrc = crc32("CRC-32", new Buffer(programData));
+    if (embeddedSeal.program_crc !== calculatedProgramCrc) {
+      log.error(
+        `Program CRC mismatch. SEAL says: 0x${embeddedSeal.program_crc.toString(16)}, Calculated: 0x${calculatedProgramCrc.toString(16)}`,
+      );
+      throw new Error("Wrong FW: Program CRC validation failed.");
+    }
+
+    log.info("✓ Firmware SEAL validation passed");
+
     // Prepare connection
     serialPort = await serialConnection();
 
@@ -117,24 +168,25 @@ const SonshiFlash = {
 
     const sealData: SealType = {
       bldr_seal_header_t: {
-        version: info.seal_version,
-        size: 28,
-        crc: 0, // this needs to change
+        version: 2,
+        size: 32,
+        crc: 0,
       },
+      device_id: KEYSCANNER_SONSHI_DEVICE_ID,
       program_start: info.program_space_start,
-      program_size: totalSaved,
-      program_crc: crc32("CRC-32", new Buffer(mergedArray)),
-      program_version: 1,
+      program_size: programDataSize,
+      program_crc: calculatedProgramCrc,
+      program_version: embeddedSeal.program_version,
     };
 
     const newSeal = SealWithCRC(sealData);
 
     // SEAL to device
     log.info("sending SEAL");
-    let ans: Buffer = await rawCommand(`S${num2hexstr(28, 8)}#`, serialPort, 1000);
+    let ans: Buffer = await rawCommand(`S${num2hexstr(32, 8)}#`, serialPort, 1000);
     if (ans[0] !== 65) {
       log.info("answer to Seal size: ", String.fromCharCode.apply(null, ans));
-      log.info(`RAW Command: S${num2hexstr(28, 8)}#`);
+      log.info(`RAW Command: S${num2hexstr(32, 8)}#`);
       throw Error("error when sending SEAL size");
     }
     ans = await rawCommand(newSeal, serialPort, 1000);
