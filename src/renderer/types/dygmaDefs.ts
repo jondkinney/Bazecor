@@ -1,6 +1,6 @@
 export type DygmaDeviceInfoType = {
   vendor: "Dygma";
-  product: "Raise" | "Defy" | "Raise2";
+  product: "Raise" | "Defy" | "Raise2" | "Sonshi";
   keyboardType: string;
   displayName: string;
   urls: {
@@ -41,6 +41,7 @@ export type DygmaDeviceType = {
   chipId?: string;
   wireless?: boolean;
   bootloader?: boolean;
+  sides?: number;
   path?: string;
   filePath?: string;
   isDeviceSupported?: (port: string) => any;

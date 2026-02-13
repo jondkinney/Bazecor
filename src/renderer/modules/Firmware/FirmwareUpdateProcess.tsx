@@ -307,6 +307,40 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
       description: i18n.firmwareUpdate.texts.errorDuringProcessDescription,
     },
   ];
+
+  const stepsDefySingleSide = [
+    { step: 1, title: i18n.firmwareUpdate.texts.flashCardTitle1, description: i18n.firmwareUpdate.texts.flashCardTitleDefy2 },
+    {
+      step: 3,
+      title: i18n.firmwareUpdate.texts.progressCardStatusDefy2,
+      description: i18n.firmwareUpdate.texts.progressCardBarDefy2,
+    },
+    {
+      step: 4,
+      title: i18n.firmwareUpdate.texts.progressCardStatusDefy3,
+      description: i18n.firmwareUpdate.texts.progressCardBarDefy3,
+    },
+    {
+      step: 5,
+      title: i18n.firmwareUpdate.texts.progressCardStatusDefy4,
+      description: i18n.firmwareUpdate.texts.progressCardBarDefy4,
+    },
+    {
+      step: 6,
+      title: i18n.firmwareUpdate.texts.progressCardStatusDefy5,
+      description: i18n.firmwareUpdate.texts.progressCardBarDefy5,
+    },
+    {
+      step: 7,
+      title: i18n.firmwareUpdate.texts.progressCardStatusDefy6,
+      description: i18n.firmwareUpdate.texts.progressCardBarSuccess,
+    },
+    {
+      step: 8,
+      title: i18n.firmwareUpdate.texts.errorDuringProcessTitle,
+      description: i18n.firmwareUpdate.texts.errorDuringProcessDescription,
+    },
+  ];
   const stepsRaise = [
     { step: 1, title: i18n.firmwareUpdate.texts.flashCardTitle1, description: i18n.firmwareUpdate.texts.flashCardTitle2 },
     { step: 4, title: i18n.firmwareUpdate.texts.progressCardStatus1, description: i18n.firmwareUpdate.texts.progressCardBar1 },
@@ -345,7 +379,14 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
               countdown={state.context.stateblock}
               deviceProduct={state.context.device?.info.product}
               keyboardType={state.context.device?.info.keyboardType}
-              steps={state.context.device?.info.product === "Raise" ? stepsRaise : stepsDefy}
+              deviceSides={state.context.device?.sides}
+              steps={
+                state.context.device?.info.product === "Raise" 
+                  ? stepsRaise 
+                  : state.context.device?.sides === 1 
+                    ? stepsDefySingleSide 
+                    : stepsDefy
+              }
             />
           </div>
           {state.context.stateblock === 1 ? (

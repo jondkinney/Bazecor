@@ -189,7 +189,12 @@ function FirmwareCheckProcessPanel(props: FirmwareCheckProcessPanelType) {
   }, [state.context, state, nextBlock]);
 
   useEffect(() => {
-    const newValue: ListItems[] = ["sideLeftOk", "sideLeftBL", "sideRightOK", "sideRightBL", "backup"].map(
+    const hasTwoSides = context.device.sides === 2;
+    const checkItems = hasTwoSides 
+      ? ["sideLeftOk", "sideLeftBL", "sideRightOK", "sideRightBL", "backup"]
+      : ["sideLeftOk", "sideLeftBL", "backup"];
+    
+    const newValue: ListItems[] = checkItems.map(
       (text: "sideLeftOk" | "sideLeftBL" | "sideRightOK" | "sideRightBL" | "backup", index) => {
         let checked = false;
         if (text === "backup") {
@@ -203,7 +208,7 @@ function FirmwareCheckProcessPanel(props: FirmwareCheckProcessPanelType) {
     );
     // console.log("Setting checks", newValue);
     setlistItems(newValue);
-  }, [state]);
+  }, [state, context.device.sides]);
 
   return (
     <Style>

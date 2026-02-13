@@ -133,7 +133,8 @@ const BatteryStatus = ({ disable }: BatteryStatusProps) => {
     });
 
   const getBatteryStatus = useCallback(async () => {
-    if (state.currentDevice && !disable && !state.currentDevice.isSending) {
+    // Skip battery polling if device is in bootloader mode or disabled
+    if (state.currentDevice && !disable && !state.currentDevice.isSending && !state.currentDevice.device.bootloader) {
       let left = "";
       let right = "";
       let leftStatus = "";
