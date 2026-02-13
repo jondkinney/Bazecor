@@ -81,7 +81,8 @@ const FlashDevice = setup({
       throw new Error("Unexpected event type");
     },
     onError: {
-      target: ".waitEsc",
+      target: ".failure",
+      actions: [assign({ error: event => event as any })],
     },
     onDone: {
       target: ".waitEsc",

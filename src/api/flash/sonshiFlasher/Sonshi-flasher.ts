@@ -111,53 +111,52 @@ const SonshiFlash = {
     let hexCount = 0;
     let { address } = dataObjects[0];
 
-    // Validate SEAL from firmware before flashing
-    log.info("Validating firmware SEAL...");
-    if (mergedArray.length < 32) {
-      throw new Error("Firmware file too small to contain valid SEAL");
-    }
-
-    const embeddedSeal = parseSealFromBinary(mergedArray.slice(0, 32));
-    log.info("Embedded SEAL:", embeddedSeal);
-
-    // Check SEAL version
-    if (embeddedSeal.bldr_seal_header_t.version !== 2) {
-      log.error(`Wrong SEAL version. Expected: 2, Got: ${embeddedSeal.bldr_seal_header_t.version}`);
-      throw new Error("Wrong FW: Invalid SEAL version. Expected version 2 for Keyscanner Sonshi.");
-    }
-
-    // Check device_id for Keyscanner Sonshi (0x4F53534B = "KSSO")
-    if (embeddedSeal.device_id !== KEYSCANNER_SONSHI_DEVICE_ID) {
-      log.error(
-        `Wrong device_id. Expected: 0x${KEYSCANNER_SONSHI_DEVICE_ID.toString(16).toUpperCase()} (KSSO), Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`,
-      );
-      throw new Error("Wrong FW: This firmware is not for Keyscanner Sonshi.");
-    }
-
-    // Validate SEAL CRC
-    if (!validateSealCRC(embeddedSeal)) {
-      log.error("SEAL CRC validation failed");
-      throw new Error("Wrong FW: SEAL CRC validation failed.");
-    }
-
-    // Validate program size
+    // TODO: Validate SEAL from Neuron firmware before flashing
+    // Currently disabled because Neuron SEAL is not ready yet
+    // The Keyscanner SEAL validation is done in input.ts before starting the flash process
+    
+    // Calculate program data size and CRC (needed for creating SEAL to send to device)
     const programDataSize = totalSaved - FIRST_SECTOR_SIZE;
-    if (embeddedSeal.program_size !== programDataSize) {
-      log.error(`Program size mismatch. SEAL says: ${embeddedSeal.program_size}, Actual: ${programDataSize}`);
-      throw new Error("Wrong FW: Program size mismatch.");
-    }
-
-    // Validate program CRC (skip first 4kB sector which contains the SEAL)
     const programData = mergedArray.slice(FIRST_SECTOR_SIZE);
     const calculatedProgramCrc = crc32("CRC-32", new Buffer(programData));
-    if (embeddedSeal.program_crc !== calculatedProgramCrc) {
-      log.error(
-        `Program CRC mismatch. SEAL says: 0x${embeddedSeal.program_crc.toString(16)}, Calculated: 0x${calculatedProgramCrc.toString(16)}`,
-      );
-      throw new Error("Wrong FW: Program CRC validation failed.");
+    
+    // Parse embedded SEAL to get program version (if available)
+    let embeddedSeal;
+    try {
+      embeddedSeal = parseSealFromBinary(mergedArray.slice(0, 32));
+    } catch (e) {
+      // If SEAL parsing fails, use default version
+      log.warn("Could not parse embedded SEAL, using default program_version: 1");
+      embeddedSeal = { program_version: 1 };
     }
 
-    log.info("✓ Firmware SEAL validation passed");
+    // SEAL validation is currently disabled - uncomment when Neuron SEAL is ready:
+    // log.info("Validating firmware SEAL...");
+    // if (mergedArray.length < 32) {
+    //   throw new Error("Firmware file too small to contain valid SEAL");
+    // }
+    // log.info("Embedded SEAL:", embeddedSeal);
+    // if (embeddedSeal.bldr_seal_header_t.version !== 2) {
+    //   log.error(`Wrong SEAL version. Expected: 2, Got: ${embeddedSeal.bldr_seal_header_t.version}`);
+    //   throw new Error("Wrong FW: Invalid SEAL version. Expected version 2 for Neuron Sonshi.");
+    // }
+    // if (embeddedSeal.device_id !== NEURON_SONSHI_DEVICE_ID) {
+    //   log.error(`Wrong device_id. Expected: 0x${NEURON_SONSHI_DEVICE_ID.toString(16).toUpperCase()}, Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`);
+    //   throw new Error("Wrong FW: This firmware is not for Neuron Sonshi.");
+    // }
+    // if (!validateSealCRC(embeddedSeal)) {
+    //   log.error("SEAL CRC validation failed");
+    //   throw new Error("Wrong FW: SEAL CRC validation failed.");
+    // }
+    // if (embeddedSeal.program_size !== programDataSize) {
+    //   log.error(`Program size mismatch. SEAL says: ${embeddedSeal.program_size}, Actual: ${programDataSize}`);
+    //   throw new Error("Wrong FW: Program size mismatch.");
+    // }
+    // if (embeddedSeal.program_crc !== calculatedProgramCrc) {
+    //   log.error(`Program CRC mismatch. SEAL says: 0x${embeddedSeal.program_crc.toString(16)}, Calculated: 0x${calculatedProgramCrc.toString(16)}`);
+    //   throw new Error("Wrong FW: Program CRC validation failed.");
+    // }
+    // log.info("✓ Firmware SEAL validation passed");
 
     // Prepare connection
     serialPort = await serialConnection();
@@ -166,13 +165,15 @@ const SonshiFlash = {
     const info = (await rawCommand("I#", serialPort, 1000)) as InfoType;
     log.info("Result of sending I#: ", info);
 
+    // Neuron uses SEAL version 1 (without device_id)
+    // Only Keyscanner uses SEAL version 2 (with device_id)
     const sealData: SealType = {
       bldr_seal_header_t: {
-        version: 2,
-        size: 32,
+        version: 1,
+        size: 28,
         crc: 0,
       },
-      device_id: KEYSCANNER_SONSHI_DEVICE_ID,
+      device_id: undefined,
       program_start: info.program_space_start,
       program_size: programDataSize,
       program_crc: calculatedProgramCrc,
@@ -180,13 +181,14 @@ const SonshiFlash = {
     };
 
     const newSeal = SealWithCRC(sealData);
+    const sealSize = sealData.bldr_seal_header_t.size;
 
     // SEAL to device
     log.info("sending SEAL");
-    let ans: Buffer = await rawCommand(`S${num2hexstr(32, 8)}#`, serialPort, 1000);
+    let ans: Buffer = await rawCommand(`S${num2hexstr(sealSize, 8)}#`, serialPort, 1000);
     if (ans[0] !== 65) {
       log.info("answer to Seal size: ", String.fromCharCode.apply(null, ans));
-      log.info(`RAW Command: S${num2hexstr(32, 8)}#`);
+      log.info(`RAW Command: S${num2hexstr(sealSize, 8)}#`);
       throw Error("error when sending SEAL size");
     }
     ans = await rawCommand(newSeal, serialPort, 1000);
