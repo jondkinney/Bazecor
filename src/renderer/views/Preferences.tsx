@@ -64,6 +64,12 @@ import Backup from "../../api/backup";
 import { delay } from "../../api/flash/delay";
 
 const store = Store.getStore();
+const sk20Raw = store.get("capabilities.sk20");
+const sk20 =
+  sk20Raw === true ||
+  sk20Raw === "true" ||
+  sk20Raw === 1 ||
+  sk20Raw === "1";
 
 const initialWireless = {
   battery: {
@@ -212,9 +218,18 @@ const Preferences = (props: PreferencesProps) => {
         newKbData.qukeysOverlapThreshold = overlapThresholdParsed;
       });
 
-      await state.currentDevice.command("qukeys.minimumHoldTime").then((minimumHoldTime: string) => {
+      await state.currentDevice.command("qukeys.minimumHoldTime").then(async (minimumHoldTime: string) => {
         const minHoldParsed = minimumHoldTime ? parseInt(minimumHoldTime, 10) : undefined;
-        newKbData.qukeysMinHold = minHoldParsed;
+        let clampedMinHold = minHoldParsed;
+
+        if (typeof minHoldParsed === "number" && minHoldParsed > 255) {
+          clampedMinHold = 255;
+          if (state.currentDevice) {
+            await state.currentDevice.command("qukeys.minimumHoldTime", "255");
+          }
+        }
+
+        newKbData.qukeysMinHold = clampedMinHold;
       });
 
       await state.currentDevice.command("qukeys.minimumPriorInterval").then((minimumPriorInterval: string) => {
@@ -237,6 +252,21 @@ const Preferences = (props: PreferencesProps) => {
         const overlapThreshold = overlap ? parseInt(overlap, 10) : 80;
         newKbData.SuperOverlapThreshold = overlapThreshold;
       });
+
+      if (sk20) {
+        const fastHold = newKbData.qukeysHoldTimeout;
+        const superHold = newKbData.SuperHoldstart;
+
+        if (typeof fastHold === "number" && typeof superHold === "number" && fastHold >= 0 && superHold >= 0) {
+          const mergedHold = fastHold < superHold ? fastHold : superHold;
+          newKbData.qukeysHoldTimeout = mergedHold;
+          newKbData.SuperHoldstart = mergedHold;
+        } else if (typeof superHold === "number" && superHold >= 0) {
+          newKbData.qukeysHoldTimeout = superHold;
+        } else {
+          newKbData.SuperHoldstart = fastHold;
+        }
+      }
 
       // MOUSE variables commands
       await state.currentDevice.command("mouse.speed").then((speed: string) => {
@@ -362,7 +392,13 @@ const Preferences = (props: PreferencesProps) => {
       // QUKEYS
       await state.currentDevice.command("qukeys.holdTimeout", kbData.qukeysHoldTimeout.toString());
       await state.currentDevice.command("qukeys.overlapThreshold", kbData.qukeysOverlapThreshold.toString());
-      await state.currentDevice.command("qukeys.minimumHoldTime", kbData.qukeysMinHold ? kbData.qukeysMinHold.toString() : "");
+
+      let minHoldValueToSend = "";
+      if (typeof kbData.qukeysMinHold === "number" && kbData.qukeysMinHold > 0) {
+        const clamped = kbData.qukeysMinHold > 255 ? 255 : kbData.qukeysMinHold;
+        minHoldValueToSend = clamped.toString();
+      }
+      await state.currentDevice.command("qukeys.minimumHoldTime", minHoldValueToSend);
       await state.currentDevice.command(
         "qukeys.minimumPriorInterval",
         kbData.qukeysMinPrior ? kbData.qukeysMinPrior.toString() : "",
