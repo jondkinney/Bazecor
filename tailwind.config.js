@@ -110,10 +110,10 @@ module.exports = {
         cardRaiseOnLight: "url('@Assets/base/devices/raise-ansi-white-on.png')",
         cardRaiseOffDark: "url('@Assets/base/devices/raise-ansi-black-offline.png')",
         cardRaiseOnDark: "url('@Assets/base/devices/raise-ansi-black-on.png')",
-        cardSonshiOffLight: "url('@Assets/base/devices/sonshi-black-offline.png')",
-        cardSonshiOnLight: "url('@Assets/base/devices/sonshi-black-on.png')",
-        cardSonshiOffDark: "url('@Assets/base/devices/sonshi-black-offline.png')",
-        cardSonshiOnDark: "url('@Assets/base/devices/sonshi-black-on.png')",
+        cardSonshiOffLight: "url('@Assets/base/devices/A_Disconnected.png')",
+        cardSonshiOnLight: "url('@Assets/base/devices/A_Connected.png')",
+        cardSonshiOffDark: "url('@Assets/base/devices/A_Disconnected.png')",
+        cardSonshiOnDark: "url('@Assets/base/devices/A_Connected.png')",
         bgCardOfflineLight:
           "linear-gradient(180deg, rgba(240, 240, 240, 0.60) 1.33%, rgba(240, 240, 240, 0.00) 51.04%, rgba(240, 240, 245, 0.35) 100%), linear-gradient(rgba(30, 30, 55, 0.20), rgba(30, 30, 55, 0.20))",
         bgCardOfflineDark:
