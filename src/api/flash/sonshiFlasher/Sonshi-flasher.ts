@@ -25,11 +25,10 @@ import { serialConnection, rawCommand, noWaitCommand } from "../serialConnection
 import { InfoType, SealType, HexType } from "../types";
 import ihexDecode from "../ihexDecode";
 import SealWithCRC from "../sealWithCRC";
-import { parseSealFromBinary, validateSealCRC } from "../parseSeal";
+import { parseSealFromBinary } from "../parseSeal";
 
 const PACKET_SIZE = 4096;
 const FIRST_SECTOR_SIZE = 4096;
-const KEYSCANNER_SONSHI_DEVICE_ID = 0x4f53534b;
 
 const TYPE_DAT = 0x00;
 const TYPE_ESA = 0x02;
@@ -54,109 +53,102 @@ let serialPort;
  */
 const SonshiFlash = {
   flash: async (
-    lines: string[],
+    lines: string[] | Uint8Array,
     stateUpdate: (arg0: string, arg1: number) => void,
     finished: (err: Error, result: unknown) => void,
     erasePairings: boolean,
   ) => {
-    // let fileData = fs.readFileSync(firmware, { encoding: "utf8" });
-    // fileData = fileData.replace(/(?:\r\n|\r|\n)/g, "");
-
-    // var lines = fileData.split(":");
-    // lines.splice(0, 1);
-
     const dataObjects: HexType[] = [];
     let total = 0;
-    let segment = 0;
-    let linear = 0;
-    const auxData = [];
-
-    for (let i = 0; i < lines.length; i += 1) {
-      const hex = ihexDecode(lines[i]);
-
-      if (hex.type === TYPE_ESA) {
-        segment = parseInt(hex.str.substring(8, 8 + hex.len * 2), 16) * 16;
-        linear = 0;
-      }
-
-      if (hex.type === TYPE_ELA) {
-        linear = parseInt(hex.str.substring(8, 8 + hex.len * 2), 16) * 65536;
-        segment = 0;
-      }
-
-      // let aux = hex.address;
-
-      if (hex.type === TYPE_DAT) {
-        total += hex.len;
-        if (segment > 0) hex.address += segment;
-        if (linear > 0) hex.address += linear;
-        auxData.push(hex.data);
-        dataObjects.push(hex);
-      }
-      //   log.info(num2hexstr(segment, 8), linear, num2hexstr(aux), num2hexstr(hex.address));
-    }
-
-    let ArrLenght = 0;
-    auxData.forEach(item => {
-      ArrLenght += item.length;
-    });
-    const mergedArray = new Uint8Array(ArrLenght);
-    let offset = 0;
-    auxData.forEach(item => {
-      mergedArray.set(item, offset);
-      offset += item.length;
-    });
-
-    const totalSaved = total;
+    let mergedArray: Uint8Array;
+    let totalSaved: number;
     let hexCount = 0;
-    let { address } = dataObjects[0];
+    let address: number;
+    let isBinaryInput = false;
 
-    // TODO: Validate SEAL from Neuron firmware before flashing
-    // Currently disabled because Neuron SEAL is not ready yet
-    // The Keyscanner SEAL validation is done in input.ts before starting the flash process
-    
-    // Calculate program data size and CRC (needed for creating SEAL to send to device)
-    const programDataSize = totalSaved - FIRST_SECTOR_SIZE;
-    const programData = mergedArray.slice(FIRST_SECTOR_SIZE);
-    const calculatedProgramCrc = crc32("CRC-32", new Buffer(programData));
-    
-    // Parse embedded SEAL to get program version (if available)
-    let embeddedSeal;
-    try {
-      embeddedSeal = parseSealFromBinary(mergedArray.slice(0, 32));
-    } catch (e) {
-      // If SEAL parsing fails, use default version
-      log.warn("Could not parse embedded SEAL, using default program_version: 1");
-      embeddedSeal = { program_version: 1 };
+    // Check if input is binary (Uint8Array) or hex (string[])
+    if (lines instanceof Uint8Array) {
+      // Binary input (.bin file) - skip first 4KB sector (SEAL) and split application into chunks
+      log.info("Processing binary firmware file (.bin)");
+      mergedArray = lines;
+      totalSaved = mergedArray.length;
+      
+      // Parse SEAL to get program_start address (the actual flash address for the application)
+      const sealForAddress = parseSealFromBinary(mergedArray.slice(0, 32));
+      const baseAddress = sealForAddress.program_start;
+      
+      // The first FIRST_SECTOR_SIZE bytes contain the SEAL sector - skip it
+      // Only flash the application data starting after the SEAL sector
+      const appData = mergedArray.slice(FIRST_SECTOR_SIZE);
+      const CHUNK_SIZE = 16; // Match typical hex record size
+      let offset = 0;
+      while (offset < appData.length) {
+        const chunkLen = Math.min(CHUNK_SIZE, appData.length - offset);
+        dataObjects.push({
+          str: "",
+          len: chunkLen,
+          address: baseAddress + offset,
+          type: TYPE_DAT,
+          data: appData.slice(offset, offset + chunkLen),
+        });
+        total += chunkLen;
+        offset += chunkLen;
+      }
+      address = dataObjects[0].address;
+      isBinaryInput = true;
+      log.info(`Binary: skipped ${FIRST_SECTOR_SIZE} bytes SEAL sector, application size: ${appData.length}, start address: 0x${baseAddress.toString(16)}`);
+    } else {
+      // Hex input (.hex file) - parse as before
+      log.info("Processing hex firmware file (.hex)");
+      let segment = 0;
+      let linear = 0;
+      const auxData = [];
+
+      for (let i = 0; i < lines.length; i += 1) {
+        const hex = ihexDecode(lines[i]);
+
+        if (hex.type === TYPE_ESA) {
+          segment = parseInt(hex.str.substring(8, 8 + hex.len * 2), 16) * 16;
+          linear = 0;
+        }
+
+        if (hex.type === TYPE_ELA) {
+          linear = parseInt(hex.str.substring(8, 8 + hex.len * 2), 16) * 65536;
+          segment = 0;
+        }
+
+        if (hex.type === TYPE_DAT) {
+          total += hex.len;
+          if (segment > 0) hex.address += segment;
+          if (linear > 0) hex.address += linear;
+          auxData.push(hex.data);
+          dataObjects.push(hex);
+        }
+      }
+
+      let ArrLenght = 0;
+      auxData.forEach(item => {
+        ArrLenght += item.length;
+      });
+      mergedArray = new Uint8Array(ArrLenght);
+      let offset = 0;
+      auxData.forEach(item => {
+        mergedArray.set(item, offset);
+        offset += item.length;
+      });
+
+      totalSaved = total;
+      address = dataObjects[0].address;
     }
 
-    // SEAL validation is currently disabled - uncomment when Neuron SEAL is ready:
-    // log.info("Validating firmware SEAL...");
-    // if (mergedArray.length < 32) {
-    //   throw new Error("Firmware file too small to contain valid SEAL");
-    // }
-    // log.info("Embedded SEAL:", embeddedSeal);
-    // if (embeddedSeal.bldr_seal_header_t.version !== 2) {
-    //   log.error(`Wrong SEAL version. Expected: 2, Got: ${embeddedSeal.bldr_seal_header_t.version}`);
-    //   throw new Error("Wrong FW: Invalid SEAL version. Expected version 2 for Neuron Sonshi.");
-    // }
-    // if (embeddedSeal.device_id !== NEURON_SONSHI_DEVICE_ID) {
-    //   log.error(`Wrong device_id. Expected: 0x${NEURON_SONSHI_DEVICE_ID.toString(16).toUpperCase()}, Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`);
-    //   throw new Error("Wrong FW: This firmware is not for Neuron Sonshi.");
-    // }
-    // if (!validateSealCRC(embeddedSeal)) {
-    //   log.error("SEAL CRC validation failed");
-    //   throw new Error("Wrong FW: SEAL CRC validation failed.");
-    // }
-    // if (embeddedSeal.program_size !== programDataSize) {
-    //   log.error(`Program size mismatch. SEAL says: ${embeddedSeal.program_size}, Actual: ${programDataSize}`);
-    //   throw new Error("Wrong FW: Program size mismatch.");
-    // }
-    // if (embeddedSeal.program_crc !== calculatedProgramCrc) {
-    //   log.error(`Program CRC mismatch. SEAL says: 0x${embeddedSeal.program_crc.toString(16)}, Calculated: 0x${calculatedProgramCrc.toString(16)}`);
-    //   throw new Error("Wrong FW: Program CRC validation failed.");
-    // }
-    // log.info("✓ Firmware SEAL validation passed");
+    // SEAL validation is done in input.ts before flashing starts.
+    // Here we only parse the SEAL to extract values needed for the flash process.
+    const embeddedSeal = parseSealFromBinary(mergedArray.slice(0, 32));
+    log.info("Neuron firmware SEAL:", embeddedSeal);
+    
+    const programDataSize = embeddedSeal.program_size;
+    const programData = mergedArray.slice(FIRST_SECTOR_SIZE, FIRST_SECTOR_SIZE + programDataSize);
+    const calculatedProgramCrc = crc32("CRC-32", new Buffer(programData));
 
     // Prepare connection
     serialPort = await serialConnection();
@@ -165,15 +157,14 @@ const SonshiFlash = {
     const info = (await rawCommand("I#", serialPort, 1000)) as InfoType;
     log.info("Result of sending I#: ", info);
 
-    // Neuron uses SEAL version 1 (without device_id)
-    // Only Keyscanner uses SEAL version 2 (with device_id)
+    // Neuron Sonshi uses SEAL version 2 (with device_id) same as Keyscanner
     const sealData: SealType = {
       bldr_seal_header_t: {
-        version: 1,
-        size: 28,
+        version: 2,
+        size: 32,
         crc: 0,
       },
-      device_id: undefined,
+      device_id: embeddedSeal.device_id,
       program_start: info.program_space_start,
       program_size: programDataSize,
       program_crc: calculatedProgramCrc,
@@ -198,20 +189,21 @@ const SonshiFlash = {
       throw Error("error when sending SEAL data");
     }
 
-    // ERASE device
-    log.info("Erasing...");
+    // ERASE device - always erase from program_space_start (includes SEAL sector)
+    const eraseAddress = info.program_space_start;
+    log.info("Erasing from address:", `0x${eraseAddress.toString(16)}`);
     if (erasePairings) {
-      ans = await rawCommand(`E${num2hexstr(dataObjects[0].address, 8)}#`, serialPort, 60000);
+      ans = await rawCommand(`E${num2hexstr(eraseAddress, 8)}#`, serialPort, 60000);
     } else {
       ans = await rawCommand(
-        `E${num2hexstr(dataObjects[0].address, 8)},${num2hexstr(0x00072000 - dataObjects[0].address, 8)}#`,
+        `E${num2hexstr(eraseAddress, 8)},${num2hexstr(0x00072000 - eraseAddress, 8)}#`,
         serialPort,
         60000,
       );
     }
     if (ans[0] !== 65) {
       log.info("answer to Erase command: ", String.fromCharCode.apply(null, ans));
-      log.info(`RAW Command: ${`E${num2hexstr(dataObjects[0].address, 8)}#`}`);
+      log.info(`RAW Command: ${`E${num2hexstr(eraseAddress, 8)}#`}`);
       throw Error("error when Erasing");
     }
 
@@ -235,7 +227,31 @@ const SonshiFlash = {
     let state = 1;
     const stateT = totalSaved / 4096;
 
-    log.info("Starting flashing procedure", totalSaved, stateT);
+    // Remove SEAL from firmware data - only for hex input
+    // For binary input, the SEAL sector was already skipped during chunk creation
+    if (!isBinaryInput) {
+      log.info("Removing SEAL from firmware data before flashing...");
+      const SEAL_SIZE = 32;
+      
+      // Skip the first 32 bytes (SEAL) from the first data object
+      if (dataObjects[0].data.length >= SEAL_SIZE) {
+        const originalData = dataObjects[0].data;
+        dataObjects[0].data = originalData.slice(SEAL_SIZE);
+        dataObjects[0].len -= SEAL_SIZE;
+        dataObjects[0].address += SEAL_SIZE;
+        total -= SEAL_SIZE;
+        log.info(`Removed ${SEAL_SIZE} bytes of SEAL. New total: ${total}`);
+      } else {
+        log.warn("First data object is smaller than SEAL size, skipping SEAL removal");
+      }
+    } else {
+      log.info("Binary input: SEAL sector already skipped during processing");
+    }
+    
+    log.info("Starting flashing procedure", total, total / 4096);
+    const adjustedStateT = total / 4096;
+    state = 1;
+    
     while (total > 0) {
       let bufferSize = total < PACKET_SIZE ? total : PACKET_SIZE;
 
@@ -276,7 +292,7 @@ const SonshiFlash = {
       ans = await rawCommand(`W${num2hexstr(address, 8)},${num2hexstr(bufferSize, 8)}#`, serialPort, 1000);
 
       // Update External State
-      stateUpdate("neuron", (state / stateT) * 100);
+      stateUpdate("neuron", (state / adjustedStateT) * 100);
       state += 1;
       total -= bufferSize;
       address += bufferSize;

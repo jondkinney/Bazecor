@@ -1,8 +1,10 @@
 import log from "electron-log/renderer";
+import { crc32 } from "easy-crc";
 import { BackupType } from "@Renderer/types/backups";
 import { State } from "src/api/comms/Device";
 import { DygmaDeviceType } from "@Renderer/types/dygmaDefs";
 import { validateSonshiKeyscannerSeal } from "../../../api/flash/validateSonshiSeal";
+import { parseSealFromBinary, validateSealCRC } from "../../../api/flash/parseSeal";
 import type * as Context from "./context";
 
 export interface InputType {
@@ -36,25 +38,62 @@ export const Input = async (input: InputType): Promise<Context.ContextType> => {
   // Validate Sonshi Keyscanner firmware SEAL BEFORE starting the flash process
   // This only applies to Sonshi keyboards - other keyboards (Raise, Raise2, Defy) don't use SEAL
   // The SEAL is in the Keyscanner firmware (fwSides), not the Neuron firmware (fw)
-  if (input.device.info.product === "Sonshi" && input.firmwares?.fwSides) {
-    log.info("Detected Sonshi keyboard - validating Keyscanner firmware SEAL before flashing...");
-    
-    const validationResult = validateSonshiKeyscannerSeal(input.firmwares.fwSides);
-    
-    if (!validationResult.valid) {
-      log.error("Sonshi Keyscanner firmware SEAL validation failed:", validationResult.error);
-      throw new Error(`Invalid Sonshi Keyscanner firmware: ${validationResult.error}`);
+  if (input.device.info.product === "Sonshi") {
+    log.info("Detected Sonshi keyboard - validating firmware SEALs before flashing...");
+
+    // Validate Keyscanner firmware SEAL
+    if (input.firmwares?.fwSides) {
+      const ksValidation = validateSonshiKeyscannerSeal(input.firmwares.fwSides);
+      if (!ksValidation.valid) {
+        log.error("Sonshi Keyscanner firmware SEAL validation failed:", ksValidation.error);
+        throw new Error(`Invalid Sonshi Keyscanner firmware: ${ksValidation.error}`);
+      }
+      log.info("✓ Sonshi Keyscanner firmware SEAL validation passed");
     }
-    
-    log.info("✓ Sonshi Keyscanner firmware SEAL validation passed - safe to proceed with flashing");
-    
-    // TODO: Add Neuron firmware validation when SEAL is implemented for Neuron
-    // if (input.firmwares?.fw) {
-    //   const neuronValidation = validateSonshiNeuronSeal(input.firmwares.fw);
-    //   if (!neuronValidation.valid) {
-    //     throw new Error(`Invalid Sonshi Neuron firmware: ${neuronValidation.error}`);
-    //   }
-    // }
+
+    // Validate Neuron firmware SEAL (.bin - Uint8Array)
+    if (input.firmwares?.fw && input.firmwares.fw instanceof Uint8Array) {
+      log.info("Starting Sonshi Neuron firmware SEAL validation...");
+      const neuronFw = input.firmwares.fw as Uint8Array;
+
+      if (neuronFw.length < 32) {
+        throw new Error("Invalid Sonshi Neuron firmware: Firmware file too small to contain valid SEAL");
+      }
+
+      const embeddedSeal = parseSealFromBinary(neuronFw.slice(0, 32));
+      log.info("Neuron Embedded SEAL:", embeddedSeal);
+
+      if (embeddedSeal.bldr_seal_header_t.version !== 2) {
+        log.error(`Wrong SEAL version. Expected: 2, Got: ${embeddedSeal.bldr_seal_header_t.version}`);
+        throw new Error("Invalid Sonshi Neuron firmware: Invalid SEAL version. Expected version 2.");
+      }
+
+      // TODO: Validate device_id when NEURON_SONSHI_DEVICE_ID is defined
+
+      if (!validateSealCRC(embeddedSeal)) {
+        log.error("Neuron SEAL CRC validation failed");
+        throw new Error("Invalid Sonshi Neuron firmware: SEAL CRC validation failed.");
+      }
+
+      // The .bin file may have padding beyond the program data due to sector alignment
+      const availableDataSize = neuronFw.length - 4096;
+      if (availableDataSize < embeddedSeal.program_size) {
+        log.error(`Firmware file too small. SEAL says program_size: ${embeddedSeal.program_size}, Available: ${availableDataSize}`);
+        throw new Error("Invalid Sonshi Neuron firmware: Firmware file too small for declared program size.");
+      }
+
+      // Validate CRC only over the exact program_size bytes declared in the SEAL
+      const programData = neuronFw.slice(4096, 4096 + embeddedSeal.program_size);
+      const calculatedProgramCrc = crc32("CRC-32", Buffer.from(programData));
+      if (embeddedSeal.program_crc !== calculatedProgramCrc) {
+        log.error(`Program CRC mismatch. SEAL says: 0x${embeddedSeal.program_crc.toString(16)}, Calculated: 0x${calculatedProgramCrc.toString(16)}`);
+        throw new Error("Invalid Sonshi Neuron firmware: Program CRC validation failed.");
+      }
+
+      log.info("✓ Sonshi Neuron firmware SEAL validation passed");
+    }
+
+    log.info("✓ All Sonshi firmware SEAL validations passed - safe to proceed with flashing");
   }
 
   const result: Context.ContextType = {

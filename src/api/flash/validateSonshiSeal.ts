@@ -63,16 +63,16 @@ export function validateSonshiKeyscannerSeal(binaryData: Uint8Array): SealValida
       return { valid: false, error, embeddedSeal };
     }
 
-    // Validate program size
-    const programDataSize = binaryData.length - FIRST_SECTOR_SIZE;
-    if (embeddedSeal.program_size !== programDataSize) {
-      const error = `Program size mismatch. SEAL says: ${embeddedSeal.program_size}, Actual: ${programDataSize}`;
+    // Validate program size - .bin file may have padding beyond program data due to sector alignment
+    const availableDataSize = binaryData.length - FIRST_SECTOR_SIZE;
+    if (availableDataSize < embeddedSeal.program_size) {
+      const error = `Firmware file too small. SEAL says program_size: ${embeddedSeal.program_size}, Available: ${availableDataSize}`;
       log.error(error);
       return { valid: false, error, embeddedSeal };
     }
 
-    // Validate program CRC (skip first 4kB sector which contains the SEAL)
-    const programData = binaryData.slice(FIRST_SECTOR_SIZE);
+    // Validate program CRC over the exact program_size bytes declared in the SEAL
+    const programData = binaryData.slice(FIRST_SECTOR_SIZE, FIRST_SECTOR_SIZE + embeddedSeal.program_size);
     const calculatedProgramCrc = crc32("CRC-32", new Buffer(programData));
     if (embeddedSeal.program_crc !== calculatedProgramCrc) {
       const error = `Program CRC mismatch. SEAL says: 0x${embeddedSeal.program_crc.toString(16)}, Calculated: 0x${calculatedProgramCrc.toString(16)}`;

@@ -154,6 +154,16 @@ const obtainFWFiles = async (type: string, url: string) => {
       firmware = response.split(":") as Array<string>;
       firmware.splice(0, 1);
     }
+    if (type === "Wireless_neuron.bin") {
+      log.info("getting Wireless_neuron.bin");
+      response = await axios.request({
+        method: "GET",
+        url,
+        responseType: "arraybuffer",
+        responseEncoding: "binary",
+      });
+      firmware = new Uint8Array(response.data);
+    }
     if (type === "firmware.hex") {
       log.info("getting firmware.hex");
       response = await axios.request({
@@ -176,8 +186,6 @@ const obtainFWFiles = async (type: string, url: string) => {
 };
 
 const obtainLocalFWFiles = (customFWPath: string) => {
-  const fromHexString = (hexString: any) => Uint8Array.from(hexString.match(/.{1,2}/g).map((byte: string) => parseInt(byte, 16)));
-
   let result;
   if (customFWPath.includes(".hex")) {
     let fileData = fs.readFileSync(customFWPath, { encoding: "utf8" });
@@ -187,8 +195,9 @@ const obtainLocalFWFiles = (customFWPath: string) => {
     result = lines;
   }
   if (customFWPath.includes(".bin")) {
-    const filedata = fs.readFileSync(customFWPath, { encoding: "hex" });
-    result = fromHexString(filedata);
+    // Read binary file directly as Uint8Array
+    const filedata = fs.readFileSync(customFWPath);
+    result = new Uint8Array(filedata);
   }
   if (customFWPath.includes(".uf2")) {
     result = customFWPath;
@@ -220,13 +229,15 @@ export const downloadFirmware = async (
           : (obtainLocalFWFiles(path.join(customFirmwareFolder, "firmware.hex")) as Array<string>);
     } else {
       if (info.keyboardType === "wireless" || productName === "Raise2") {
+        // For Sonshi, use .bin file; for others use .hex
+        const neuronFile = productName === "Sonshi" ? "Wireless_neuron.bin" : "Wireless_neuron.hex";
         filename =
           typeSelected === "default"
             ? ((await obtainFWFiles(
-                "Wireless_neuron.hex",
-                firmwareAssets.find((asset: { name: string }) => asset.name === "Wireless_neuron.hex").url,
+                neuronFile,
+                firmwareAssets.find((asset: { name: string }) => asset.name === neuronFile).url,
               )) as Array<string>)
-            : (obtainLocalFWFiles(path.join(customFirmwareFolder, "Wireless_neuron.hex")) as Array<string>);
+            : (obtainLocalFWFiles(path.join(customFirmwareFolder, neuronFile)) as Array<string>);
       } else {
         filename =
           typeSelected === "default"
