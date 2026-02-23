@@ -208,17 +208,49 @@ export default class SideFlaser {
       // eslint-disable-next-line no-console
       console.table(info);
 
+      // Get write size from keyscanner
+      // log.info("Sending getWriteSize command...");
+      // this.serialport.write("upgrade.keyscanner.getWriteSize\n");
+      
+      let PACKET_SIZE = 256; // Default size
+      // try {
+      //   // Wait for response with timeout
+      //   const timeoutPromise = new Promise((_, reject) => 
+      //     setTimeout(() => reject(new Error("timeout")), 1000)
+      //   );
+      //   const readPromise = (async () => {
+      //     await readLine();
+      //     return await readLine();
+      //   })();
+        
+      //   const writeSizeResponse = await Promise.race([readPromise, timeoutPromise]) as string;
+      //   log.info("Received WriteSize response: ", writeSizeResponse);
+        
+      //   if (writeSizeResponse && writeSizeResponse.trim() !== "") {
+      //     const parsedSize = parseInt(writeSizeResponse.trim(), 10);
+      //     if (!isNaN(parsedSize) && parsedSize > 0) {
+      //       PACKET_SIZE = parsedSize;
+      //       log.info(`packet size ${PACKET_SIZE}`);
+      //     } else {
+      //       log.info("size 256 default");
+      //     }
+      //   } else {
+      //     log.info("size 256 default");
+      //   }
+      // } catch (error) {
+      //   log.info("getWriteSize not supported or timeout, using size 256 default");
+      // }
+
       // Write Firmware FOR Loop
       let step = 0;
-      const PACKET_SIZE = 2048;
       const totalsteps = this.firmwareSides.length / PACKET_SIZE;
       log.info("CRC check is ", info.programCrc !== seal.program_crc, ", info:", info.programCrc, "seal:", seal.program_crc);
       log.info("isItBootloader:", isItBootloader, "forceFlashSides:", forceFlashSides);
       
       const needsUpdate = info.programCrc !== seal.program_crc || forceFlashSides;
-      log.info("Condition check: needsUpdate?", needsUpdate, "isBootloader?", isItBootloader);
+      log.info("Condition check: needsUpdate?", needsUpdate);
       
-      if (needsUpdate && isItBootloader) {
+      if (needsUpdate) {
         log.info("Starting flash loop. Total firmware size:", this.firmwareSides.length, "Total steps:", totalsteps);
         let validate = "false";
         log.info("Entering flash loop, firmware length:", this.firmwareSides.length, "packet size:", PACKET_SIZE);
@@ -274,12 +306,7 @@ export default class SideFlaser {
         log.info("result of validation", validate);
         // retry++;
       } else {
-        if (!needsUpdate) {
-          log.info("Skipping flash - firmware already up to date (CRC matches)");
-        } else if (!isItBootloader) {
-          log.warn("Skipping flash - device is not in bootloader mode");
-          log.warn("The firmware needs to be updated but the device must be in bootloader mode to flash");
-        }
+        log.info("Skipping flash - firmware already up to date (CRC matches)");
       }
 
       log.info("Sending finish command...");
