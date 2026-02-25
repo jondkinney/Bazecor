@@ -208,38 +208,50 @@ export default class SideFlaser {
       // eslint-disable-next-line no-console
       console.table(info);
 
+      // Clear buffer before getWriteSize - read any residual data
+      log.info("Clearing buffer before getWriteSize...");
+      while (receivedData.length > 0) {
+        const cleared = receivedData.shift();
+        log.info("Cleared from buffer:", cleared);
+      }
+      
       // Get write size from keyscanner
-      // log.info("Sending getWriteSize command...");
-      // this.serialport.write("upgrade.keyscanner.getWriteSize\n");
+      log.info("Sending getWriteSize command...");
+      this.serialport.write("upgrade.keyscanner.getWriteSize\n");
       
       let PACKET_SIZE = 256; // Default size
-      // try {
-      //   // Wait for response with timeout
-      //   const timeoutPromise = new Promise((_, reject) => 
-      //     setTimeout(() => reject(new Error("timeout")), 1000)
-      //   );
-      //   const readPromise = (async () => {
-      //     await readLine();
-      //     return await readLine();
-      //   })();
+      
+      // Wait a bit for response
+      await delay(50);
+      
+      // Check if we got a response
+      if (receivedData.length > 0) {
+        const firstLine = receivedData.shift();
+        log.info("First line after getWriteSize:", firstLine);
         
-      //   const writeSizeResponse = await Promise.race([readPromise, timeoutPromise]) as string;
-      //   log.info("Received WriteSize response: ", writeSizeResponse);
-        
-      //   if (writeSizeResponse && writeSizeResponse.trim() !== "") {
-      //     const parsedSize = parseInt(writeSizeResponse.trim(), 10);
-      //     if (!isNaN(parsedSize) && parsedSize > 0) {
-      //       PACKET_SIZE = parsedSize;
-      //       log.info(`packet size ${PACKET_SIZE}`);
-      //     } else {
-      //       log.info("size 256 default");
-      //     }
-      //   } else {
-      //     log.info("size 256 default");
-      //   }
-      // } catch (error) {
-      //   log.info("getWriteSize not supported or timeout, using size 256 default");
-      // }
+        // Parse response - format is "2048 true " or just "." if command doesn't exist
+        if (firstLine && firstLine.trim() !== ".") {
+          const parts = firstLine.trim().split(" ");
+          const parsedSize = parseInt(parts[0], 10);
+          
+          if (!isNaN(parsedSize) && parsedSize > 0) {
+            PACKET_SIZE = parsedSize;
+            log.info(`Using packet size ${PACKET_SIZE} from device`);
+            
+            // Read the "true" line if it's separate
+            if (parts.length === 1 && receivedData.length > 0) {
+              const trueLine = receivedData.shift();
+              log.info("True line:", trueLine);
+            }
+          } else {
+            log.info("Invalid response, using default 256");
+          }
+        } else {
+          log.info("Command not supported (got '.'), using default 256");
+        }
+      } else {
+        log.info("No response from getWriteSize, using default 256");
+      }
 
       // Write Firmware FOR Loop
       let step = 0;
@@ -268,16 +280,11 @@ export default class SideFlaser {
           blob.set(crc, data.length + writeAction.length);
           const buffer = Buffer.from(blob);
           
-          log.info(`Sending chunk: address=${info.flashStart + i}, size=${chunkSize}, total buffer size=${buffer.length}`);
           this.serialport.write("upgrade.keyscanner.sendWrite ");
           this.serialport.write(buffer);
           if (wiredOrWireless !== "wired") await delay(20);
-          log.info("Waiting for first ACK line...");
           let ack = (await readLine()) as string;
-          log.info("First ACK line received:", ack);
-          log.info("Waiting for second ACK line...");
           ack += (await readLine()) as string;
-          log.info("Complete ACK received:", ack);
           if (!ack.includes("true") || ack.includes("false")) {
             let retries = 3;
             if (wiredOrWireless !== "wired") await delay(100);
@@ -299,7 +306,6 @@ export default class SideFlaser {
           step += 1;
           // }
         }
-        log.info("Flash loop completed, sending validate command...");
         this.serialport.write("upgrade.keyscanner.validate\n");
         validate = (await readLine()) as string;
         validate += (await readLine()) as string;
@@ -309,7 +315,6 @@ export default class SideFlaser {
         log.info("Skipping flash - firmware already up to date (CRC matches)");
       }
 
-      log.info("Sending finish command...");
       await this.serialport.write("upgrade.keyscanner.finish\n");
       await readLine();
       await readLine();
