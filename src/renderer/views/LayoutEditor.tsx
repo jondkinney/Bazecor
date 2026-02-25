@@ -535,10 +535,10 @@ const LayoutEditor = (props: LayoutEditorProps) => {
     // Calculate total LEDs: keyboard LEDs + underglow LEDs
     const keyboardLEDs = currentDevice.device.keyboard.ledsLeft.length + currentDevice.device.keyboard.ledsRight.length;
     
-    // For underglow, prefer using ledsLeft/ledsRight arrays if available, otherwise fall back to rows * columns
+    // For underglow, prefer using ledsLeft/ledsRight arrays if available and not empty, otherwise fall back to rows * columns
     let underglowLEDs = 0;
-    if (currentDevice.device.keyboardUnderglow.ledsLeft && currentDevice.device.keyboardUnderglow.ledsRight) {
-      underglowLEDs = currentDevice.device.keyboardUnderglow.ledsLeft.length + currentDevice.device.keyboardUnderglow.ledsRight.length;
+    if (currentDevice.device.keyboardUnderglow.ledsLeft?.length > 0 || currentDevice.device.keyboardUnderglow.ledsRight?.length > 0) {
+      underglowLEDs = (currentDevice.device.keyboardUnderglow.ledsLeft?.length || 0) + (currentDevice.device.keyboardUnderglow.ledsRight?.length || 0);
     } else {
       underglowLEDs = currentDevice.device.keyboardUnderglow.rows * currentDevice.device.keyboardUnderglow.columns;
     }

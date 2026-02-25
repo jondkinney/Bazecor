@@ -46,8 +46,8 @@ const DefyWired: DygmaDeviceType = {
   keyboardUnderglow: {
     rows: 2,
     columns: 89,
-    ledsLeft: [...aFN(70, 123)],
-    ledsRight: [...aFN(123, 176)],
+    ledsLeft: [...aFN(70, 124)],
+    ledsRight: [...aFN(124, 178)],
   },
   RGBWMode: true,
   sides: 2,
