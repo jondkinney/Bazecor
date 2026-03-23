@@ -213,10 +213,11 @@ const BatteryStatus = ({ disable }: BatteryStatusProps) => {
   };
 
   const deviceType = state.currentDevice?.device?.info?.product || "";
+  const isSonsei = deviceType?.toLowerCase().includes("sonsei");
 
   return (
     <Style>
-      <div className="battery-indicator--wrapper" ref={target}>
+      <div className={`battery-indicator--wrapper ${isSonsei ? "pointer-events-none" : ""}`} ref={target}>
         <div className="battery-indicator--container">
           <BatteryStatusSide side="left" batteryLevel={bLeft} isSavingMode={isSavingMode} batteryStatus={sLeft} size="sm" deviceType={deviceType} />
           <BatteryStatusSide side="right" batteryLevel={bRight} isSavingMode={isSavingMode} batteryStatus={sRight} size="sm" deviceType={deviceType} />

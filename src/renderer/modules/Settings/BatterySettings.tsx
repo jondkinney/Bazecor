@@ -44,6 +44,12 @@ padding-top: 24px;
 
 function BatterySettings(props: BatterySettingsProps) {
   const { wireless, deviceType } = props;
+  const isSonsei = deviceType?.toLowerCase().includes("sonsei");
+  
+  if (isSonsei) {
+    return null;
+  }
+  
   return (
     <Styles>
       <Card className="max-w-2xl mx-auto" variant="default">
