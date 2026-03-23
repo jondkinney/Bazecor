@@ -27,7 +27,7 @@ const FlashDevice = setup({
     resetDefy: fromPromise<Context.ContextType, Context.ContextType>(({ input }) => Actions.resetDefy(input)),
     uploadDefyWireless: fromPromise<boolean, Context.ContextType>(({ input }) => Actions.uploadDefyWireless(input)),
     uploadRaise2: fromPromise<boolean, Context.ContextType>(({ input }) => Actions.uploadRaise2(input)),
-    uploadSonshi: fromPromise<boolean, Context.ContextType>(({ input }) => Actions.uploadSonshi(input)),
+    uploadSonsei: fromPromise<boolean, Context.ContextType>(({ input }) => Actions.uploadSonsei(input)),
     reconnect: fromPromise<boolean, Context.ContextType>(({ input }) => Actions.reconnect(input)),
     restoreDefies: fromPromise<boolean, Context.ContextType>(({ input }) => Actions.restoreDefies(input)),
     resetRaise: fromPromise<Context.ContextType, Context.ContextType>(({ input }) => Actions.resetRaise(input)),
@@ -52,22 +52,22 @@ const FlashDevice = setup({
     doNotFlashSidesWi: ({ context }) =>
       context.device?.bootloader === true &&
       context.device.info.product !== "Raise" &&
-      context.device.info.product !== "Sonshi" &&
+      context.device.info.product !== "Sonsei" &&
       (context.device.info.keyboardType === "wireless" || context.device.info.product !== "Raise2"),
     doNotFlashSidesR2: ({ context }) =>
       context.device?.bootloader === true &&
       context.device.info.product !== "Raise" &&
-      context.device.info.product !== "Sonshi" &&
+      context.device.info.product !== "Sonsei" &&
       (context.device.info.keyboardType === "wireless" || context.device.info.product === "Raise2"),
-    doNotFlashSidesSonshi: ({ context }) =>
+    doNotFlashSidesSonsei: ({ context }) =>
       context.device?.bootloader === true &&
-      context.device.info.product === "Sonshi",
+      context.device.info.product === "Sonsei",
     doNotWaitForESC: ({ context }) =>
       (context.device?.bootloader === true || context.sideLeftBL === true) && context.loadedComms === true,
     isDefywired: ({ context }) => context.DeviceVariant === "Defywired",
     isDefywireless: ({ context }) => context.DeviceVariant === "Defywireless",
-    isSonshiwireless: ({ context }) => context.DeviceVariant === "Sonshiwireless",
-    isRaise2: ({ context }) => context.DeviceVariant === "Raise2ISO" || context.DeviceVariant === "Raise2ANSI" || context.DeviceVariant === "Sonshiwireless",
+    isSonseiwireless: ({ context }) => context.DeviceVariant === "Sonseiwireless",
+    isRaise2: ({ context }) => context.DeviceVariant === "Raise2ISO" || context.DeviceVariant === "Raise2ANSI" || context.DeviceVariant === "Sonseiwireless",
   },
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QDEA2BDAFrAlgOygAUAnAewGM5YA6Ad3RwBcBRWcgYmYGUBhQgJW5dmAEQDaABgC6iUAAdSuRjlJ5ZIAB6IATAA4ArNQkB2bQE4zxgIzbz+gCxWANCACeiAGz7t1KxI8AzB4S+pYeZtoeAL5RLmhYuAQkFFTUAGYYsJj8OFCYjFw4EGDsXACqPDxCkjJIIApKKmp1Wgh6hibmljZ2ji7ubdoB1NrGuh66Elb6umb60-YxcRjY+ERklLA0GehZOXkFRSXM-PwA8vw16g1MTeqt7UamFta2c31uiPa6PgG6s5FdAF7KZvEsQPFVkkNqkdlkADJgNKHYqlCpVLhcK51G7KVT3TzmaihKxWMz+AzGay6fo6CT2ajGen2YKkrx+YzgyGJdYpLbpTKYRHIwqok7nS7Sa6KW74lqEszEsyk8kTfRUqw0z4IIJWaheazeMwg-QBKzRWIQlY85KbbaCgByYAArmQ8GjKtUpTiZXjmqBWhFhlYAgEJCEzcZvKTaQgyRJqCzNWb2nNSdouda1rbYY6XW7OKcLtj5L67vKEEHfKHw6arFHtDHtdp7AmIqbjKqJKHO-pMwlszD+cQ4IxSCP4ehXGBiLAPRisd7S405QHEDZzfrjN8ycaIkz7LHtCFiQEqQYph5zzZ+1DeXbqCPYGOJ1OZ3PxcWl-Uy6vNOuJCBEZ6y8cIAkbMxgVjXQ9RBZUvDCb59AkMxbxtIdtgYVBXRKQQABV+AATRLH8V39f82gMJ4uleXpnG1H4Ex+M9jSCfwLUtPBSGKeA6m5Qc+V45dZXI1oAFoPFjCS0IEh96CYVhyGlMiCQQextFjdVjGrPw5g8IZZgCPtLX46FBIFXZMEIdBGEwLgwFQMByBfZSRNU+wWSMIZ7G8cDjxBDxJO1YJg2PJlOjJTVUJMrMzIfOFslyfJRTAVy-VUmxDAcetAPDVsPG+Q9mxPcZjxDMwPBsQJzRkuLc0s4UUVSn0VIrFkEzGbt7DMAx7GBbtY01bS9CpSDlX+CCAlq+96qyJ1XT-XFyzXBBjAKkZw0q8DvCGGZBpgxlAOBKMbAkbQHGM5YBzq-kZzIYg0uWii-HVRl1PUsYgR6-RY1DXR9Uq+kurDFkLSuu8c2HUdxzASdp1nR6-1aF7tO3FtRn+AJvv2nxsvCDUrG6qZpshzCcGwkdEdE9cqK8f4r2CD61WgxtqDNExgX0U1AhMEmMOoWBnXIO0qYyoy9T0d7zumYxgSKgZ-MZGC9CGaYwyMxYYiiIA */
@@ -137,7 +137,7 @@ const FlashDevice = setup({
         "*": [
           { target: "flashDefyWired", guard: "doNotFlashSidesW" },
           { target: "resetDefyWireless", guard: { type: "doNotFlashSidesWi" } },
-          { target: "resetSonshi", guard: "doNotFlashSidesSonshi" },
+          { target: "resetSonsei", guard: "doNotFlashSidesSonsei" },
           { target: "resetRaise2", guard: "doNotFlashSidesR2" },
           { target: "resetRaiseNeuron", guard: "flashRaise" },
           { target: "flashLeftSide", guard: "flashOnlyLeftSide" },
@@ -227,7 +227,7 @@ const FlashDevice = setup({
         "*": [
           { target: "flashDefyWired", guard: "isDefywired" },
           { target: "resetDefyWireless", guard: "isDefywireless" },
-          { target: "resetSonshi", guard: "isSonshiwireless" },
+          { target: "resetSonsei", guard: "isSonseiwireless" },
           { target: "resetRaise2", guard: "isRaise2" },
         ],
       },
@@ -479,11 +479,11 @@ const FlashDevice = setup({
         },
       },
     },
-    resetSonshi: {
-      id: "resetSonshi",
+    resetSonsei: {
+      id: "resetSonsei",
       entry: [
         () => {
-          log.info(`Resetting Sonshi Neuron!`);
+          log.info(`Resetting Sonsei Neuron!`);
         },
         assign({ stateblock: () => 4 }),
       ],
@@ -491,7 +491,7 @@ const FlashDevice = setup({
         src: "resetDefy",
         input: ({ context }) => context,
         onDone: {
-          target: "flashSonshi",
+          target: "flashSonsei",
           actions: assign(({ event }) => event.output),
         },
         onError: {
@@ -512,17 +512,17 @@ const FlashDevice = setup({
         },
       },
     },
-    flashSonshi: {
-      id: "flashSonshi",
+    flashSonsei: {
+      id: "flashSonsei",
       entry: [
         ({ context }) => {
-          log.info(`Flashing Sonshi Neuron! for ${context.retriesNeuron} times`);
+          log.info(`Flashing Sonsei Neuron! for ${context.retriesNeuron} times`);
         },
         assign({ stateblock: () => 5 }),
         assign({ retriesNeuron: ({ context }) => context.retriesNeuron + 1 }),
       ],
       invoke: {
-        src: "uploadSonshi",
+        src: "uploadSonsei",
         input: ({ context }) => context,
         onDone: {
           target: "reconnectDefy",

@@ -2,7 +2,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-buffer-constructor */
 /* eslint-disable no-await-in-loop */
-/* bazecor-flash-sonshi -- Dygma Sonshi flash helper for Bazecor
+/* bazecor-flash-sonsei -- Dygma Sonsei flash helper for Bazecor
  * Copyright (C) 2025  DygmaLab SE
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ const TYPE_ELA = 0x04;
 let serialPort;
 
 /**
- * Object NRf52833 with flash method for Sonshi.
+ * Object NRf52833 with flash method for Sonsei.
  *
  *
  * The new command structure developed y Ota fejfar for the NRf52833 Bootloader

@@ -18,7 +18,7 @@ import { RaiseANSI, RaiseANSIBootloader } from "../hardware-dygma-raise-ansi";
 import { RaiseISO, RaiseISOBootloader } from "../hardware-dygma-raise-iso";
 import { DefyWired, DefyWiredBootloader } from "../hardware-dygma-defy-wired";
 import { DefyWireless, DefyWirelessBootloader } from "../hardware-dygma-defy-wireless";
-import { SonshiWireless, SonshiWirelessBootloader } from "../hardware-dygma-sonshi-wireless";
+import { SonseiWireless, SonseiWirelessBootloader } from "../hardware-dygma-sonsei-wireless";
 import { Raise2ANSI, Raise2ANSIBootloader } from "../hardware-dygma-raise2-ansi";
 import { Raise2ISO, Raise2ISOBootloader } from "../hardware-dygma-raise2-iso";
 
@@ -29,7 +29,7 @@ import { Raise2ISO, Raise2ISOBootloader } from "../hardware-dygma-raise2-iso";
 // };
 
 const Hardware = {
-  serial: [RaiseISO, RaiseANSI, DefyWired, DefyWireless, Raise2ANSI, Raise2ISO, SonshiWireless],
+  serial: [RaiseISO, RaiseANSI, DefyWired, DefyWireless, Raise2ANSI, Raise2ISO, SonseiWireless],
   nonSerial: [DefyWiredBootloader],
   bootloader: [
     RaiseANSIBootloader,
@@ -38,7 +38,7 @@ const Hardware = {
     DefyWirelessBootloader,
     Raise2ANSIBootloader,
     Raise2ISOBootloader,
-    SonshiWirelessBootloader,
+    SonseiWirelessBootloader,
   ],
 };
 

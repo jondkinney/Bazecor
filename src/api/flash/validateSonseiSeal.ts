@@ -6,9 +6,9 @@ import ihexDecode from "./ihexDecode";
 import { HexType } from "./types";
 
 const FIRST_SECTOR_SIZE = 4096;
-const KEYSCANNER_SONSHI_DEVICE_ID = 0x4f53534b; // "KSSO" - Keyscanner Sonshi
-// TODO: Define NEURON_SONSHI_DEVICE_ID when Neuron SEAL is implemented
-// const NEURON_SONSHI_DEVICE_ID = 0x????????; // To be defined
+const KEYSCANNER_SONSEI_DEVICE_ID = 0x4f53534b; // "KSSO" - Keyscanner Sonsei
+// TODO: Define NEURON_SONSEI_DEVICE_ID when Neuron SEAL is implemented
+// const NEURON_SONSEI_DEVICE_ID = 0x????????; // To be defined
 
 const TYPE_DAT = 0x00;
 const TYPE_ESA = 0x02;
@@ -21,15 +21,15 @@ export interface SealValidationResult {
 }
 
 /**
- * Validates the SEAL of a Sonshi Keyscanner firmware from binary data (.bin format).
+ * Validates the SEAL of a Sonsei Keyscanner firmware from binary data (.bin format).
  * This function should be called BEFORE disconnecting the device or starting the flash process.
  * 
  * @param binaryData - Uint8Array containing the binary firmware data
  * @returns SealValidationResult with validation status and error message if invalid
  */
-export function validateSonshiKeyscannerSeal(binaryData: Uint8Array): SealValidationResult {
+export function validateSonseiKeyscannerSeal(binaryData: Uint8Array): SealValidationResult {
   try {
-    log.info("Starting Sonshi Keyscanner firmware SEAL validation...");
+    log.info("Starting Sonsei Keyscanner firmware SEAL validation...");
 
     // Validate minimum size
     if (binaryData.length < 32) {
@@ -46,14 +46,14 @@ export function validateSonshiKeyscannerSeal(binaryData: Uint8Array): SealValida
     if (embeddedSeal.bldr_seal_header_t.version !== 2) {
       const error = `Wrong SEAL version. Expected: 2, Got: ${embeddedSeal.bldr_seal_header_t.version}`;
       log.error(error);
-      return { valid: false, error: "Invalid SEAL version. Expected version 2 for Keyscanner Sonshi.", embeddedSeal };
+      return { valid: false, error: "Invalid SEAL version. Expected version 2 for Keyscanner Sonsei.", embeddedSeal };
     }
 
-    // Validate device_id for Keyscanner Sonshi (0x4F53534B = "KSSO")
-    if (embeddedSeal.device_id !== KEYSCANNER_SONSHI_DEVICE_ID) {
-      const error = `Wrong device_id. Expected: 0x${KEYSCANNER_SONSHI_DEVICE_ID.toString(16).toUpperCase()} (KSSO), Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`;
+    // Validate device_id for Keyscanner Sonsei (0x4F53534B = "KSSO")
+    if (embeddedSeal.device_id !== KEYSCANNER_SONSEI_DEVICE_ID) {
+      const error = `Wrong device_id. Expected: 0x${KEYSCANNER_SONSEI_DEVICE_ID.toString(16).toUpperCase()} (KSSO), Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`;
       log.error(error);
-      return { valid: false, error: "This firmware is not for Keyscanner Sonshi.", embeddedSeal };
+      return { valid: false, error: "This firmware is not for Keyscanner Sonsei.", embeddedSeal };
     }
 
     // Validate SEAL CRC
@@ -89,15 +89,15 @@ export function validateSonshiKeyscannerSeal(binaryData: Uint8Array): SealValida
 }
 
 /**
- * Validates the SEAL of a Sonshi Neuron firmware from hex format (.hex format).
+ * Validates the SEAL of a Sonsei Neuron firmware from hex format (.hex format).
  * This function should be called BEFORE disconnecting the device or starting the flash process.
  * 
  * @param lines - Array of hex file lines (firmware data)
  * @returns SealValidationResult with validation status and error message if invalid
  */
-export function validateSonshiNeuronSeal(lines: string[]): SealValidationResult {
+export function validateSonseiNeuronSeal(lines: string[]): SealValidationResult {
   try {
-    log.info("Starting Sonshi firmware SEAL validation...");
+    log.info("Starting Sonsei firmware SEAL validation...");
 
     // Parse hex file to get binary data
     const dataObjects: HexType[] = [];
@@ -155,14 +155,14 @@ export function validateSonshiNeuronSeal(lines: string[]): SealValidationResult 
     if (embeddedSeal.bldr_seal_header_t.version !== 2) {
       const error = `Wrong SEAL version. Expected: 2, Got: ${embeddedSeal.bldr_seal_header_t.version}`;
       log.error(error);
-      return { valid: false, error: "Invalid SEAL version. Expected version 2 for Keyscanner Sonshi.", embeddedSeal };
+      return { valid: false, error: "Invalid SEAL version. Expected version 2 for Keyscanner Sonsei.", embeddedSeal };
     }
 
-    // Validate device_id for Keyscanner Sonshi (0x4F53534B = "KSSO")
-    if (embeddedSeal.device_id !== KEYSCANNER_SONSHI_DEVICE_ID) {
-      const error = `Wrong device_id. Expected: 0x${KEYSCANNER_SONSHI_DEVICE_ID.toString(16).toUpperCase()} (KSSO), Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`;
+    // Validate device_id for Keyscanner Sonsei (0x4F53534B = "KSSO")
+    if (embeddedSeal.device_id !== KEYSCANNER_SONSEI_DEVICE_ID) {
+      const error = `Wrong device_id. Expected: 0x${KEYSCANNER_SONSEI_DEVICE_ID.toString(16).toUpperCase()} (KSSO), Got: 0x${(embeddedSeal.device_id || 0).toString(16).toUpperCase()}`;
       log.error(error);
-      return { valid: false, error: "This firmware is not for Keyscanner Sonshi.", embeddedSeal };
+      return { valid: false, error: "This firmware is not for Keyscanner Sonsei.", embeddedSeal };
     }
 
     // Validate SEAL CRC

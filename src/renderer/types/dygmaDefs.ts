@@ -1,6 +1,6 @@
 export type DygmaDeviceInfoType = {
   vendor: "Dygma";
-  product: "Raise" | "Defy" | "Raise2" | "Sonshi";
+  product: "Raise" | "Defy" | "Raise2" | "Sonsei";
   keyboardType: string;
   displayName: string;
   urls: {

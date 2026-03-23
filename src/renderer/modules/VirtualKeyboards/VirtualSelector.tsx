@@ -24,7 +24,7 @@ import {
   DefyWireless,
   Raise2ANSI,
   Raise2ISO,
-  // SonshiWireless,
+  // SonseiWireless,
   enumerator,
 } from "../../../api/hardware-virtual";
 import Store from "../../utils/Store";
@@ -65,9 +65,9 @@ export default function VirtualSelector(props: VirtualSelectorProps) {
       ) {
         const { product, keyboardType } = hardwareDevice.info;
 
-        // if (product === "Sonshi") {
-        //   vk = { ...SonshiWireless };
-        //   fileName = "VirtualSonshi";
+        // if (product === "Sonsei") {
+        //   vk = { ...SonseiWireless };
+        //   fileName = "VirtualSonsei";
         // } else 
         if (product === "Defy" && keyboardType === "wired") {
           vk = { ...DefyWired };
@@ -311,7 +311,7 @@ export default function VirtualSelector(props: VirtualSelectorProps) {
                   className="mt-3"
                   onClick={() => {
                     let fileName = enumerator[selectedVirtualKeyboard].device.info.product as string;
-                    const usesProductOnly = ["Defy" /*, "Sonshi"*/].includes(fileName);
+                    const usesProductOnly = ["Defy" /*, "Sonsei"*/].includes(fileName);
                     fileName = usesProductOnly
                       ? `Virtual${fileName}`
                       : `Virtual${fileName}${enumerator[selectedVirtualKeyboard].device.info.keyboardType}`;

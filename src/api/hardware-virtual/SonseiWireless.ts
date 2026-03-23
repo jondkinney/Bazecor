@@ -1,18 +1,18 @@
 import { VirtualType } from "@Renderer/types/virtual";
 import DefyWireless from "./DefyWireless";
 
-const SonshiWireless: VirtualType = {
+const SonseiWireless: VirtualType = {
   ...DefyWireless,
   device: {
     ...DefyWireless.device,
     info: {
       ...DefyWireless.device.info,
-      product: "Sonshi",
-      displayName: "Dygma Sonshi",
+      product: "Sonsei",
+      displayName: "Dygma Sonsei",
       urls: [
         {
           name: "Homepage",
-          url: "https://www.dygma.com/sonshi/",
+          url: "https://www.dygma.com/sonsei/",
         },
       ],
     },
@@ -23,4 +23,4 @@ const SonshiWireless: VirtualType = {
   },
 };
 
-export default SonshiWireless;
+export default SonseiWireless;

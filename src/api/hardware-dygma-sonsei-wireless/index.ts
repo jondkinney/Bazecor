@@ -1,4 +1,4 @@
-/* bazecor-hardware-dygma-sonshi-wireless -- Bazecor support for Dygma Sonshi wireless
+/* bazecor-hardware-dygma-sonsei-wireless -- Bazecor support for Dygma Sonsei wireless
  * Copyright (C) 2019-2025 DygmaLab SE
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -16,10 +16,10 @@
 
 import log from "electron-log/renderer";
 import { DygmaDeviceType } from "@Renderer/types/dygmaDefs";
-import KeymapSONSHI from "./components/Keymap";
+import KeymapSONSEI from "./components/Keymap";
 import aFN from "../arrayFillNum";
 
-const sonshiKeyboard = {
+const sonseiKeyboard = {
   rows: 5,
   columns: 12,
   left: [aFN(0, 12), aFN(12, 24), aFN(24, 36), aFN(36, 48), aFN(48, 56)],
@@ -28,7 +28,7 @@ const sonshiKeyboard = {
   ledsRight: [] as number[],
 };
 
-const sonshiUnderglow = {
+const sonseiUnderglow = {
   rows: 0,
   columns: 0,
   ledsLeft: [] as number[],
@@ -37,16 +37,16 @@ const sonshiUnderglow = {
 
 const updateInstructions = `To update the firmware, the keyboard needs a special reset. When the countdown starts, press and hold the Escape key. Soon after the countdown finished, the Neuron's light should start a blue pulsing pattern, and the flashing will proceed. At this point, you should release the Escape key.`;
 
-const SonshiWireless: DygmaDeviceType = {
+const SonseiWireless: DygmaDeviceType = {
   info: {
     vendor: "Dygma",
-    product: "Sonshi",
+    product: "Sonsei",
     keyboardType: "wireless",
-    displayName: "Dygma Sonshi",
+    displayName: "Dygma Sonsei",
     urls: [
       {
         name: "Homepage",
-        url: "https://www.dygma.com/sonshi/",
+        url: "https://www.dygma.com/sonsei/",
       },
     ],
   },
@@ -54,12 +54,12 @@ const SonshiWireless: DygmaDeviceType = {
     vendorId: 0x35ef,
     productId: 0x0031,
   },
-  keyboard: sonshiKeyboard,
-  keyboardUnderglow: sonshiUnderglow,
+  keyboard: sonseiKeyboard,
+  keyboardUnderglow: sonseiUnderglow,
   RGBWMode: true,
   sides: 1,
   components: {
-    keymap: KeymapSONSHI,
+    keymap: KeymapSONSEI,
   },
   instructions: {
     en: {
@@ -79,16 +79,16 @@ const SonshiWireless: DygmaDeviceType = {
   isDeviceSupported: async () => true,
 };
 
-const SonshiWirelessBootloader: DygmaDeviceType = {
+const SonseiWirelessBootloader: DygmaDeviceType = {
   info: {
     vendor: "Dygma",
-    product: "Sonshi",
+    product: "Sonsei",
     keyboardType: "wireless",
-    displayName: "Dygma Sonshi (bootloader)",
+    displayName: "Dygma Sonsei (bootloader)",
     urls: [
       {
         name: "Homepage",
-        url: "https://www.dygma.com/sonshi/",
+        url: "https://www.dygma.com/sonsei/",
       },
     ],
   },
@@ -115,4 +115,4 @@ const SonshiWirelessBootloader: DygmaDeviceType = {
   },
 };
 
-export { SonshiWireless, SonshiWirelessBootloader };
+export { SonseiWireless, SonseiWirelessBootloader };
