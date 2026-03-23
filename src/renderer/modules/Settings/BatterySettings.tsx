@@ -43,7 +43,7 @@ padding-top: 24px;
 `;
 
 function BatterySettings(props: BatterySettingsProps) {
-  const { wireless } = props;
+  const { wireless, deviceType } = props;
   return (
     <Styles>
       <Card className="max-w-2xl mx-auto" variant="default">
@@ -61,6 +61,7 @@ function BatterySettings(props: BatterySettingsProps) {
               isSavingMode={wireless.battery ? wireless.battery.savingMode : false}
               batteryStatus={wireless.battery ? wireless.battery.LeftState : 0}
               size="lg"
+              deviceType={deviceType}
             />
             <BatteryStatusSide
               side="right"
@@ -68,8 +69,9 @@ function BatterySettings(props: BatterySettingsProps) {
               isSavingMode={wireless.battery ? wireless.battery.savingMode : false}
               batteryStatus={wireless.battery ? wireless.battery.RightState : 0}
               size="lg"
+              deviceType={deviceType}
             />
-            <SavingModeIndicator isSavingMode={wireless.battery ? wireless.battery.savingMode : false} />
+            <SavingModeIndicator isSavingMode={wireless.battery ? wireless.battery.savingMode : false} deviceType={deviceType} />
           </div>
         </CardContent>
       </Card>

@@ -794,7 +794,7 @@ const Preferences = (props: PreferencesProps) => {
                     <>
                       <TabsContent value="Battery">
                         <motion.div initial="hidden" animate="visible" variants={tabVariants}>
-                          <BatterySettings wireless={wireless} changeWireless={updateWireless} isCharging={false} />
+                          <BatterySettings wireless={wireless} changeWireless={updateWireless} isCharging={false} deviceType={state.currentDevice.device.info.product as string} />
                           <EnergyManagement wireless={wireless} changeWireless={updateWireless} updateTab={handleTabChange} />
                         </motion.div>
                       </TabsContent>
