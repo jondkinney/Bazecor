@@ -598,13 +598,13 @@ class KeymapSONSEI extends React.Component {
 
         <g transform="translate(68, 30) scale(2.75)">
 
-          <path 
+          <path
 
-            opacity="0.8" 
+            opacity="0.8"
 
-            d="M225.998 192H181.998C176.998 191.5 173.498 187.5 171.998 186C168.498 182.5 163.998 177 156.498 172.5C148.998 167 137.498 162.5 132 161.5L11 134.5C7.41038 133.847 3.99879 131 2.49879 128C1.74801 126.5 1.49932 124.716 1.5 123.5V12C1.49801 7.5 6.99639 1.5 11.9983 1.5H397.998C404.498 1.5 408.498 7.5 408.498 12.5V123C408.498 124.167 408.998 129 403.998 132.5C403.665 132.667 401.498 134 394.498 135.5L274.998 162.5L271.998 163.5C270.331 164.167 264.998 166 257.998 170C257.027 170.555 255.998 171 247.998 177C246.998 177.833 243.898 180.6 239.498 185C237.998 186.5 235.998 188.5 231.998 191C229.998 191.5 229.498 192 225.998 192Z" 
+            d="M225.998 192H181.998C176.998 191.5 173.498 187.5 171.998 186C168.498 182.5 163.998 177 156.498 172.5C148.998 167 137.498 162.5 132 161.5L11 134.5C7.41038 133.847 3.99879 131 2.49879 128C1.74801 126.5 1.49932 124.716 1.5 123.5V12C1.49801 7.5 6.99639 1.5 11.9983 1.5H397.998C404.498 1.5 408.498 7.5 408.498 12.5V123C408.498 124.167 408.998 129 403.998 132.5C403.665 132.667 401.498 134 394.498 135.5L274.998 162.5L271.998 163.5C270.331 164.167 264.998 166 257.998 170C257.027 170.555 255.998 171 247.998 177C246.998 177.833 243.898 180.6 239.498 185C237.998 186.5 235.998 188.5 231.998 191C229.998 191.5 229.498 192 225.998 192Z"
 
-            stroke="#3F425A" 
+            stroke="#3F425A"
 
             strokeWidth="3"
 
@@ -1628,7 +1628,7 @@ class KeymapSONSEI extends React.Component {
 
           <Key
 
-            keyType="sonsei-t1"
+            keyType="defy-t1"
 
             id="R4C0_keyshape"
 
@@ -1640,11 +1640,9 @@ class KeymapSONSEI extends React.Component {
 
             height={57}
 
-            x={310}
+            x={302}
 
-            y={349}
-
-            transform="scale(1) rotate(0)"
+            y={350}
 
             fill={getColor(4, 0)}
 
@@ -1672,7 +1670,7 @@ class KeymapSONSEI extends React.Component {
 
           <Key
 
-            keyType="sonsei-t2"
+            keyType="defy-t2"
 
             id="R4C1_keyshape"
 
@@ -1687,8 +1685,6 @@ class KeymapSONSEI extends React.Component {
             x={390}
 
             y={350}
-
-            transform="scale(1) rotate(0)"
 
             fill={getColor(4, 1)}
 
@@ -1716,9 +1712,7 @@ class KeymapSONSEI extends React.Component {
 
           <Key
 
-            keyType="sonsei-t3"
-
-            id="R4C2_keyshape"
+            keyType="defy-t3"
 
             onClick={onClick}
 
@@ -1731,8 +1725,6 @@ class KeymapSONSEI extends React.Component {
             x={449}
 
             y={351}
-
-            transform="scale(1) rotate(0)"
 
             fill={getColor(4, 2)}
 
@@ -1760,7 +1752,7 @@ class KeymapSONSEI extends React.Component {
 
           <Key
 
-            keyType="sonsei-t4"
+            keyType="defy-t4"
 
             id="R4C3_keyshape"
 
@@ -1775,8 +1767,6 @@ class KeymapSONSEI extends React.Component {
             x={497}
 
             y={373}
-
-            transform="scale(1) rotate(0)"
 
             fill={getColor(4, 3)}
 

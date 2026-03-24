@@ -446,6 +446,12 @@ select:focus {
     display: none;
   }
 }
+.battery-indicator--item.size--sm {
+  min-width: 40px;
+}
+.battery-item--container {
+  min-width: 50px;
+}
 .battery-indicator--item.size--sm.status--saving,
 .battery-indicator--item.size--sm.status--fault {
   @apply bg-orange-200/25 dark:bg-orange-200/15;
