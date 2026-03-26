@@ -199,7 +199,17 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
             {deviceProduct !== "Raise" ? (
               <>
                 {deviceSides !== 1 && <CircleLoader radius={13} percentage={rightProgress} active={stepsPosition === 1} />}
-                <CircleLoader radius={13} percentage={leftProgress} active={deviceSides === 1 ? stepsPosition === 1 : stepsPosition === 2} />
+                <CircleLoader
+                  radius={13}
+                  percentage={leftProgress}
+                  active={
+                    deviceProduct === "Sonsei"
+                      ? stepsPosition === 1
+                      : deviceSides === 1
+                        ? stepsPosition === 1
+                        : stepsPosition === 2
+                  }
+                />
               </>
             ) : (
               ""
@@ -209,8 +219,9 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
               percentage={resetProgress}
               active={
                 (deviceProduct === "Raise" && stepsPosition === 1) ||
-                (deviceProduct !== "Raise" && deviceSides === 1 && stepsPosition === 1) ||
-                (deviceProduct !== "Raise" && deviceSides !== 1 && stepsPosition === 3)
+                (deviceProduct === "Sonsei" && stepsPosition === 2) ||
+                (deviceProduct !== "Raise" && deviceProduct !== "Sonsei" && deviceSides === 1 && stepsPosition === 1) ||
+                (deviceProduct !== "Raise" && deviceProduct !== "Sonsei" && deviceSides !== 1 && stepsPosition === 3)
               }
             />
             <CircleLoader
@@ -218,8 +229,9 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
               percentage={neuronProgress}
               active={
                 (deviceProduct === "Raise" && stepsPosition === 2) ||
-                (deviceProduct !== "Raise" && deviceSides === 1 && stepsPosition === 2) ||
-                (deviceProduct !== "Raise" && deviceSides !== 1 && stepsPosition === 4)
+                (deviceProduct === "Sonsei" && stepsPosition === 3) ||
+                (deviceProduct !== "Raise" && deviceProduct !== "Sonsei" && deviceSides === 1 && stepsPosition === 2) ||
+                (deviceProduct !== "Raise" && deviceProduct !== "Sonsei" && deviceSides !== 1 && stepsPosition === 4)
               }
             />
             <CircleLoader
@@ -227,8 +239,9 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
               percentage={restoreProgress}
               active={
                 (deviceProduct === "Raise" && stepsPosition === 3) ||
-                (deviceProduct !== "Raise" && deviceSides === 1 && stepsPosition === 3) ||
-                (deviceProduct !== "Raise" && deviceSides !== 1 && stepsPosition === 5)
+                (deviceProduct === "Sonsei" && stepsPosition === 4) ||
+                (deviceProduct !== "Raise" && deviceProduct !== "Sonsei" && deviceSides === 1 && stepsPosition === 3) ||
+                (deviceProduct !== "Raise" && deviceProduct !== "Sonsei" && deviceSides !== 1 && stepsPosition === 5)
               }
             />
           </div>

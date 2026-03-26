@@ -192,15 +192,39 @@ const SonshiFlash = {
     // ERASE device - always erase from program_space_start (includes SEAL sector)
     const eraseAddress = info.program_space_start;
     log.info("Erasing from address:", `0x${eraseAddress.toString(16)}`);
-    if (erasePairings) {
-      ans = await rawCommand(`E${num2hexstr(eraseAddress, 8)}#`, serialPort, 60000);
-    } else {
-      ans = await rawCommand(
-        `E${num2hexstr(eraseAddress, 8)},${num2hexstr(0x00072000 - eraseAddress, 8)}#`,
-        serialPort,
-        60000,
-      );
+    
+    // Start simulated progress for erase operation
+    const ERASE_DURATION = 30000; // 30 seconds
+    const PROGRESS_INTERVAL = 300; // Update every 300ms
+    const totalSteps = ERASE_DURATION / PROGRESS_INTERVAL;
+    let currentStep = 0;
+    
+    // Create promise for erase operation
+    const erasePromise = erasePairings
+      ? rawCommand(`E${num2hexstr(eraseAddress, 8)}#`, serialPort, 60000)
+      : rawCommand(
+          `E${num2hexstr(eraseAddress, 8)},${num2hexstr(0x00072000 - eraseAddress, 8)}#`,
+          serialPort,
+          60000,
+        );
+    
+    // Start progress simulation (0% to 50% for erase)
+    const progressInterval = setInterval(() => {
+      currentStep += 1;
+      const progress = Math.min(49.5, (currentStep / totalSteps) * 50); // Cap at 49.5% until erase completes
+      stateUpdate("neuron", progress);
+    }, PROGRESS_INTERVAL);
+    
+    // Wait for erase to complete
+    try {
+      ans = await erasePromise;
+      clearInterval(progressInterval);
+      stateUpdate("neuron", 50); // Set to 50% when erase completes
+    } catch (error) {
+      clearInterval(progressInterval);
+      throw error;
     }
+    
     if (ans[0] !== 65) {
       log.info("answer to Erase command: ", String.fromCharCode.apply(null, ans));
       log.info(`RAW Command: ${`E${num2hexstr(eraseAddress, 8)}#`}`);
@@ -223,6 +247,8 @@ const SonshiFlash = {
     log.info("Reconnecting to bootloader...");
     serialPort = await serialConnection();
     log.info("Reconnected successfully");
+
+    // Progress continues from 50% for write phase (no reset)
 
     let state = 1;
     const stateT = totalSaved / 4096;
@@ -249,7 +275,8 @@ const SonshiFlash = {
     }
     
     log.info("Starting flashing procedure", total, total / 4096);
-    const adjustedStateT = total / 4096;
+    const totalInitial = total; // Save initial total for progress calculation
+    const adjustedStateT = totalInitial / 4096;
     state = 1;
     
     while (total > 0) {
@@ -291,8 +318,8 @@ const SonshiFlash = {
       // copy N bytes to memory location Y -> W function.
       ans = await rawCommand(`W${num2hexstr(address, 8)},${num2hexstr(bufferSize, 8)}#`, serialPort, 1000);
 
-      // Update External State
-      stateUpdate("neuron", (state / adjustedStateT) * 100);
+      // Update External State (50% to 100% for write phase)
+      stateUpdate("neuron", 50 + (state / adjustedStateT) * 50);
       state += 1;
       total -= bufferSize;
       address += bufferSize;
