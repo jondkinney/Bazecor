@@ -57,10 +57,7 @@ const createWindow = () => {
 
   Window.getInstance(); // init Windows manager
   Window.setWindow(mainWindow);
-  if (!app.isPackaged) {
-    // Open the DevTools if we are in development mode
-    mainWindow.webContents.openDevTools();
-  }
+  
 
   configureNativeTheme();
   configureRedirect();
@@ -69,6 +66,11 @@ const createWindow = () => {
   onClose();
   configureHID();
   configureUSB();
+
+  if (process.env.NODE_ENV === "development") {
+    // Open the DevTools if we are in development mode
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 export default createWindow;

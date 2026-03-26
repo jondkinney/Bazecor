@@ -23,11 +23,13 @@ import videoFirmwareUpdate from "@Assets/videos/update-firmware.mp4";
 import videoFirmwareUpdateReleaseKey from "@Assets/videos/release-key.mp4";
 import videoFirmwareUpdateDefySRC from "@Assets/videos/update-firmware-defy.mp4";
 import videoFirmwareUpdateDefyReleaseSRC from "@Assets/videos/release-key-defy.mp4";
+import SonseiKeyboard from "../../../static/icons/Sonsei-Keyboard.svg";
+import FlashingSonseiFrame from "../../../static/icons/FlashingSonseiFrame.svg";
 
 import FirmwareNeuronHelp from "@Renderer/modules/Firmware/FirmwareNeuronHelp";
 import FirmwareDefyUpdatingStatus from "@Renderer/modules/Firmware/FirmwareDefyUpdatingStatus";
 
-import { IconCheckmark } from "@Renderer/components/atoms/icons";
+import { IconCheckmark, IconRefresh } from "@Renderer/components/atoms/icons";
 import BadgeFirmware from "@Renderer/component/Badge/BadgeFirmware";
 
 const Style = Styled.div`
@@ -53,6 +55,7 @@ const Style = Styled.div`
   position: relative;
   canvas {
     max-width: 100%;
+    opacity: 0;
   }
   .status-icon {
     position: absolute;
@@ -64,6 +67,11 @@ const Style = Styled.div`
   &.processDefy .status-icon {
     top: 73px;
     left: 72px;
+  }
+  &.processSonsei {
+    position: relative;
+    width: 100%;
+    height: 100%;
   }
 }
 .process-raise,
@@ -80,9 +88,25 @@ const Style = Styled.div`
 }
 .process-sonsei,
 .process-Sonsei {
-  background-position: left bottom;
-  background-repeat: no-repeat;
-  background-image: url(${({ theme }) => theme.styles.firmwareUpdateProcess.sonseiFrameSVG});
+  background: none;
+}
+.sonseiLoadingIndicator {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  color: ${({ theme }) => theme.colors.gray25};
+  background-color: ${({ theme }) => theme.colors.purple300};
+  transform-origin: center;
+  animation: sonseiSpin 2s linear infinite;
+}
+@keyframes sonseiSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .animPressDown {
   animation: animaPressDown  0.3s forwards;
@@ -238,17 +262,35 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
             </div>
           </div>
         </div>
-        <div className={`process-col process-neuron ${countdown === 0 ? `process-${deviceProduct}` : ""}`}>
+        <div className={`process-col process-neuron ${countdown === 0 && deviceProduct !== "Sonsei" ? `process-${deviceProduct.toLowerCase()}` : ""}`} style={deviceProduct === "Sonsei" && countdown === 0 ? { overflow: "hidden" } : {}}>
           {countdown === 0 ? (
-            <div className={`processCanvas process${deviceProduct}`}>
-              <div className="status-icon">
-                <div className="blob green pulse-green" />
-              </div>
-              <canvas className="" width={340} height={259} />
+            <div className={`processCanvas ${deviceProduct !== "Sonsei" ? `process${deviceProduct}` : "processSonsei"}`}>
+              {deviceProduct !== "Sonsei" && (
+                <div className="status-icon">
+                  <div className="blob green pulse-green" />
+                </div>
+              )}
+              {deviceProduct === "Sonsei" ? (
+                <img src={SonseiKeyboard} alt="Sonsei Keyboard" style={{ position: "absolute", top: "26px", left: "40px", width: "510px", height: "auto", maxWidth: "none" }} />
+              ) : (
+                <canvas className="" width={340} height={259} />
+              )}
             </div>
           ) : (
-            <div className={`${deviceProduct === "Defy" || deviceProduct === "Sonsei" ? "updatingDefy" : ""} updatingRaise`}>
-              {deviceProduct === "Defy" || deviceProduct === "Sonsei" ? (
+            <div className={`${deviceProduct === "Defy" || deviceProduct === "Sonsei" ? "updatingDefy" : ""} updatingRaise`} style={deviceProduct === "Sonsei" ? { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" } : {}}>
+              {deviceProduct === "Sonsei" && (
+                <div style={{ position: "relative", width: "100%", height: "260px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <img 
+                    src={FlashingSonseiFrame} 
+                    alt="Sonsei Frame" 
+                    style={{ position: "absolute", top: "0px", left: "25px", width: "80%", height: "100%", objectFit: "contain" }}
+                  />
+                  <div className="sonseiLoadingIndicator" style={{ position: "absolute", top: "24%", left: "80%", marginTop: "-16px", marginLeft: "11px" }}>
+                    <IconRefresh />
+                  </div>
+                </div>
+              )}
+              {deviceProduct === "Defy" && (
                 <FirmwareDefyUpdatingStatus
                   countdown={countdown}
                   keyboardType={keyboardType}
@@ -258,7 +300,8 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
                   retriesNeuron={retriesNeuron}
                   deviceSides={deviceSides}
                 />
-              ) : (
+              )}
+              {deviceProduct !== "Defy" && deviceProduct !== "Sonsei" && (
                 <FirmwareNeuronHelp countdown={countdown} deviceProduct={deviceProduct} steps={steps} error={error} />
               )}
             </div>
