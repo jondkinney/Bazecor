@@ -184,6 +184,7 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
           retriesRight={retriesRight}
           retriesNeuron={retriesNeuron}
           retriesDefyWired={retriesDefyWired}
+          deviceSides={deviceSides}
         />
         <div className="process-row">
           <StepsProgressBar steps={steps} stepActive={stepsPosition} />
@@ -207,21 +208,27 @@ const FirmwareProgressStatus = (props: FirmwareProgressStatusType) => {
               radius={13}
               percentage={resetProgress}
               active={
-                !!((deviceProduct === "Raise" && stepsPosition === 1) || (deviceProduct !== "Raise" && stepsPosition === 3))
+                (deviceProduct === "Raise" && stepsPosition === 1) ||
+                (deviceProduct !== "Raise" && deviceSides === 1 && stepsPosition === 1) ||
+                (deviceProduct !== "Raise" && deviceSides !== 1 && stepsPosition === 3)
               }
             />
             <CircleLoader
               radius={13}
               percentage={neuronProgress}
               active={
-                !!((deviceProduct === "Raise" && stepsPosition === 2) || (deviceProduct !== "Raise" && stepsPosition === 4))
+                (deviceProduct === "Raise" && stepsPosition === 2) ||
+                (deviceProduct !== "Raise" && deviceSides === 1 && stepsPosition === 2) ||
+                (deviceProduct !== "Raise" && deviceSides !== 1 && stepsPosition === 4)
               }
             />
             <CircleLoader
               radius={13}
               percentage={restoreProgress}
               active={
-                !!((deviceProduct === "Raise" && stepsPosition === 3) || (deviceProduct !== "Raise" && stepsPosition === 5))
+                (deviceProduct === "Raise" && stepsPosition === 3) ||
+                (deviceProduct !== "Raise" && deviceSides === 1 && stepsPosition === 3) ||
+                (deviceProduct !== "Raise" && deviceSides !== 1 && stepsPosition === 5)
               }
             />
           </div>

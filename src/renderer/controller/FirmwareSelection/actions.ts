@@ -16,6 +16,7 @@ export const FocusAPIRead = async (context: Context.ContextType): Promise<Contex
     const { currentDevice } = context.deviceState;
     context.device.bootloader = currentDevice.device?.bootloader !== undefined ? currentDevice.device.bootloader : false;
     context.device.info = currentDevice.device.info;
+    context.device.sides = currentDevice.device?.sides || 2;
     if (context.device.bootloader) return context;
     log.info("CHECKING CONTEXT DEPENDENCIES: ", context.deviceState.currentDevice.device);
     const versionData = await currentDevice.noCacheCommand("version");
@@ -229,8 +230,8 @@ export const downloadFirmware = async (
           : (obtainLocalFWFiles(path.join(customFirmwareFolder, "firmware.hex")) as Array<string>);
     } else {
       if (info.keyboardType === "wireless" || productName === "Raise2") {
-        // For Sonshi, use .bin file; for others use .hex
-        const neuronFile = productName === "Sonshi" ? "Wireless_neuron.bin" : "Wireless_neuron.hex";
+        // For Sonsei, use .bin file; for others use .hex
+        const neuronFile = productName === "Sonsei" ? "Wireless_neuron.bin" : "Wireless_neuron.hex";
         filename =
           typeSelected === "default"
             ? ((await obtainFWFiles(

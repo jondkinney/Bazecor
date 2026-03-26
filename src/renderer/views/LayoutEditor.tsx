@@ -1790,6 +1790,7 @@ const LayoutEditor = (props: LayoutEditorProps) => {
           selectedColorIndex={palette.length - 1}
           keyboardSide="BOTH"
           fillWithNoKey={false}
+          deviceSides={state.currentDevice.device?.sides || 2}
         />
 
         <CopyFromDialog

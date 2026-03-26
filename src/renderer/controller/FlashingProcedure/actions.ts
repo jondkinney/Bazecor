@@ -51,7 +51,7 @@ const stateUpdate = (stage: string, percentage: number, context: Context.Context
       leftProgress * 0.2 + rightProgress * 0.2 + resetProgress * 0.2 + neuronProgress * 0.2 + restoreProgress * 0.2;
   }
   context.stateUpdate({
-    type: "increment_event",
+    type: "increment-event",
     data: {
       globalProgress,
       leftProgress,

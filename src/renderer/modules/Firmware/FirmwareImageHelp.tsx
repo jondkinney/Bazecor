@@ -78,6 +78,12 @@ const Style = Styled.div`
   background-repeat: no-repeat;
   background-image: url(${({ theme }) => theme.styles.firmwareUpdateProcess.defySVG});
 }
+.process-sonsei,
+.process-Sonsei {
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  background-image: url(${({ theme }) => theme.styles.firmwareUpdateProcess.sonseiFrameSVG});
+}
 .animPressDown {
   animation: animaPressDown  0.3s forwards;
   animation-timing-function: cubic-bezier(0.75, -1.27, 0.3, 2.33);
@@ -107,6 +113,7 @@ interface FirmwareImageHelpProps {
   retriesRight: number | undefined;
   retriesDefyWired: number | undefined;
   retriesNeuron: number | undefined;
+  deviceSides?: number;
 }
 
 const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
@@ -119,6 +126,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
   retriesRight,
   retriesDefyWired,
   retriesNeuron,
+  deviceSides,
 }) => {
   const videoIntro = useRef<HTMLVideoElement | null>(null);
   const videoIntroDefy = useRef<HTMLVideoElement | null>(null);
@@ -248,6 +256,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
                   retriesRight={retriesRight}
                   retriesDefyWired={retriesDefyWired}
                   retriesNeuron={retriesNeuron}
+                  deviceSides={deviceSides}
                 />
               ) : (
                 <FirmwareNeuronHelp countdown={countdown} deviceProduct={deviceProduct} steps={steps} error={error} />

@@ -15,15 +15,16 @@ interface CheckedItem {
 }
 interface AccordionFirmwareProps {
   items: CheckedItem[];
+  deviceSides?: number;
 }
 
-const AccordionFirmware = ({ items }: AccordionFirmwareProps) => {
+const AccordionFirmware = ({ items, deviceSides = 2 }: AccordionFirmwareProps) => {
   const [passedTasks, SetPassedTasks] = useState(true);
   const [counterTasks, SetCounterTasks] = useState(0);
 
   const textMap: Record<string, string> = {
-    sideLeftOk: i18n.firmwareUpdate.milestones.checkLeftSide,
-    sideLeftBL: i18n.firmwareUpdate.milestones.checkLeftSideBL,
+    sideLeftOk: deviceSides === 1 ? i18n.firmwareUpdate.milestones.checkConnectivity : i18n.firmwareUpdate.milestones.checkLeftSide,
+    sideLeftBL: deviceSides === 1 ? i18n.firmwareUpdate.milestones.checkBootloaderStatus : i18n.firmwareUpdate.milestones.checkLeftSideBL,
     sideRightOK: i18n.firmwareUpdate.milestones.checkRightSide,
     sideRightBL: i18n.firmwareUpdate.milestones.checkRightSideBL,
     backup: i18n.firmwareUpdate.milestones.checkBackup,

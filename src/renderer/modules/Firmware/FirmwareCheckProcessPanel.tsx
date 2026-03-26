@@ -190,10 +190,10 @@ function FirmwareCheckProcessPanel(props: FirmwareCheckProcessPanelType) {
 
   useEffect(() => {
     const hasTwoSides = context.device.sides === 2;
-    const checkItems = hasTwoSides 
+    const checkItems = hasTwoSides
       ? ["sideLeftOk", "sideLeftBL", "sideRightOK", "sideRightBL", "backup"]
       : ["sideLeftOk", "sideLeftBL", "backup"];
-    
+
     const newValue: ListItems[] = checkItems.map(
       (text: "sideLeftOk" | "sideLeftBL" | "sideRightOK" | "sideRightBL" | "backup", index) => {
         let checked = false;
@@ -253,7 +253,11 @@ function FirmwareCheckProcessPanel(props: FirmwareCheckProcessPanelType) {
                       rightSideOK={state.context.sideRightOK}
                       leftSideBL={state.context.sideLeftBL}
                     />
-                    {state.context.device.info.product !== "Raise" ? <AccordionFirmware items={listItems} /> : ""}
+                    {state.context.device.info.product !== "Raise" ? (
+                      <AccordionFirmware items={listItems} deviceSides={state.context.device.sides} />
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
                 <div className="firmware-sidebar borderRightTopRadius">
