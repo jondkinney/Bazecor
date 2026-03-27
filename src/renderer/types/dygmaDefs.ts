@@ -30,6 +30,7 @@ export type DygmaDeviceType = {
     ledsRight: number[];
   };
   RGBWMode?: boolean;
+  hasRF?: boolean;
   components?: {
     keymap: unknown;
   };

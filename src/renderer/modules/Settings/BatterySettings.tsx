@@ -40,16 +40,52 @@ padding-top: 24px;
   position: relative;
   max-width: 202px;
 }
+.battery-sonsei--container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+}
 `;
 
 function BatterySettings(props: BatterySettingsProps) {
   const { wireless, deviceType } = props;
   const isSonsei = deviceType?.toLowerCase().includes("sonsei");
-  
+
   if (isSonsei) {
-    return null;
+    return (
+      <Styles>
+        <Card className="max-w-2xl mx-auto" variant="default">
+          <CardHeader>
+            <CardTitle variant="default">
+              <IconBattery /> {i18n.wireless.batteryPreferences.battery}
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="py-0">
+            <div className="battery-sonsei--container">
+              <div className="relative">
+                <BatteryStatusSide
+                  side="left"
+                  batteryLevel={wireless.battery ? wireless.battery.LeftLevel : 100}
+                  isSavingMode={wireless.battery ? wireless.battery.savingMode : false}
+                  batteryStatus={wireless.battery ? wireless.battery.LeftState : 0}
+                  size="lg"
+                  deviceType={deviceType}
+                />
+                <SavingModeIndicator
+                  isSavingMode={wireless.battery ? wireless.battery.savingMode : false}
+                  deviceType={deviceType}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Styles>
+    );
   }
-  
+
   return (
     <Styles>
       <Card className="max-w-2xl mx-auto" variant="default">

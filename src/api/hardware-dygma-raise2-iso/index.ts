@@ -58,6 +58,7 @@ const Raise2ISO: DygmaDeviceType = {
     ledsRight: [...aFN(122, 176)],
   },
   RGBWMode: true,
+  hasRF: true,
   bootloader: false,
   wireless: true,
   sides: 2,

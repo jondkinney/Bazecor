@@ -57,6 +57,7 @@ const SonseiWireless: DygmaDeviceType = {
   keyboard: sonseiKeyboard,
   keyboardUnderglow: sonseiUnderglow,
   RGBWMode: true,
+  hasRF: false,
   sides: 1,
   components: {
     keymap: KeymapSONSEI,

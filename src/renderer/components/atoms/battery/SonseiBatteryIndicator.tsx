@@ -34,18 +34,18 @@ const SonseiBatteryIndicator = ({ batteryLevel, batteryStatus }: SonseiBatteryIn
         if (batteryLevel > 0 && batteryLevel < 5) {
           setBatteryHeight(5);
         } else {
-          setBatteryHeight((164 * batteryLevel) / 100);
+          setBatteryHeight((185 * batteryLevel) / 100);
         }
         break;
       case 1:
         if (batteryLevel > 0 && batteryLevel < 5) {
           setBatteryHeight(5);
         } else {
-          setBatteryHeight((164 * batteryLevel) / 100);
+          setBatteryHeight((185 * batteryLevel) / 100);
         }
         break;
       case 2:
-        setBatteryHeight(164);
+        setBatteryHeight(185);
         break;
       case 3:
         setBatteryHeight(0);

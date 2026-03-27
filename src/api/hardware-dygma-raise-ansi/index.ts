@@ -34,6 +34,7 @@ const RaiseANSI: DygmaDeviceType = {
     ],
   },
   RGBWMode: false,
+  hasRF: false,
   usb: {
     vendorId: 0x1209,
     productId: 0x2201,

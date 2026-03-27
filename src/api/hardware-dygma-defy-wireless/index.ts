@@ -52,6 +52,7 @@ const DefyWireless: DygmaDeviceType = {
     ledsRight: [...aFN(124, 178)],
   },
   RGBWMode: true,
+  hasRF: true,
   sides: 2,
   components: {
     keymap: KeymapDEFY,
