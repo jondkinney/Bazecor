@@ -227,7 +227,9 @@ function FirmwareCheckProcessPanel(props: FirmwareCheckProcessPanelType) {
                       variant={!state.context.sideLeftOk || !state.context.sideRightOK ? "warning" : "default"}
                     >
                       {!state.context.sideLeftOk || !state.context.sideRightOK
-                        ? i18n.firmwareUpdate.texts.errorTitle
+                        ? state.context.device.info.product === "Sonsei"
+                          ? "Please Contact Customer Support"
+                          : i18n.firmwareUpdate.texts.errorTitle
                         : i18n.firmwareUpdate.texts.disclaimerTitle}
                     </Heading>
                     {state.context.sideLeftOk && state.context.sideRightOK ? (
@@ -252,8 +254,13 @@ function FirmwareCheckProcessPanel(props: FirmwareCheckProcessPanelType) {
                       leftSideOK={state.context.sideLeftOk}
                       rightSideOK={state.context.sideRightOK}
                       leftSideBL={state.context.sideLeftBL}
+                      deviceProduct={state.context.device.info.product}
                     />
-                    {state.context.device.info.product !== "Raise" ? (
+                    {state.context.device.info.product !== "Raise" &&
+                    !(
+                      state.context.device.info.product === "Sonsei" &&
+                      (!state.context.sideLeftOk || !state.context.sideRightOK)
+                    ) ? (
                       <AccordionFirmware items={listItems} deviceSides={state.context.device.sides} />
                     ) : (
                       ""
