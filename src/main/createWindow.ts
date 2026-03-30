@@ -49,6 +49,11 @@ const createWindow = () => {
     removeHIDListeners();
   });
 
+  mainWindow.webContents.on("did-finish-load", () => {
+    // Open the DevTools when the content is fully loaded
+    mainWindow.webContents.openDevTools();
+  });
+
   configureIPCs();
   mainWindowState.manage(mainWindow);
 
@@ -66,11 +71,6 @@ const createWindow = () => {
   onClose();
   configureHID();
   configureUSB();
-
-  if (process.env.NODE_ENV === "development") {
-    // Open the DevTools if we are in development mode
-    mainWindow.webContents.openDevTools();
-  }
 };
 
 export default createWindow;

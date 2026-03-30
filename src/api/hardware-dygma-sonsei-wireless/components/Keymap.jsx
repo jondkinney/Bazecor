@@ -596,7 +596,7 @@ class KeymapSONSEI extends React.Component {
 
         {/* Sonsei Frame */}
 
-        <g transform="translate(68, 30) scale(2.75)">
+        <g transform="translate(119, 30) scale(2.50)">
 
           <path
 
@@ -1628,7 +1628,7 @@ class KeymapSONSEI extends React.Component {
 
           <Key
 
-            keyType="defy-t1"
+            keyType="sonsei-t1"
 
             id="R4C0_keyshape"
 
@@ -1636,13 +1636,15 @@ class KeymapSONSEI extends React.Component {
 
             className="key"
 
-            width={82}
+            width={57}
 
             height={57}
 
-            x={302}
+            x={327}
 
-            y={350}
+            y={347}
+
+            rotation={0}
 
             fill={getColor(4, 0)}
 
@@ -2978,13 +2980,15 @@ class KeymapSONSEI extends React.Component {
 
             className="key"
 
-            width={65}
+            width={57}
 
             height={57}
 
             x={886}
 
             y={349}
+
+            rotation={0}
 
             fill={getColor(4, 11)}
 
