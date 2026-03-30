@@ -228,7 +228,7 @@ function FirmwareCheckProcessPanel(props: FirmwareCheckProcessPanelType) {
                     >
                       {!state.context.sideLeftOk || !state.context.sideRightOK
                         ? state.context.device.info.product === "Sonsei"
-                          ? "Please Contact Customer Support"
+                          ? "Contact Customer Support"
                           : i18n.firmwareUpdate.texts.errorTitle
                         : i18n.firmwareUpdate.texts.disclaimerTitle}
                     </Heading>
