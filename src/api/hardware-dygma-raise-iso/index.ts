@@ -33,6 +33,7 @@ const RaiseISO: DygmaDeviceType = {
       },
     ],
   },
+  RGBWMode: false,
   hasRF: false,
   usb: {
     vendorId: 0x1209,

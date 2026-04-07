@@ -64,7 +64,8 @@ const Style = Styled.div`
     top: 62px;
     left: 85px;
   }
-  &.processDefy .status-icon {
+  &.processDefy .status-icon,
+  &.processRaise2 .status-icon {
     top: 73px;
     left: 72px;
   }
@@ -84,6 +85,13 @@ const Style = Styled.div`
 .process-Defy {
   background-position: left bottom;
   background-repeat: no-repeat;
+  background-image: url(${({ theme }) => theme.styles.firmwareUpdateProcess.defySVG});
+}
+.process-raise2,
+.process-Raise2 {
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
   background-image: url(${({ theme }) => theme.styles.firmwareUpdateProcess.defySVG});
 }
 .process-sonsei,
@@ -280,9 +288,9 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
             <div className={`${deviceProduct === "Defy" || deviceProduct === "Sonsei" ? "updatingDefy" : ""} updatingRaise`} style={deviceProduct === "Sonsei" ? { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" } : {}}>
               {deviceProduct === "Sonsei" && (
                 <div style={{ position: "relative", width: "100%", height: "260px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <img 
-                    src={FlashingSonseiFrame} 
-                    alt="Sonsei Frame" 
+                  <img
+                    src={FlashingSonseiFrame}
+                    alt="Sonsei Frame"
                     style={{ position: "absolute", top: "0px", left: "25px", width: "80%", height: "100%", objectFit: "contain" }}
                   />
                   <div className="sonseiLoadingIndicator" style={{ position: "absolute", top: "24%", left: "80%", marginTop: "-16px", marginLeft: "11px" }}>
