@@ -31,7 +31,7 @@ const RaiseANSI: VirtualType = {
       rows: 6,
       columns: 22,
       ledsLeft: [...aFN(69, 99)],
-      ledsRight: [...aFN(99, 131)],
+      ledsRight: [...aFN(99, 132)],
     },
     RGBWMode: false,
     bootloader: false,

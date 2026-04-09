@@ -532,14 +532,25 @@ const LayoutEditor = (props: LayoutEditorProps) => {
 
   const getColormap = useCallback(async (): Promise<ColormapType> => {
     const { currentDevice } = state;
-    const layerSize = currentDevice.device.keyboardUnderglow.rows * currentDevice.device.keyboardUnderglow.columns;
+    // Calculate total LEDs: keyboard LEDs + underglow LEDs
+    const keyboardLEDs = currentDevice.device.keyboard.ledsLeft.length + currentDevice.device.keyboard.ledsRight.length;
+
+    // For underglow, prefer using ledsLeft/ledsRight arrays if available and not empty, otherwise fall back to rows * columns
+    let underglowLEDs = 0;
+    if (currentDevice.device.keyboardUnderglow.ledsLeft?.length > 0 || currentDevice.device.keyboardUnderglow.ledsRight?.length > 0) {
+      underglowLEDs = (currentDevice.device.keyboardUnderglow.ledsLeft?.length || 0) + (currentDevice.device.keyboardUnderglow.ledsRight?.length || 0);
+    } else {
+      underglowLEDs = currentDevice.device.keyboardUnderglow.rows * currentDevice.device.keyboardUnderglow.columns;
+    }
+
+    const layerSize = keyboardLEDs + underglowLEDs;
     const paletteData = (await currentDevice?.command("palette")) as string;
     const colorMapData = (await currentDevice?.command("colormap.map")) as string;
 
     const plette = parsePaletteRaw(paletteData, currentDevice?.device.RGBWMode);
     log.info("PARSED PALETTE: ", paletteData, plette, currentDevice?.device.RGBWMode);
     const colMap = parseColormapRaw(colorMapData, layerSize);
-    log.info("PARSED COLORMAP: ", colorMapData, layerSize);
+    log.info("PARSED COLORMAP: ", colorMapData, layerSize, "keyboardLEDs:", keyboardLEDs, "underglowLEDs:", underglowLEDs);
 
     return {
       palette: plette,

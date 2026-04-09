@@ -51,7 +51,7 @@ const RaiseANSI: DygmaDeviceType = {
     rows: 6,
     columns: 22,
     ledsLeft: [...aFN(69, 99)],
-    ledsRight: [...aFN(99, 131)],
+    ledsRight: [...aFN(99, 132)],
   },
   components: {
     keymap: KeymapANSI,
