@@ -81,7 +81,7 @@ height: 100%;
 .image-neuron-defy {
   width: 90%;
   height: auto;
-  max-width: 190px;
+  max-width: 175px;
 }
 .neuronIcon {
   position: absolute;

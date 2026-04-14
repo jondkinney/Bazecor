@@ -65,7 +65,7 @@ const BatteryStatusSide: React.FC<BatteryStatusSideProps> = ({ side, batteryLeve
   return (
     <div>
       <div
-        className={`battery-indicator--item size--${size} ${size === "sm" ? "p-1 rounded-sm bg-gray-50 dark:bg-gray-800" : ""} item--${side} ${sideStatus} ${batteryStatus === 1 ? "origin-center animate-pulse" : ""} ${isSavingMode && "status--saving"}`}
+        className={`battery-indicator--item size--${size} ${size === "sm" ? "p-1 rounded-sm bg-gray-50 dark:bg-gray-800" : ""} item--${side} ${sideStatus} ${batteryStatus === 1 && !isSonsei ? "origin-center animate-pulse" : ""} ${isSavingMode && "status--saving"}`}
       >
         <div className={`battery-item--container flex gap-2 items-center ${size === "sm" && isSonsei ? "justify-center" : ""}`} style={{ color: "var(--color-status)" }}>
           {size === "sm" && !isSonsei ? (

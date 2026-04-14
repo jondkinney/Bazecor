@@ -17,6 +17,7 @@
 import React, { useState, useEffect } from "react";
 
 import SonseiBatteryIndicatorLeft from "@Renderer/components/atoms/battery/SonseiBatteryIndicatorLeft";
+import { IconThunder } from "@Renderer/components/atoms/icons";
 
 import { i18n } from "@Renderer/i18n";
 
@@ -64,8 +65,13 @@ const SonseiBatteryIndicator = ({ batteryLevel, batteryStatus }: SonseiBatteryIn
         <div className="batterySide relative">
           <SonseiBatteryIndicatorLeft batteryStatus={batteryStatus} batteryHeight={batteryHeight} />
           {batteryStatus === 0 || batteryStatus === 1 || batteryStatus === 2 ? (
-            <div className="batterySide--percentage absolute top-1/2 left-1/2 w-full font-bold tracking-tight text-center text-xl transform-style-3d translate-x-[-50%] translate-y-[-50%] text-[#ffffff] dark:text-gray-25">
-              {batteryLevel}%
+            <div className="batterySide--percentage absolute top-1/2 left-1/2 w-full font-bold tracking-tight text-center text-xl transform-style-3d translate-x-[-50%] translate-y-[-50%] text-[#ffffff] dark:text-gray-25 flex items-center justify-center gap-2">
+              {(batteryStatus === 1 || batteryStatus === 2) && (
+                <span className="flex items-center justify-center">
+                  <IconThunder />
+                </span>
+              )}
+              <span>{batteryLevel}%</span>
             </div>
           ) : (
             ""

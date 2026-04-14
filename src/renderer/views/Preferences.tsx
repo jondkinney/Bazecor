@@ -724,7 +724,7 @@ const Preferences = (props: PreferencesProps) => {
                     Device settings
                   </h4>
                   <TabsTrigger value="Keyboard" variant="tab">
-                    <IconKeyboard /> Typing and Keys
+                    <IconKeyboard /> Keys and Layers
                   </TabsTrigger>
                   <TabsTrigger value="LED" variant="tab">
                     <IconFlashlight /> LED
@@ -732,7 +732,7 @@ const Preferences = (props: PreferencesProps) => {
                   {(state.currentDevice.device.info.keyboardType === "wireless" || state.currentDevice.device.wireless) && (
                     <>
                       <TabsTrigger value="Battery" variant="tab">
-                        <IconBattery /> Battery Management
+                        <IconBattery /> Battery
                       </TabsTrigger>
                       {/* <TabsTrigger value="Bluetooth" variant="tab">
                         <IconBluetooth /> Bluetooth Settings
@@ -744,9 +744,6 @@ const Preferences = (props: PreferencesProps) => {
                       )}
                     </>
                   )}
-                  <TabsTrigger value="Advanced" variant="tab">
-                    <IconWrench /> Advanced
-                  </TabsTrigger>
                 </>
               ) : null}
               <h4
@@ -776,6 +773,19 @@ const Preferences = (props: PreferencesProps) => {
                   <TabsContent value="Keyboard" className="w-full">
                     <motion.div initial="hidden" animate="visible" variants={tabVariants}>
                       <KeyboardSettings kbData={kbData} setKbData={updateKBData} connected={connected} />
+                      <AdvancedSettings
+                        connected={connected}
+                        defaultLayer={defaultLayer}
+                        selectDefaultLayer={selectDefaultLayer}
+                        keyboardType={state.currentDevice.device.info.product as string}
+                        neurons={neurons}
+                        neuronID={neuronID}
+                        selectedNeuron={selectedNeuron}
+                        updateTab={handleTabChange}
+                        onlyCustomLayers={kbData.keymap.onlyCustom.toString()}
+                        onChangeOnlyCustomLayers={onChangeOnlyCustomLayers}
+                        toggleBackup={toggleBackup}
+                      />
                     </motion.div>
                   </TabsContent>
                   <TabsContent value="LED">
@@ -818,23 +828,6 @@ const Preferences = (props: PreferencesProps) => {
                       )}
                     </>
                   )}
-                  <TabsContent value="Advanced">
-                    <motion.div initial="hidden" animate="visible" variants={tabVariants}>
-                      <AdvancedSettings
-                        connected={connected}
-                        defaultLayer={defaultLayer}
-                        selectDefaultLayer={selectDefaultLayer}
-                        keyboardType={state.currentDevice.device.info.product as string}
-                        neurons={neurons}
-                        neuronID={neuronID}
-                        selectedNeuron={selectedNeuron}
-                        updateTab={handleTabChange}
-                        onlyCustomLayers={kbData.keymap.onlyCustom.toString()}
-                        onChangeOnlyCustomLayers={onChangeOnlyCustomLayers}
-                        toggleBackup={toggleBackup}
-                      />
-                    </motion.div>
-                  </TabsContent>
                 </>
               ) : null}
               <TabsContent value="Application">

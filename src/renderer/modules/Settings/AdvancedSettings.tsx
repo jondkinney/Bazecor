@@ -115,7 +115,7 @@ const AdvancedSettings = ({
 
   return (
     <>
-      <Card className="max-w-2xl mx-auto" variant="default">
+      <Card className="mt-3 max-w-2xl mx-auto" variant="default">
         <CardHeader>
           <CardTitle variant="default">
             <IconLayers /> Layers

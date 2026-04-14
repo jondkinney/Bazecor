@@ -345,7 +345,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
         <Card className="max-w-2xl mx-auto" variant="default">
           <CardHeader>
             <CardTitle>
-              <IconTypo /> {i18n.keyboardSettings.superkeys.title}
+              <IconTypo /> {sk20 ? "Superkeys" : i18n.keyboardSettings.superkeys.title}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -356,7 +356,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                     <div className="w-full">
                       <Heading headingLevel={3} renderAs="paragraph-sm" className="flex items-center gap-2">
                         {sk20
-                          ? i18n.keyboardSettings.superkeys.holdstart
+                          ? i18n.keyboardSettings.superkeys.holdstart.replace("Superkeys - ", "")
                           : labelWithFastSuper(i18n.keyboardSettings.qukeys.holdTimeout)}
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
@@ -397,7 +397,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                   <div className="w-full flex gap-2">
                     <div className="w-full">
                       <Heading headingLevel={3} renderAs="paragraph-sm" className="flex items-center gap-2">
-                        {labelWithFastSuper(i18n.keyboardSettings.qukeys.overlapThreshold)}
+                        {sk20 ? labelWithFastSuper(i18n.keyboardSettings.qukeys.overlapThreshold).replace("Superkeys - ", "").trim() : labelWithFastSuper(i18n.keyboardSettings.qukeys.overlapThreshold)}
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger className="[&_svg]:text-purple-100 [&_svg]:dark:text-purple-200">
@@ -439,7 +439,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                   <div className="w-full flex gap-2">
                     <div className="w-full">
                       <Heading headingLevel={3} renderAs="paragraph-sm" className="flex items-center gap-2">
-                        {labelWithFastSuper(i18n.keyboardSettings.qukeys.minHold)}
+                        {sk20 ? labelWithFastSuper(i18n.keyboardSettings.qukeys.minHold).replace("Superkeys - ", "").trim() : labelWithFastSuper(i18n.keyboardSettings.qukeys.minHold)}
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger className="[&_svg]:text-purple-100 [&_svg]:dark:text-purple-200">
@@ -480,7 +480,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                   <div className="w-full flex gap-2">
                     <div className="w-full">
                       <Heading headingLevel={3} renderAs="paragraph-sm" className="flex items-center gap-2">
-                        {labelWithFastSuper(i18n.keyboardSettings.qukeys.minPrior)}
+                        {sk20 ? labelWithFastSuper(i18n.keyboardSettings.qukeys.minPrior).replace("Superkeys - ", "").trim() : labelWithFastSuper(i18n.keyboardSettings.qukeys.minPrior)}
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger className="[&_svg]:text-purple-100 [&_svg]:dark:text-purple-200">
@@ -599,7 +599,7 @@ function KeyboardSettings(props: KeyboardSettingsProps) {
                   <div className="w-full flex gap-2">
                     <div className="w-full">
                       <Heading headingLevel={3} renderAs="paragraph-sm" className="flex items-center gap-2">
-                        {i18n.keyboardSettings.superkeys.timeout}
+                        {sk20 ? i18n.keyboardSettings.superkeys.timeout.replace("Superkeys - ", "") : i18n.keyboardSettings.superkeys.timeout}
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger className="[&_svg]:text-purple-100 [&_svg]:dark:text-purple-200">
