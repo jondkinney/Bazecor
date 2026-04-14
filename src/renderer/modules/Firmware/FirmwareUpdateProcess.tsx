@@ -297,11 +297,11 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
       title: i18n.firmwareUpdate.texts.progressCardStatusDefy4,
       description: i18n.firmwareUpdate.texts.progressCardBarDefy4,
     },
-    {
-      step: 6,
-      title: i18n.firmwareUpdate.texts.progressCardStatusDefy5,
-      description: i18n.firmwareUpdate.texts.progressCardBarDefy5,
-    },
+    // {
+    //   step: 6,
+    //   title: i18n.firmwareUpdate.texts.progressCardStatusDefy5,
+    //   description: i18n.firmwareUpdate.texts.progressCardBarDefy5,
+    // },
     {
       step: 7,
       title: i18n.firmwareUpdate.texts.progressCardStatusDefy6,
@@ -331,11 +331,11 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
       title: i18n.firmwareUpdate.texts.progressCardStatusDefy4,
       description: i18n.firmwareUpdate.texts.progressCardBarDefy4,
     },
-    {
-      step: 6,
-      title: i18n.firmwareUpdate.texts.progressCardStatusDefy5,
-      description: i18n.firmwareUpdate.texts.progressCardBarDefy5,
-    },
+    // {
+    //   step: 6,
+    //   title: i18n.firmwareUpdate.texts.progressCardStatusDefy5,
+    //   description: i18n.firmwareUpdate.texts.progressCardBarDefy5,
+    // },
     {
       step: 7,
       title: i18n.firmwareUpdate.texts.progressCardStatusDefy6,
@@ -364,11 +364,6 @@ function FirmwareUpdateProcess(props: FirmwareUpdateProcessProps) {
       step: 5,
       title: i18n.firmwareUpdate.texts.progressCardStatusSonsei3,
       description: i18n.firmwareUpdate.texts.progressCardBarSonsei3,
-    },
-    {
-      step: 6,
-      title: i18n.firmwareUpdate.texts.progressCardStatusSonsei4,
-      description: i18n.firmwareUpdate.texts.progressCardBarSonsei4,
     },
     {
       step: 7,
