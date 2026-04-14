@@ -22,6 +22,7 @@ import { crc32 } from "easy-crc";
 import log from "electron-log/renderer";
 import { num2hexstr } from "../num2hexstr";
 import { serialConnection, rawCommand, noWaitCommand } from "../serialConnection";
+import { delay } from "../../../main/utils/delay";
 import { InfoType, SealType, HexType } from "../types";
 import ihexDecode from "../ihexDecode";
 import SealWithCRC from "../sealWithCRC";
@@ -61,7 +62,6 @@ const SonshiFlash = {
     const dataObjects: HexType[] = [];
     let total = 0;
     let mergedArray: Uint8Array;
-    let totalSaved: number;
     let hexCount = 0;
     let address: number;
     let isBinaryInput = false;
@@ -71,12 +71,11 @@ const SonshiFlash = {
       // Binary input (.bin file) - skip first 4KB sector (SEAL) and split application into chunks
       log.info("Processing binary firmware file (.bin)");
       mergedArray = lines;
-      totalSaved = mergedArray.length;
-      
+
       // Parse SEAL to get program_start address (the actual flash address for the application)
       const sealForAddress = parseSealFromBinary(mergedArray.slice(0, 32));
       const baseAddress = sealForAddress.program_start;
-      
+
       // The first FIRST_SECTOR_SIZE bytes contain the SEAL sector - skip it
       // Only flash the application data starting after the SEAL sector
       const appData = mergedArray.slice(FIRST_SECTOR_SIZE);
@@ -137,7 +136,6 @@ const SonshiFlash = {
         offset += item.length;
       });
 
-      totalSaved = total;
       address = dataObjects[0].address;
     }
 
@@ -145,7 +143,7 @@ const SonshiFlash = {
     // Here we only parse the SEAL to extract values needed for the flash process.
     const embeddedSeal = parseSealFromBinary(mergedArray.slice(0, 32));
     log.info("Neuron firmware SEAL:", embeddedSeal);
-    
+
     const programDataSize = embeddedSeal.program_size;
     const programData = mergedArray.slice(FIRST_SECTOR_SIZE, FIRST_SECTOR_SIZE + programDataSize);
     const calculatedProgramCrc = crc32("CRC-32", new Buffer(programData));
@@ -189,76 +187,12 @@ const SonshiFlash = {
       throw Error("error when sending SEAL data");
     }
 
-    // ERASE device - always erase from program_space_start (includes SEAL sector)
-    const eraseAddress = info.program_space_start;
-    log.info("Erasing from address:", `0x${eraseAddress.toString(16)}`);
-    
-    // Start simulated progress for erase operation
-    const ERASE_DURATION = 30000; // 30 seconds
-    const PROGRESS_INTERVAL = 300; // Update every 300ms
-    const totalSteps = ERASE_DURATION / PROGRESS_INTERVAL;
-    let currentStep = 0;
-    
-    // Create promise for erase operation
-    const erasePromise = erasePairings
-      ? rawCommand(`E${num2hexstr(eraseAddress, 8)}#`, serialPort, 60000)
-      : rawCommand(
-          `E${num2hexstr(eraseAddress, 8)},${num2hexstr(0x00072000 - eraseAddress, 8)}#`,
-          serialPort,
-          60000,
-        );
-    
-    // Start progress simulation (0% to 50% for erase)
-    const progressInterval = setInterval(() => {
-      currentStep += 1;
-      const progress = Math.min(49.5, (currentStep / totalSteps) * 50); // Cap at 49.5% until erase completes
-      stateUpdate("neuron", progress);
-    }, PROGRESS_INTERVAL);
-    
-    // Wait for erase to complete
-    try {
-      ans = await erasePromise;
-      clearInterval(progressInterval);
-      stateUpdate("neuron", 50); // Set to 50% when erase completes
-    } catch (error) {
-      clearInterval(progressInterval);
-      throw error;
-    }
-    
-    if (ans[0] !== 65) {
-      log.info("answer to Erase command: ", String.fromCharCode.apply(null, ans));
-      log.info(`RAW Command: ${`E${num2hexstr(eraseAddress, 8)}#`}`);
-      throw Error("error when Erasing");
-    }
-
-    // Close and reconnect after erase (Sonshi bootloader may reset)
-    log.info("Closing serial port after erase...");
-    try {
-      serialPort.close();
-    } catch (e) {
-      log.warn("Error closing port after erase:", e);
-    }
-
-    // Wait for bootloader to stabilize
-    log.info("Waiting for bootloader to stabilize...");
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Reconnect to bootloader
-    log.info("Reconnecting to bootloader...");
-    serialPort = await serialConnection();
-    log.info("Reconnected successfully");
-
-    // Progress continues from 50% for write phase (no reset)
-
-    let state = 1;
-    const stateT = totalSaved / 4096;
-
-    // Remove SEAL from firmware data - only for hex input
+    // Remove SEAL from firmware data before flashing
     // For binary input, the SEAL sector was already skipped during chunk creation
     if (!isBinaryInput) {
       log.info("Removing SEAL from firmware data before flashing...");
       const SEAL_SIZE = 32;
-      
+
       // Skip the first 32 bytes (SEAL) from the first data object
       if (dataObjects[0].data.length >= SEAL_SIZE) {
         const originalData = dataObjects[0].data;
@@ -273,12 +207,19 @@ const SonshiFlash = {
     } else {
       log.info("Binary input: SEAL sector already skipped during processing");
     }
-    
-    log.info("Starting flashing procedure", total, total / 4096);
-    const totalInitial = total; // Save initial total for progress calculation
-    const adjustedStateT = totalInitial / 4096;
-    state = 1;
-    
+
+    // Use erase_alignment from device info to align erase blocks
+    const eraseAlignment = info.erase_alignment > 0 ? info.erase_alignment : PACKET_SIZE;
+    log.info(
+      "Starting block-by-block erase+write procedure.",
+      `Total: ${total}, erase_alignment: ${eraseAlignment}, PACKET_SIZE: ${PACKET_SIZE}`,
+    );
+
+    const totalInitial = total;
+    const totalBlocks = Math.ceil(totalInitial / PACKET_SIZE);
+    let blockIndex = 0;
+    let lastErasedEnd = 0; // Track the end of the last erased region to avoid double-erasing
+
     while (total > 0) {
       let bufferSize = total < PACKET_SIZE ? total : PACKET_SIZE;
 
@@ -297,32 +238,75 @@ const SonshiFlash = {
           break;
         }
 
-        // log.info(buffer, bufferTotal, currentHex);
         for (let i = 0; i < currentHex.data.length; i += 1) {
           buffer.writeUInt8(currentHex.data[i], bufferTotal + i);
         }
-        // new Uint8Array(buffer, bufferTotal, currentHex.len).set(
-        //   currentHex.data
-        // );
 
         hexCount += 1;
         bufferTotal += currentHex.len;
       }
 
-      // tell the NRf52833 the size of data being sent.
+      // ERASE: calculate aligned erase region for this block
+      const blockStart = address;
+      const blockEnd = address + bufferSize;
+      // Align erase start down to erase_alignment boundary
+      const eraseStart = Math.max(lastErasedEnd, blockStart - (blockStart % eraseAlignment));
+      // Align erase size up to erase_alignment boundary
+      const eraseEnd = Math.ceil(blockEnd / eraseAlignment) * eraseAlignment;
+
+      if (eraseStart < eraseEnd && eraseStart >= lastErasedEnd) {
+        const eraseSize = eraseEnd - eraseStart;
+        log.info(
+          `Block ${blockIndex + 1}/${totalBlocks}: Erasing 0x${eraseStart.toString(16)} size 0x${eraseSize.toString(16)}`,
+        );
+        ans = await rawCommand(
+          `E${num2hexstr(eraseStart, 8)},${num2hexstr(eraseSize, 8)}#`,
+          serialPort,
+          10000,
+        );
+        if (ans[0] !== 65) {
+          log.info("answer to Erase command: ", String.fromCharCode.apply(null, ans));
+          throw Error(`error when erasing block at 0x${eraseStart.toString(16)}`);
+        }
+        lastErasedEnd = eraseEnd;
+      }
+
+      // WRITE: upload data and write to flash
       ans = await rawCommand(`U${num2hexstr(bufferSize, 8)}#`, serialPort, 1000);
 
-      // write our data.
       noWaitCommand(buffer, serialPort);
 
-      // copy N bytes to memory location Y -> W function.
       ans = await rawCommand(`W${num2hexstr(address, 8)},${num2hexstr(bufferSize, 8)}#`, serialPort, 1000);
 
-      // Update External State (50% to 100% for write phase)
-      stateUpdate("neuron", 50 + (state / adjustedStateT) * 50);
-      state += 1;
+      // Small delay to let the serial buffer fully drain before the next erase command
+      // Prevents stale multi-byte ACK responses from being consumed by the next rawCommand
+      await delay(50);
+
+      // Update progress (0% to 100% linearly)
+      blockIndex += 1;
+      stateUpdate("neuron", (blockIndex / totalBlocks) * 100);
       total -= bufferSize;
       address += bufferSize;
+    }
+
+    // If erasePairings is requested, erase the pairings region after flashing
+    if (erasePairings) {
+      const pairingsStart = 0x00072000;
+      const pairingsEnd = info.flash_start + info.flash_size;
+      if (pairingsEnd > pairingsStart) {
+        const pairingsSize = pairingsEnd - pairingsStart;
+        log.info(
+          `Erasing pairings region: 0x${pairingsStart.toString(16)} size 0x${pairingsSize.toString(16)}`,
+        );
+        ans = await rawCommand(
+          `E${num2hexstr(pairingsStart, 8)},${num2hexstr(pairingsSize, 8)}#`,
+          serialPort,
+          30000,
+        );
+        if (ans[0] !== 65) {
+          log.warn("Warning: error when erasing pairings region");
+        }
+      }
     }
 
     // log.info("Validating...");
