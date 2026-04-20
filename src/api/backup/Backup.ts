@@ -53,7 +53,6 @@ export default class Backup {
       "led.setMultiple",
       "led.getMultiple",
       "led.setAll",
-      "led.fade",
       "macros.trigger",
       "macros.memory",
       "upgrade",

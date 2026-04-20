@@ -598,7 +598,7 @@ const English = {
     advanced: "Advanced",
     defaultLabel: "default",
     backupFolder: {
-      header: "Backups",
+      header: "Backups Actions",
       title: "Backup folder",
       restoreTitle: "Select a backup to restore",
       loadWindowTitle: "Choose backup folder",

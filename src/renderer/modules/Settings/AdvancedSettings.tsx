@@ -155,20 +155,6 @@ const AdvancedSettings = ({
           </div>
         </CardContent>
       </Card>
-      {keyboardType === "Raise" ? (
-        <Card className="mt-3 max-w-2xl mx-auto" variant="default">
-          <CardHeader>
-            <CardTitle variant="default">
-              <IconChip /> {i18n.keyboardSettings.resetEEPROM.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form>{connected && <AdvancedKeyboardSettings />}</form>
-          </CardContent>
-        </Card>
-      ) : (
-        ""
-      )}
     </>
   );
 };

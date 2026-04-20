@@ -184,6 +184,86 @@ const BackupSettings = (props: BackupSettingsProps) => {
     GetBackup();
   };
 
+  const restoreDefaultBackup = async () => {
+    try {
+      openPerformingBackup();
+      toggleBackup(true);
+
+      const { product, keyboardType } = state.currentDevice.device.info;
+      let backupFileName = "";
+
+      if (product === "Sonsei") {
+        backupFileName = "Sonsei.json";
+      } else if (product === "Defy") {
+        if (keyboardType === "wireless" || state.currentDevice.device.wireless) {
+          backupFileName = "Defy-wireless-backup.json";
+        } else {
+          backupFileName = "Defy-wired-backup.json";
+        }
+      } else if (product === "Raise") {
+        const isRaise2 = state.currentDevice.device.info.product === "Raise" && state.currentDevice.device.info.keyboardType === "ANSI";
+        if (isRaise2) {
+          backupFileName = keyboardType === "ISO" ? "Raise2ISO.json" : "Raise2ANSI.json";
+        } else {
+          backupFileName = keyboardType === "ISO" ? "RaiseISO.json" : "RaiseANSI.json";
+        }
+      }
+
+      if (!backupFileName) {
+        throw new Error("Unknown keyboard type");
+      }
+
+      const defaultBackupPath = await ipcRenderer.invoke("get-defaultBackupPath", backupFileName);
+      log.info("Loading default backup from:", defaultBackupPath);
+
+      const loadedFile = JSON.parse(fs.readFileSync(defaultBackupPath, "utf-8"));
+
+      if (loadedFile.virtual !== undefined) {
+        await localRestoreVirtual(loadedFile as VirtualType);
+        await destroyContext();
+        log.info("Restored default Virtual backup");
+      } else if (loadedFile.backup !== undefined || loadedFile[0]?.command !== undefined) {
+        await localRestoreBackup(loadedFile);
+        await destroyContext();
+        log.info("Restored default backup");
+      }
+
+      toast.success(
+        <ToastMessage
+          title="Default backup restored"
+          content="The default backup was restored successfully to the device!"
+          icon={<IconArrowDownWithLine />}
+        />,
+        {
+          autoClose: 2000,
+          icon: "",
+        },
+      );
+      closePerformingBackup();
+      toggleBackup(false);
+    } catch (error) {
+      log.error("Error restoring default backup:", error);
+      closePerformingBackup();
+      toggleBackup(false);
+      toast.error(
+        <ToastMessage
+          title="Could not restore default backup"
+          content={`Error: ${error.message}`}
+          icon={<IconArrowDownWithLine />}
+        />,
+        {
+          autoClose: 2000,
+          icon: "",
+        },
+      );
+    }
+  };
+
+  const triggerRestoreDefault = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    restoreDefaultBackup();
+  };
+
   const triggerExportBackup = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const options = {
@@ -266,16 +346,18 @@ const BackupSettings = (props: BackupSettingsProps) => {
           </Banner>
         )}
         <form className={`${enabled ? "" : "opacity-30 mt-4"}`}>
-          <h3 className="mb-1 text-gray-400 dark:text-gray-100 tracking-tight font-semibold">Backup actions</h3>
           <div className="flex gap-3">
             <Button variant="short" onClick={event => triggerGetLatestBackup(event)} disabled={!connected}>
-              Restore last backup
+              Restore last
             </Button>
             <Button variant="short" onClick={event => triggerGetBackup(event)} disabled={!connected}>
-              Load backup
+              Load
             </Button>
             <Button variant="short" onClick={event => triggerExportBackup(event)} disabled={!connected}>
-              Export backup
+              Export
+            </Button>
+            <Button variant="short" onClick={event => triggerRestoreDefault(event)} disabled={!connected}>
+              Restore Default
             </Button>
             <WaitForRestoreDialog title="Restoring Backup" open={performingBackup} />
           </div>

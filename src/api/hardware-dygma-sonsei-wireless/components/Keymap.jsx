@@ -594,7 +594,7 @@ class KeymapSONSEI extends React.Component {
 
       >
 
-        <g id="keyshapes-left" transform="rotate(10, 420, 680)">
+        <g id="keyshapes-left" transform="rotate(10, 320, 680)">
 
           {/* Left side keys: columns 0-5 */}
 
@@ -1776,7 +1776,7 @@ class KeymapSONSEI extends React.Component {
 
         </g>
 
-        <g id="keyshapes-right" transform="rotate(-10, 850, 680)">
+        <g id="keyshapes-right" transform="rotate(-10, 960, 680)">
 
           {/* Right side keys: columns 6-11 */}
 

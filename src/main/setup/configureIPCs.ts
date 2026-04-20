@@ -1,5 +1,6 @@
 import { ipcMain, app, dialog, shell, nativeTheme, systemPreferences } from "electron";
 import { uIOhook } from "uiohook-napi";
+import path from "path";
 import log from "electron-log/main";
 import { sendKeyUp, sendkeyDown } from "./configureCaptureKeys";
 import { listDrivesHandler } from "../utils/listDrivesHandler";
@@ -19,6 +20,7 @@ const removeIPCs = () => {
   ipcMain.removeHandler("openExternal");
   ipcMain.removeHandler("get-NativeTheme");
   ipcMain.removeHandler("ask-for-accessibility");
+  ipcMain.removeHandler("get-defaultBackupPath");
 };
 
 const configureIPCs = () => {
@@ -73,6 +75,13 @@ const configureIPCs = () => {
   });
 
   ipcMain.handle("get-userPath", (event, path) => app.getPath(path));
+
+  ipcMain.handle("get-defaultBackupPath", (event, fileName) => {
+    const appPath = app.getAppPath();
+    const defaultBackupPath = path.join(appPath, "src", "defaultBackups", fileName);
+    log.info("Default backup path requested:", defaultBackupPath);
+    return defaultBackupPath;
+  });
 
   ipcMain.handle("openExternal", (event, URI) => shell.openExternal(URI));
 
