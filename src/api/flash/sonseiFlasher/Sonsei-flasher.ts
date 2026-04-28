@@ -291,21 +291,18 @@ const SonshiFlash = {
 
     // If erasePairings is requested, erase the pairings region after flashing
     if (erasePairings) {
-      const pairingsStart = 0x00072000;
-      const pairingsEnd = info.flash_start + info.flash_size;
-      if (pairingsEnd > pairingsStart) {
-        const pairingsSize = pairingsEnd - pairingsStart;
-        log.info(
-          `Erasing pairings region: 0x${pairingsStart.toString(16)} size 0x${pairingsSize.toString(16)}`,
-        );
-        ans = await rawCommand(
-          `E${num2hexstr(pairingsStart, 8)},${num2hexstr(pairingsSize, 8)}#`,
-          serialPort,
-          30000,
-        );
-        if (ans[0] !== 65) {
-          log.warn("Warning: error when erasing pairings region");
-        }
+      const pairingsStart = 0x00070000;
+      const pairingsSize = 0x00005000;
+      log.info(
+        `Erasing pairings region: 0x${pairingsStart.toString(16)} size 0x${pairingsSize.toString(16)}`,
+      );
+      ans = await rawCommand(
+        `E${num2hexstr(pairingsStart, 8)},${num2hexstr(pairingsSize, 8)}#`,
+        serialPort,
+        30000,
+      );
+      if (ans[0] !== 65) {
+        log.warn("Warning: error when erasing pairings region");
       }
     }
 

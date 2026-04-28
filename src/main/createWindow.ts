@@ -51,7 +51,7 @@ const createWindow = () => {
 
   mainWindow.webContents.on("did-finish-load", () => {
     // Open the DevTools when the content is fully loaded
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   });
 
   configureIPCs();
