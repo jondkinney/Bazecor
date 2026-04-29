@@ -291,7 +291,7 @@ const SonshiFlash = {
 
     // If erasePairings is requested, erase the pairings region after flashing
     if (erasePairings) {
-      const pairingsStart = 0x00070000;
+      const pairingsStart = 0x000F0000;
       const pairingsSize = 0x00005000;
       log.info(
         `Erasing pairings region: 0x${pairingsStart.toString(16)} size 0x${pairingsSize.toString(16)}`,
