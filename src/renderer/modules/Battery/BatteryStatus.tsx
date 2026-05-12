@@ -31,8 +31,12 @@ const Style = Styled.div`
 .battery-indicator--container {
   display: flex;
   grid-gap: 3px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   > div {
     flex: 1;
+    min-width: 0;
   }
 }
 .battery-defy--indicator {
@@ -218,7 +222,7 @@ const BatteryStatus = ({ disable }: BatteryStatusProps) => {
   return (
     <Style>
       <div className={`battery-indicator--wrapper ${isSonsei ? "pointer-events-none" : ""}`} ref={target}>
-        <div className="battery-indicator--container">
+        <div className={`battery-indicator--container ${isSonsei ? "battery-sonsei" : "battery-dual"}`}>
           <BatteryStatusSide side="left" batteryLevel={bLeft} isSavingMode={isSavingMode} batteryStatus={sLeft} size="sm" deviceType={deviceType} />
           <BatteryStatusSide side="right" batteryLevel={bRight} isSavingMode={isSavingMode} batteryStatus={sRight} size="sm" deviceType={deviceType} />
         </div>

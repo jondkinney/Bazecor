@@ -75,7 +75,7 @@ const BatteryStatusSide: React.FC<BatteryStatusSideProps> = ({ side, batteryLeve
           )}
           {size === "sm" ? <PileIndicator batteryLevel={batteryLevel} batteryStatus={batteryStatus} /> : ""}
           {size === "sm" && isSonsei ? (
-            <div className="text-gray-400 text-[0.6rem] font-semibold">{batteryLevel}%</div>
+            <div className="battery-percentage-sonsei text-gray-400 text-[0.6rem] font-semibold">{batteryLevel}%</div>
           ) : (
             ""
           )}

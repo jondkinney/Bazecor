@@ -447,10 +447,44 @@ select:focus {
   }
 }
 .battery-indicator--item.size--sm {
-  min-width: 40px;
+  min-width: 0;
+  max-width: 100%;
 }
 .battery-item--container {
+  min-width: 0;
+  max-width: 100%;
+}
+/* Sonsei: 1 batería centrada con ancho fijo */
+.battery-sonsei .battery-indicator--item.size--sm {
   min-width: 50px;
+}
+.battery-sonsei .battery-item--container {
+  min-width: 50px;
+  justify-content: center;
+}
+/* Defy/Raise: 2 baterías flexibles */
+.battery-dual .battery-indicator--item.size--sm {
+  min-width: 0;
+}
+.battery-dual .battery-item--container {
+  min-width: 0;
+}
+/* Ocultar porcentaje de Sonsei en pantallas pequeñas */
+@media screen and (max-width: 999px) {
+  .battery-percentage-sonsei {
+    display: none;
+  }
+  .battery-sonsei .battery-item--container {
+    justify-content: center;
+  }
+}
+@media screen and (max-height: 870px) {
+  .battery-percentage-sonsei {
+    display: none;
+  }
+  .battery-sonsei .battery-item--container {
+    justify-content: center;
+  }
 }
 .battery-indicator--item.size--sm.status--saving,
 .battery-indicator--item.size--sm.status--fault {

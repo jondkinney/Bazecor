@@ -347,16 +347,16 @@ const BackupSettings = (props: BackupSettingsProps) => {
         )}
         <form className={`${enabled ? "" : "opacity-30 mt-4"}`}>
           <div className="flex gap-3">
-            <Button variant="short" onClick={event => triggerGetLatestBackup(event)} disabled={!connected}>
+            <Button variant="short" className="flex-1" onClick={event => triggerGetLatestBackup(event)} disabled={!connected}>
               Restore last
             </Button>
-            <Button variant="short" onClick={event => triggerGetBackup(event)} disabled={!connected}>
+            <Button variant="short" className="flex-1" onClick={event => triggerGetBackup(event)} disabled={!connected}>
               Load
             </Button>
-            <Button variant="short" onClick={event => triggerExportBackup(event)} disabled={!connected}>
+            <Button variant="short" className="flex-1" onClick={event => triggerExportBackup(event)} disabled={!connected}>
               Export
             </Button>
-            <Button variant="short" onClick={event => triggerRestoreDefault(event)} disabled={!connected}>
+            <Button variant="short" className="flex-1" onClick={event => triggerRestoreDefault(event)} disabled={!connected}>
               Restore Default
             </Button>
             <WaitForRestoreDialog title="Restoring Backup" open={performingBackup} />

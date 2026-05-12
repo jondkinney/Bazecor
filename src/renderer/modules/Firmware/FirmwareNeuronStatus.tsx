@@ -69,7 +69,7 @@ height: 100%;
   }
 }
 .neuronDefyContainer {
-  width: 280px;
+  width: 200px;
   margin: auto;
   position: relative;
   isolation: isolate;
@@ -81,7 +81,7 @@ height: 100%;
 .image-neuron-defy {
   width: 90%;
   height: auto;
-  max-width: 175px;
+  max-width: 125px;
 }
 .neuronIcon {
   position: absolute;
