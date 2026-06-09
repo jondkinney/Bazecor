@@ -23,6 +23,8 @@ import videoFirmwareUpdate from "@Assets/videos/update-firmware.mp4";
 import videoFirmwareUpdateReleaseKey from "@Assets/videos/release-key.mp4";
 import videoFirmwareUpdateDefySRC from "@Assets/videos/update-firmware-defy.mp4";
 import videoFirmwareUpdateDefyReleaseSRC from "@Assets/videos/release-key-defy.mp4";
+import videoRaise2EscapeSRC from "@Assets/videos/raise2-escape.mp4";
+import videoSonseiEscapeSRC from "@Assets/videos/sonsei-escape.mp4";
 import SonseiKeyboard from "../../../static/icons/Sonsei-Keyboard.svg";
 import FlashingSonseiFrame from "../../../static/icons/FlashingSonseiFrame.svg";
 
@@ -173,7 +175,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     if (deviceProduct === "Raise" && videoIntro.current) {
       videoIntro.current.currentTime = 3;
       videoIntro.current.play();
-    } else if ((deviceProduct === "Defy" || deviceProduct === "Sonsei") && videoIntroDefy.current) {
+    } else if (deviceProduct === "Defy" && videoIntroDefy.current) {
       videoIntroDefy.current.currentTime = 3;
       videoIntroDefy.current.play();
     }
@@ -189,8 +191,10 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
       if (productName === "Raise") {
         internalVideoIntro.addEventListener("ended", playVideo, false);
         internalVideoRelease.pause();
-      } else if (productName === "Defy" || productName === "Sonsei") {
+      } else if (productName === "Defy") {
         internalVideoIntroDefy.addEventListener("ended", playVideo, false);
+        internalVideoReleaseDefy.pause();
+      } else if (productName === "Sonsei" || productName === "Raise2") {
         internalVideoReleaseDefy.pause();
       }
     }
@@ -199,7 +203,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
       if (productName === "Raise") {
         internalVideoIntro.classList.add("animOut");
         internalVideoRelease.classList.add("animPressDown");
-      } else if (productName === "Defy" || productName === "Sonsei") {
+      } else if (productName === "Defy" || productName === "Sonsei" || productName === "Raise2") {
         internalVideoIntroDefy.classList.add("animOut");
         internalVideoReleaseDefy.classList.add("animIn");
         internalVideoReleaseDefy.play();
@@ -219,7 +223,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     return () => {
       if (internalVideoIntro && countdown === 0 && productName === "Raise") {
         internalVideoIntro.removeEventListener("ended", playVideo, false);
-      } else if (internalVideoIntroDefy && countdown === 0 && (productName === "Defy" || productName === "Sonsei")) {
+      } else if (internalVideoIntroDefy && countdown === 0 && productName === "Defy") {
         internalVideoIntroDefy.removeEventListener("ended", playVideo, false);
       }
     };
@@ -230,8 +234,8 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     <Style>
       <div className="process-row process-header">
         <div className="process-col process-image">
-          <div className="videoWrapper">
-            <div className="videoInner">
+          <div className="videoWrapper" style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px" } : {}}>
+            <div className="videoInner" style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px" } : {}}>
               <div className="firmwareCheck animWaiting" ref={checkSuccess}>
                 <IconCheckmark size="sm" />
               </div>
@@ -253,8 +257,8 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
                 </>
               ) : (
                 <>
-                  <video ref={videoIntroDefy} width={520} height={520} autoPlay className="img-center img-fluid animIn">
-                    <source src={videoFirmwareUpdateDefySRC} type="video/mp4" />
+                  <video ref={videoIntroDefy} width={520} height={520} autoPlay className="img-center img-fluid animIn" style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px", maxWidth: "none", objectFit: "cover" } : {}}>
+                    <source src={deviceProduct === "Raise2" ? videoRaise2EscapeSRC : deviceProduct === "Sonsei" ? videoSonseiEscapeSRC : videoFirmwareUpdateDefySRC} type="video/mp4" />
                   </video>
                   <video
                     ref={videoReleaseDefy}
@@ -262,8 +266,9 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
                     height={520}
                     autoPlay={false}
                     className="img-center img-fluid animWaiting"
+                    style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px", maxWidth: "none", objectFit: "cover" } : {}}
                   >
-                    <source src={videoFirmwareUpdateDefyReleaseSRC} type="video/mp4" />
+                    <source src={deviceProduct === "Raise2" ? videoRaise2EscapeSRC : deviceProduct === "Sonsei" ? videoSonseiEscapeSRC : videoFirmwareUpdateDefyReleaseSRC} type="video/mp4" />
                   </video>
                 </>
               )}
