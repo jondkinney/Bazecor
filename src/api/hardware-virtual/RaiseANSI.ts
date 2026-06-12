@@ -47,7 +47,7 @@ const RaiseANSI: VirtualType = {
   },
   virtual: {
     version: {
-      data: "v1.0.9beta 7622bb53 c9d9b7b-dirty",
+      data: "v1.4.0 7622bb53 c9d9b7b-dirty",
       eraseable: false,
     },
     "keymap.custom": {
