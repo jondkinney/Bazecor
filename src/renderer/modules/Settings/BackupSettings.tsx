@@ -114,6 +114,14 @@ const BackupSettings = (props: BackupSettingsProps) => {
     }
   };
 
+  const isBackupCompatible = (backupProduct: string, connectedProduct: string): boolean => {
+    if (backupProduct === connectedProduct) return true;
+    const raiseFamily = ["Raise", "Raise2"];
+    if (raiseFamily.includes(backupProduct) && raiseFamily.includes(connectedProduct)) return true;
+    if (backupProduct === "Defy" && connectedProduct === "Sonsei") return true;
+    return false;
+  };
+
   const GetBackup = async () => {
     const options = {
       title: i18n.keyboardSettings.backupFolder.restoreTitle,
@@ -132,13 +140,40 @@ const BackupSettings = (props: BackupSettingsProps) => {
       let loadedFile;
       try {
         loadedFile = JSON.parse(fs.readFileSync(resp.filePaths[0], "utf-8"));
+
+        const connectedProduct = state.currentDevice.device.info.product;
+
         if (loadedFile.virtual !== undefined) {
+          const backupProduct = (loadedFile as VirtualType).device.info.product;
+          if (!isBackupCompatible(backupProduct, connectedProduct)) {
+            toast.error(
+              <ToastMessage
+                title="Incompatible backup"
+                content={`Cannot import a ${backupProduct} backup into a ${connectedProduct} keyboard.`}
+                icon={<IconArrowDownWithLine />}
+              />,
+              { autoClose: 4000, icon: "" },
+            );
+            return;
+          }
           await localRestoreVirtual(loadedFile as VirtualType);
           await destroyContext();
           log.info("Restored Virtual backup");
           return;
         }
         if (loadedFile.backup !== undefined || loadedFile[0].command !== undefined) {
+          const backupProduct = loadedFile.neuron?.device?.info?.product;
+          if (backupProduct && !isBackupCompatible(backupProduct, connectedProduct)) {
+            toast.error(
+              <ToastMessage
+                title="Incompatible backup"
+                content={`Cannot import a ${backupProduct} backup into a ${connectedProduct} keyboard.`}
+                icon={<IconArrowDownWithLine />}
+              />,
+              { autoClose: 4000, icon: "" },
+            );
+            return;
+          }
           await localRestoreBackup(loadedFile);
           await destroyContext();
           log.info("Restored normal backup");
