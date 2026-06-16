@@ -21,7 +21,7 @@ import Styled from "styled-components";
 
 import videoFirmwareUpdate from "@Assets/videos/update-firmware.mp4";
 import videoFirmwareUpdateReleaseKey from "@Assets/videos/release-key.mp4";
-import videoFirmwareUpdateDefySRC from "@Assets/videos/update-firmware-defy.mp4";
+import videoFirmwareUpdateDefySRC from "@Assets/videos/Defy_bazecor_2.mp4";
 import videoFirmwareUpdateDefyReleaseSRC from "@Assets/videos/release-key-defy.mp4";
 import videoRaise2EscapeSRC from "@Assets/videos/raise2-escape.mp4";
 import videoSonseiEscapeSRC from "@Assets/videos/sonsei-escape.mp4";
@@ -235,8 +235,8 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     <Style>
       <div className="process-row process-header">
         <div className="process-col process-image">
-          <div className="videoWrapper" style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px" } : {}}>
-            <div className="videoInner" style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px" } : {}}>
+          <div className="videoWrapper" style={deviceProduct !== "Raise" ? { width: "200px", height: "200px" } : {}}>
+            <div className="videoInner" style={deviceProduct !== "Raise" ? { width: "200px", height: "200px" } : {}}>
               <div className="firmwareCheck animWaiting" ref={checkSuccess}>
                 <IconCheckmark size="sm" />
               </div>
@@ -258,7 +258,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
                 </>
               ) : (
                 <>
-                  <video ref={videoIntroDefy} width={520} height={520} autoPlay className="img-center img-fluid animIn" style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px", maxWidth: "none", objectFit: "cover" } : {}}>
+                  <video ref={videoIntroDefy} width={520} height={520} autoPlay className="img-center img-fluid animIn" style={{ width: "200px", height: "200px", maxWidth: "none", objectFit: "cover" }}>
                     <source src={deviceProduct === "Raise2" ? videoRaise2EscapeSRC : deviceProduct === "Sonsei" ? videoSonseiEscapeSRC : videoFirmwareUpdateDefySRC} type="video/mp4" />
                   </video>
                   <video
@@ -267,7 +267,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
                     height={520}
                     autoPlay={false}
                     className="img-center img-fluid animWaiting"
-                    style={(deviceProduct === "Sonsei" || deviceProduct === "Raise2") ? { width: "200px", height: "200px", maxWidth: "none", objectFit: "cover" } : {}}
+                    style={{ width: "200px", height: "200px", maxWidth: "none", objectFit: "cover" }}
                   >
                     <source src={deviceProduct === "Raise2" ? videoRaise2EscapeSRC : deviceProduct === "Sonsei" ? videoSonseiEscapeSRC : videoFirmwareUpdateDefyReleaseSRC} type="video/mp4" />
                   </video>
