@@ -532,6 +532,8 @@ export interface Milestones {
   checkRightSide: string;
   checkLeftSideBL: string;
   checkRightSideBL: string;
+  checkConnectivity: string;
+  checkBootloaderStatus: string;
   checkBackup: string;
 }
 

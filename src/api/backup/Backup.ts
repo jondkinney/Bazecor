@@ -13,6 +13,8 @@ import {
   convertKeymapRtoR2,
   convertPaletteR2toR,
   convertPaletteRtoR2,
+  convertKeymapDefyToSonsei,
+  convertColormapDefyToSonsei,
   parseColormapRaw,
   parseKeymapRaw,
   parsePaletteRaw,
@@ -53,7 +55,6 @@ export default class Backup {
       "led.setMultiple",
       "led.getMultiple",
       "led.setAll",
-      "led.fade",
       "macros.trigger",
       "macros.memory",
       "upgrade",
@@ -217,6 +218,8 @@ export default class Backup {
       data = Backup.convertRaiseToRaise2(backup, device);
     if (device.device.info.product === "Raise" && backup.neuron.device.info.product === "Raise2")
       data = Backup.convertRaise2ToRaise(backup, device);
+    if (device.device.info.product === "Sonsei" && backup.neuron.device.info.product === "Defy")
+      data = Backup.convertDefyToSonsei(backup, device);
     // Reorder to ensure superkeys are restored before keymap
     try {
       const keymapIdx = data.findIndex((c: BackupCmd) => typeof c.command === "string" && c.command === "keymap.custom");
@@ -328,6 +331,43 @@ export default class Backup {
       log.error(error);
       return undefined;
     }
+  };
+
+  static convertDefyToSonsei = (backup: BackupType, dev: Device) => {
+    log.info("converting Defy Backup to Sonsei");
+    const defyKeyLayerSize = 80;
+    const defyColorLayerSize = 178;
+
+    const localBackup: BackupType = JSON.parse(JSON.stringify(backup));
+    localBackup.neuron.device = dev.device;
+
+    const keymapIndex = localBackup.backup.findIndex(c => c.command === "keymap.custom");
+    const paletteIndex = localBackup.backup.findIndex(c => c.command === "palette");
+    const colormapIndex = localBackup.backup.findIndex(c => c.command === "colormap.map");
+
+    const custom = parseKeymapRaw(localBackup.backup[keymapIndex].data, defyKeyLayerSize);
+    const colormap = parseColormapRaw(localBackup.backup[colormapIndex].data, defyColorLayerSize);
+    const palette = parsePaletteRaw(localBackup.backup[paletteIndex].data, true);
+
+    const keymapFinal = custom.map((layer: number[]) => convertKeymapDefyToSonsei(layer));
+    const colormapFinal = colormap.map((layer: number[]) => convertColormapDefyToSonsei(layer));
+    const paletteFinal = palette.map(color => convertPaletteR2toR(color));
+
+    localBackup.backup[colormapIndex].data = colormapFinal
+      .flat()
+      .map(k => k.toString())
+      .join(" ");
+    localBackup.backup[keymapIndex].data = keymapFinal
+      .flat()
+      .map(k => k.toString())
+      .join(" ");
+    localBackup.backup[paletteIndex].data = paletteFinal
+      .flat()
+      .map(v => v.toString())
+      .join(" ");
+
+    log.info("Final Backup:", localBackup.backup);
+    return localBackup.backup;
   };
 
   static convertRaiseToRaise2 = (backup: BackupType, dev: Device) => {

@@ -724,7 +724,7 @@ const Preferences = (props: PreferencesProps) => {
                     Device settings
                   </h4>
                   <TabsTrigger value="Keyboard" variant="tab">
-                    <IconKeyboard /> Typing and Keys
+                    <IconKeyboard /> Keys and Layers
                   </TabsTrigger>
                   <TabsTrigger value="LED" variant="tab">
                     <IconFlashlight /> LED
@@ -732,19 +732,18 @@ const Preferences = (props: PreferencesProps) => {
                   {(state.currentDevice.device.info.keyboardType === "wireless" || state.currentDevice.device.wireless) && (
                     <>
                       <TabsTrigger value="Battery" variant="tab">
-                        <IconBattery /> Battery Management
+                        <IconBattery /> Battery
                       </TabsTrigger>
                       {/* <TabsTrigger value="Bluetooth" variant="tab">
                         <IconBluetooth /> Bluetooth Settings
                       </TabsTrigger> */}
-                      <TabsTrigger value="RF" variant="tab">
-                        <IconSignal /> RF Settings
-                      </TabsTrigger>
+                      {state.currentDevice.device.hasRF && (
+                        <TabsTrigger value="RF" variant="tab">
+                          <IconSignal /> RF Settings
+                        </TabsTrigger>
+                      )}
                     </>
                   )}
-                  <TabsTrigger value="Advanced" variant="tab">
-                    <IconWrench /> Advanced
-                  </TabsTrigger>
                 </>
               ) : null}
               <h4
@@ -760,13 +759,13 @@ const Preferences = (props: PreferencesProps) => {
               <TabsTrigger value="Backups" variant="tab">
                 <IconFloppyDisk /> Backups
               </TabsTrigger>
-              {connected && state.currentDevice ? (
+              {/* {connected && state.currentDevice ? (
                 <TabsTrigger value="NeuronManager" variant="tab">
                   <IconNeuronManager /> Neuron Manager
                 </TabsTrigger>
               ) : (
                 ""
-              )}
+              )} */}
             </TabsList>
             <div className="rounded-xl bg-gray-25/50 dark:bg-gray-400/15 px-4 py-3 w-full">
               {connected && state.currentDevice ? (
@@ -774,44 +773,6 @@ const Preferences = (props: PreferencesProps) => {
                   <TabsContent value="Keyboard" className="w-full">
                     <motion.div initial="hidden" animate="visible" variants={tabVariants}>
                       <KeyboardSettings kbData={kbData} setKbData={updateKBData} connected={connected} />
-                    </motion.div>
-                  </TabsContent>
-                  <TabsContent value="LED">
-                    <motion.div initial="hidden" animate="visible" variants={tabVariants}>
-                      <LEDSettings
-                        kbData={kbData}
-                        wireless={wireless}
-                        setKbData={updateKBData}
-                        setWireless={updateWireless}
-                        connected={connected}
-                        isWireless={
-                          state.currentDevice.device.info.keyboardType === "wireless" || state.currentDevice.device.wireless
-                        }
-                      />
-                    </motion.div>
-                  </TabsContent>
-                  {(state.currentDevice.device.info.keyboardType === "wireless" || state.currentDevice.device.wireless) && (
-                    <>
-                      <TabsContent value="Battery">
-                        <motion.div initial="hidden" animate="visible" variants={tabVariants}>
-                          <BatterySettings wireless={wireless} changeWireless={updateWireless} isCharging={false} />
-                          <EnergyManagement wireless={wireless} changeWireless={updateWireless} updateTab={handleTabChange} />
-                        </motion.div>
-                      </TabsContent>
-                      {/* <TabsContent value="Bluetooth">
-                        <motion.div initial="hidden" animate="visible" variants={tabVariants}>
-                          Bluetooth Settings
-                        </motion.div>
-                      </TabsContent> */}
-                      <TabsContent value="RF">
-                        <motion.div initial="hidden" animate="visible" variants={tabVariants}>
-                          <RFSettings wireless={wireless} changeWireless={updateWireless} sendRePair={sendRePairCommand} />
-                        </motion.div>
-                      </TabsContent>
-                    </>
-                  )}
-                  <TabsContent value="Advanced">
-                    <motion.div initial="hidden" animate="visible" variants={tabVariants}>
                       <AdvancedSettings
                         connected={connected}
                         defaultLayer={defaultLayer}
@@ -827,6 +788,46 @@ const Preferences = (props: PreferencesProps) => {
                       />
                     </motion.div>
                   </TabsContent>
+                  <TabsContent value="LED">
+                    <motion.div initial="hidden" animate="visible" variants={tabVariants}>
+                      <LEDSettings
+                        kbData={kbData}
+                        wireless={wireless}
+                        setKbData={updateKBData}
+                        setWireless={updateWireless}
+                        connected={connected}
+                        isWireless={
+                          state.currentDevice.device.info.keyboardType === "wireless" || state.currentDevice.device.wireless
+                        }
+                        hasUnderglow={
+                          (state.currentDevice.device.keyboardUnderglow?.ledsLeft?.length || 0) > 0 ||
+                          (state.currentDevice.device.keyboardUnderglow?.ledsRight?.length || 0) > 0
+                        }
+                      />
+                    </motion.div>
+                  </TabsContent>
+                  {(state.currentDevice.device.info.keyboardType === "wireless" || state.currentDevice.device.wireless) && (
+                    <>
+                      <TabsContent value="Battery">
+                        <motion.div initial="hidden" animate="visible" variants={tabVariants}>
+                          <BatterySettings wireless={wireless} changeWireless={updateWireless} isCharging={false} deviceType={state.currentDevice.device.info.product as string} />
+                          <EnergyManagement wireless={wireless} changeWireless={updateWireless} updateTab={handleTabChange} />
+                        </motion.div>
+                      </TabsContent>
+                      {/* <TabsContent value="Bluetooth">
+                        <motion.div initial="hidden" animate="visible" variants={tabVariants}>
+                          Bluetooth Settings
+                        </motion.div>
+                      </TabsContent> */}
+                      {state.currentDevice.device.hasRF && (
+                        <TabsContent value="RF">
+                          <motion.div initial="hidden" animate="visible" variants={tabVariants}>
+                            <RFSettings wireless={wireless} changeWireless={updateWireless} sendRePair={sendRePairCommand} />
+                          </motion.div>
+                        </TabsContent>
+                      )}
+                    </>
+                  )}
                 </>
               ) : null}
               <TabsContent value="Application">
