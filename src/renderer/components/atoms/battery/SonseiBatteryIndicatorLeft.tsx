@@ -27,8 +27,8 @@ function SonseiBatteryIndicatorLeft({ batteryStatus, batteryHeight }: SonseiBatt
   const maskHash = `mask-${Math.random().toString(36).substring(2, 15)}`;
   return (
     <svg
-      width="411"
-      height="194"
+      width="400"
+      height="127"
       viewBox="0 0 411 194"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

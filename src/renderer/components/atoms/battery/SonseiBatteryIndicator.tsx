@@ -71,7 +71,7 @@ const SonseiBatteryIndicator = ({ batteryLevel, batteryStatus }: SonseiBatteryIn
                   <IconThunder />
                 </span>
               )}
-              <span>{batteryLevel}%</span>
+              {!Number.isNaN(batteryLevel) && batteryLevel > 0 && <span>{batteryLevel}%</span>}
             </div>
           ) : (
             ""

@@ -175,7 +175,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     if (deviceProduct === "Raise" && videoIntro.current) {
       videoIntro.current.currentTime = 3;
       videoIntro.current.play();
-    } else if (deviceProduct === "Defy" && videoIntroDefy.current) {
+    } else if ((deviceProduct === "Defy" || deviceProduct === "Sonsei" || deviceProduct === "Raise2") && videoIntroDefy.current) {
       videoIntroDefy.current.currentTime = 3;
       videoIntroDefy.current.play();
     }
@@ -195,6 +195,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
         internalVideoIntroDefy.addEventListener("ended", playVideo, false);
         internalVideoReleaseDefy.pause();
       } else if (productName === "Sonsei" || productName === "Raise2") {
+        internalVideoIntroDefy.addEventListener("ended", playVideo, false);
         internalVideoReleaseDefy.pause();
       }
     }
@@ -223,7 +224,7 @@ const FirmwareImageHelp: React.FC<FirmwareImageHelpProps> = ({
     return () => {
       if (internalVideoIntro && countdown === 0 && productName === "Raise") {
         internalVideoIntro.removeEventListener("ended", playVideo, false);
-      } else if (internalVideoIntroDefy && countdown === 0 && productName === "Defy") {
+      } else if (internalVideoIntroDefy && countdown === 0 && (productName === "Defy" || productName === "Sonsei" || productName === "Raise2")) {
         internalVideoIntroDefy.removeEventListener("ended", playVideo, false);
       }
     };
