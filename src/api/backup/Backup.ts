@@ -19,6 +19,7 @@ import {
   parseKeymapRaw,
   parsePaletteRaw,
 } from "../parsers";
+import { rgb2w } from "../color";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glob = require(`glob`);
@@ -282,13 +283,88 @@ export default class Backup {
       try {
         log.info("Restoring all settings");
         const data = virtual.virtual;
+        
+        // Check if we need to convert between different keyboard families
+        const virtualProduct = virtual.device.info.product;
+        const deviceProduct = device.device.info.product;
+        const needsRaiseConversion = (virtualProduct === "Raise" && deviceProduct === "Raise2") || 
+                                      (virtualProduct === "Raise2" && deviceProduct === "Raise");
+        const needsDefySonseiConversion = virtualProduct === "Defy" && deviceProduct === "Sonsei";
+        
         for (const command in data) {
           if (data[command].eraseable === true) {
             // eslint-disable-next-line no-await-in-loop
             if (!(command.includes("wireless") || command.includes("led"))) {
+              let commandData = data[command].data.trim();
+              
+              // Convert keymap, colormap and palette between Raise and Raise2
+              if (needsRaiseConversion) {
+                const keyboardType = device.device.info.keyboardType;
+                const backupKeyboardType = virtual.device.info.keyboardType;
+                
+                if (command === "keymap.custom") {
+                  const keyLayerSize = 80;
+                  const custom = parseKeymapRaw(commandData, keyLayerSize);
+                  if (virtualProduct === "Raise" && deviceProduct === "Raise2") {
+                    const keymapFinal = custom.map((layer: number[]) => convertKeymapRtoR2(layer, keyboardType));
+                    commandData = keymapFinal.flat().map(k => k.toString()).join(" ");
+                  } else if (virtualProduct === "Raise2" && deviceProduct === "Raise") {
+                    const keymapFinal = custom.map((layer: number[]) => convertKeymapR2toR(layer, keyboardType));
+                    commandData = keymapFinal.flat().map(k => k.toString()).join(" ");
+                  }
+                } else if (command === "colormap.map") {
+                  const sourceLayerSize = virtual.device.keyboardUnderglow.rows * virtual.device.keyboardUnderglow.columns;
+                  const colormap = parseColormapRaw(commandData, sourceLayerSize);
+                  if (virtualProduct === "Raise" && deviceProduct === "Raise2") {
+                    const colormapFinal = colormap.map((layer: number[]) =>
+                      convertColormapRtoR2(layer, keyboardType, backupKeyboardType),
+                    );
+                    commandData = colormapFinal.flat().map(k => k.toString()).join(" ");
+                  } else if (virtualProduct === "Raise2" && deviceProduct === "Raise") {
+                    const colormapFinal = colormap.map((layer: number[]) =>
+                      convertColormapR2toR(layer, keyboardType, backupKeyboardType),
+                    );
+                    commandData = colormapFinal.flat().map(k => k.toString()).join(" ");
+                  }
+                } else if (command === "palette") {
+                  const isSourceRGBW = virtualProduct === "Raise2";
+                  const palette = parsePaletteRaw(commandData, isSourceRGBW);
+                  if (virtualProduct === "Raise" && deviceProduct === "Raise2") {
+                    const paletteFinal = palette.map(color => {
+                      const rgbw = rgb2w(color);
+                      return [rgbw.r, rgbw.g, rgbw.b, rgbw.w];
+                    });
+                    commandData = paletteFinal.flat().map(v => v.toString()).join(" ");
+                  } else if (virtualProduct === "Raise2" && deviceProduct === "Raise") {
+                    const paletteFinal = palette.map(color => [color.r, color.g, color.b]);
+                    commandData = paletteFinal.flat().map(v => v.toString()).join(" ");
+                  }
+                }
+              }
+              
+              // Convert keymap/colormap/palette between Defy and Sonsei
+              if (needsDefySonseiConversion) {
+                if (command === "keymap.custom") {
+                  const keyLayerSize = 80;
+                  const custom = parseKeymapRaw(commandData, keyLayerSize);
+                  const keymapFinal = custom.map((layer: number[]) => convertKeymapDefyToSonsei(layer));
+                  commandData = keymapFinal.flat().map(k => k.toString()).join(" ");
+                } else if (command === "colormap.map") {
+                  const colorLayerSize = virtual.device.keyboardUnderglow.rows * virtual.device.keyboardUnderglow.columns;
+                  const colormap = parseColormapRaw(commandData, colorLayerSize);
+                  const colormapFinal = colormap.map((layer: number[]) => convertColormapDefyToSonsei(layer));
+                  commandData = colormapFinal.flat().map(k => k.toString()).join(" ");
+                } else if (command === "palette") {
+                  // Defy uses RGBW, Sonsei uses RGB
+                  const palette = parsePaletteRaw(commandData, true);
+                  const paletteFinal = palette.map(color => [color.r, color.g, color.b]);
+                  commandData = paletteFinal.flat().map(v => v.toString()).join(" ");
+                }
+              }
+              
               log.warn(`Going to send ${command} to keyboard`);
               // eslint-disable-next-line no-await-in-loop
-              await device.command(command, data[command].data.trim());
+              await device.command(command, commandData);
             }
           }
         }
@@ -401,6 +477,10 @@ export default class Backup {
       .map(k => k.toString())
       .join(" ");
     localBackup.backup[paletteIndex].data = paletteFinal
+      .map(color => {
+        const rgbw = rgb2w(color);
+        return [rgbw.r, rgbw.g, rgbw.b, rgbw.w];
+      })
       .flat()
       .map(v => v.toString())
       .join(" ");
@@ -441,6 +521,7 @@ export default class Backup {
       .map(k => k.toString())
       .join(" ");
     localBackup.backup[paletteIndex].data = paletteFinal
+      .map(color => [color.r, color.g, color.b])
       .flat()
       .map(v => v.toString())
       .join(" ");
