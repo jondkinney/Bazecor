@@ -235,13 +235,10 @@ const BackupSettings = (props: BackupSettingsProps) => {
         } else {
           backupFileName = "Defy-wired-backup.json";
         }
+      } else if (product === "Raise2") {
+        backupFileName = keyboardType === "ISO" ? "Raise2ISO.json" : "Raise2ANSI.json";
       } else if (product === "Raise") {
-        const isRaise2 = state.currentDevice.device.info.product === "Raise" && state.currentDevice.device.info.keyboardType === "ANSI";
-        if (isRaise2) {
-          backupFileName = keyboardType === "ISO" ? "Raise2ISO.json" : "Raise2ANSI.json";
-        } else {
-          backupFileName = keyboardType === "ISO" ? "RaiseISO.json" : "RaiseANSI.json";
-        }
+        backupFileName = keyboardType === "ISO" ? "RaiseISO.json" : "RaiseANSI.json";
       }
 
       if (!backupFileName) {
