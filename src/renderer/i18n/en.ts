@@ -586,7 +586,7 @@ const English = {
       savingModeDescription: `<p><strong>Turn on automatically when the battery level reach 20%.</strong> This mode is designed to optimize and reduce the power consumption helping extend the time between charges.</p>`,
     },
     RFPreferences: {
-      RFSettings: "RF Settings",
+      RFSettings: "Repair RF Channel",
       repairChannel: "Repair Channel",
       reconnectSides: "Reconnect sides",
       RFRadioSignal: "Radio Signal",
