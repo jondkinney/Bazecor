@@ -17,6 +17,7 @@ import { BatteryCodes } from "../../../hw/battery";
 import { RFCodes } from "../../../hw/rf";
 import { BluetoothCodes } from "../../../hw/bluetooth";
 import { EnergyCodes } from "../../../hw/energy";
+import { OverlayCodes } from "../../../hw/overlay";
 
 const Battery = {
   groupName: "Battery",
@@ -66,5 +67,17 @@ const RF = {
     },
   ],
 };
+const Overlay = {
+  groupName: "Overlay",
+  keys: [
+    {
+      code: OverlayCodes.OVERLAY_KEY,
+      labels: {
+        top: "LENS",
+        primary: "OVERLAY",
+      },
+    },
+  ],
+};
 
-export { Battery, Bluetooth, Energy, RF };
+export { Battery, Bluetooth, Energy, RF, Overlay };

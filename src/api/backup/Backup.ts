@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import log from "electron-log/renderer";
+import { writeLensConfig } from "../../main/lens-bridge";
 import { Neuron } from "@Renderer/types/neurons";
 import { BackupType } from "@Renderer/types/backups";
 import { VirtualType } from "@Renderer/types/virtual";
@@ -191,6 +192,7 @@ export default class Backup {
           fs.mkdirSync(path.parse(fullPath).dir, { recursive: true });
         }
         fs.writeFileSync(fullPath, json);
+        writeLensConfig({ backupFolder: folder, neuronID: localBackup.neuronID, product });
       } catch (error) {
         log.error(error);
         throw error;
