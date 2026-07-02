@@ -2,7 +2,7 @@
   "name": "Bazecor",
   "productName": "Bazecor",
   "version": "1.9.0",
-  "lensVersion": "1.0.0",
+  "lensVersion": "1.1.0",
   "description": "Bazecor desktop app",
   "private": true,
   "repository": {
