@@ -28,8 +28,10 @@ export function getLensPath(): string {
     log.info("[LensManager] Using LENS_DEV_PATH:", process.env.LENS_DEV_PATH);
     return process.env.LENS_DEV_PATH;
   }
+  // Electron Forge's extraResource preserves the source folder's basename, so
+  // "src/lens-bin" lands at resources/lens-bin (not resources/lens) once packaged.
   const base = app.isPackaged
-    ? path.join(process.resourcesPath, "lens")
+    ? path.join(process.resourcesPath, "lens-bin")
     : path.join(app.getAppPath(), "src", "lens-bin"); // Dev mode: getAppPath() is the Bazecor project root.
   if (process.platform === "win32") return path.join(base, "dygma-lens.exe");
   // On macOS Lens ships as a .app bundle (not a bare binary); the real Mach-O executable
