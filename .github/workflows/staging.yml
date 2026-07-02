@@ -130,20 +130,31 @@ jobs:
         name: Download Lens executable (Windows)
         shell: pwsh
         env:
-          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          # Dygma-Lens is a public repo, so the ephemeral, always-available Actions token
+          # is enough to read its releases — no custom PAT/secret needed for this.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $LensVersion = (Get-Content package.json | ConvertFrom-Json).lensVersion
           New-Item -ItemType Directory -Force -Path src/lens-bin | Out-Null
           gh release download "v$LensVersion" -R Dygmalab/Dygma-Lens --pattern "*win32-x64*.zip" --dir . --clobber
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to download Lens v$LensVersion from Dygmalab/Dygma-Lens (gh exit $LASTEXITCODE)."
+            exit 1
+          }
           $zip = Get-ChildItem -Filter "*win32-x64*.zip" | Select-Object -First 1
+          if (-not $zip) {
+            Write-Error "Downloaded Lens release v$LensVersion but found no win32-x64 zip asset."
+            exit 1
+          }
           Expand-Archive -Path $zip.FullName -DestinationPath src/lens-bin -Force
           Remove-Item $zip.FullName
       - if: runner.os == 'macOS'
         name: Download Lens executable (macOS)
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           LENS_VERSION=$(node -p "require('./package.json').lensVersion")
           mkdir -p src/lens-bin
           TMP_DIR=$(mktemp -d)
@@ -153,6 +164,10 @@ jobs:
           mkdir -p "$TMP_DIR/extracted"
           unzip -q "$TMP_DIR"/*.zip -d "$TMP_DIR/extracted"
           APP_BUNDLE=$(find "$TMP_DIR/extracted" -maxdepth 2 -name "*.app" | head -n1)
+          if [ -z "$APP_BUNDLE" ]; then
+            echo "::error::No .app bundle found inside the downloaded Lens zip"
+            exit 1
+          fi
           cp -R "$APP_BUNDLE" "src/lens-bin/Dygma Lens.app"
           chmod +x "src/lens-bin/Dygma Lens.app/Contents/MacOS/dygma-lens"
           rm -rf "$TMP_DIR"
@@ -160,8 +175,9 @@ jobs:
         name: Download Lens executable (Linux)
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           LENS_VERSION=$(node -p "require('./package.json').lensVersion")
           mkdir -p src/lens-bin
           gh release download "v${LENS_VERSION}" -R Dygmalab/Dygma-Lens --pattern "*.AppImage" --dir src/lens-bin --clobber
