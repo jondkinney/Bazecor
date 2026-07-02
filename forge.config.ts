@@ -18,7 +18,7 @@ const packagerConfig: ForgePackagerOptions = {
   osxUniversal: {
     x64ArchFiles: "*",
   },
-  extraResource: ["NEWS.md", "src/defaultBackups"],
+  extraResource: ["NEWS.md", "src/defaultBackups", "src/lens-bin"],
   appCopyright: "Copyright © 2018, 2023 DygmaLab SL; distributed under the GPLv3",
 };
 

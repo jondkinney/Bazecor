@@ -95,6 +95,10 @@ typings/
 # Electron-Forge
 out/
 
+# Lens binary bundled as an extra resource — downloaded by CI from Dygma-Lens releases,
+# never committed (it's a full platform-specific Electron build, not source).
+src/lens-bin/
+
 # old webpack output folder
 dist
 

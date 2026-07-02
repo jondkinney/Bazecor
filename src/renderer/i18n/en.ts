@@ -355,6 +355,16 @@ const English = {
           "Assign this key to check the charge of your battery in real time thanks to the LED indicators on the keyboard.",
         savingModeDescription: "Faster and convenient way to toggle Energy saving mode on and off.",
       },
+      layerLens: {
+        title: "Layer Lens",
+        callOut:"Layer Lens is the on-screen overlay that shows your keyboard's active layer. 🔍 Assign these keys to control when it pops up.",
+        toggleLayerLens: "LENS TAP",
+        toggleLayerLensDescription: "Tap to show Layer Lens, tap again to hide it.\n ",
+        holdLayerLens: "LENS HOLD",
+        holdLayerLensDescription: "Hold to show Layer Lens, release and it hides automatically.",
+        superKey: "SK-LENS",
+        superKeyDescription: "Both gestures on one key: tap toggles it, hold shows it while pressed.",
+      },
     },
     superkeys: {
       add: "Add new superkey",

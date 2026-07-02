@@ -9,7 +9,6 @@ import Callout from "@Renderer/components/molecules/Callout/Callout";
 import { Button } from "@Renderer/components/atoms/Button";
 import { BatteryCodes } from "@Renderer/../hw/battery";
 import { BluetoothCodes } from "@Renderer/../hw/bluetooth";
-import { OverlayCodes } from "@Renderer/../hw/overlay";
 
 // const Styles = Styled.div`
 // width: 100%;
@@ -84,25 +83,6 @@ function WirelessTab(props: TabLayoutEditorProps) {
                 size="sm"
               >
                 {i18n.wireless.bluetooth.pair}
-              </Button>
-            </div>
-            <div className="flex-1 py-2">
-              <Heading renderAs="h4" headingLevel={4} className="text-base">
-                Overlay
-              </Heading>
-              <p className="text-ssm font-medium text-gray-400 dark:text-gray-200">
-                Show keyboard overlay with Lens
-              </p>
-              <Button
-                variant="config"
-                onClick={() => {
-                  onKeySelect(OverlayCodes.OVERLAY_KEY);
-                }}
-                selected={KC === OverlayCodes.OVERLAY_KEY}
-                className="w-max-[124px] w-[124px] text-center mt-2"
-                size="sm"
-              >
-                Overlay
               </Button>
             </div>
           </div>

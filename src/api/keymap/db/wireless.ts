@@ -74,7 +74,21 @@ const Overlay = {
       code: OverlayCodes.OVERLAY_KEY,
       labels: {
         top: "LENS",
-        primary: "OVERLAY",
+        primary: "SK-LENS",
+      },
+    },
+    {
+      code: OverlayCodes.OVERLAY_TAP,
+      labels: {
+        top: "LENS",
+        primary: "TAP",
+      },
+    },
+    {
+      code: OverlayCodes.OVERLAY_HOLD,
+      labels: {
+        top: "LENS",
+        primary: "HOLD",
       },
     },
   ],

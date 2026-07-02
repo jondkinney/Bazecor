@@ -35,6 +35,7 @@ import getLanguage from "@Renderer/utils/language";
 import ToastMessage from "@Renderer/components/atoms/ToastMessage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@Renderer/components/atoms/Select";
 import { Button } from "@Renderer/component/Button";
+import LayerLensSettings from "./LayerLensSettings";
 
 import { i18n } from "@Renderer/i18n";
 import Keymap from "../../../api/keymap";
@@ -204,6 +205,7 @@ const GeneralSettings = ({
           />
         </CardContent>
       </Card>
+      <LayerLensSettings />
       <Card className="mt-3 max-w-2xl mx-auto" variant="default">
         <CardHeader>
           <CardTitle variant="default">

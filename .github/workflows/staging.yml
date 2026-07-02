@@ -121,6 +121,52 @@ jobs:
       - name: Install node_modules
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile --network-timeout 300000 # sometimes yarn takes time, therefore, we increase the timeout
+      # Lens is an Electron app: the binary can't be moved on its own, it needs its whole
+      # packaged directory (locales/, *.pak, native DLLs, etc) alongside it, and on macOS it's
+      # a .app bundle rather than a bare executable. So each platform downloads and unpacks
+      # the portable zip/AppImage published by Dygma-Lens's own release workflow, using each
+      # OS's native shell (Git Bash's tar can't extract .zip on Windows runners).
+      - if: runner.os == 'Windows'
+        name: Download Lens executable (Windows)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          $LensVersion = (Get-Content package.json | ConvertFrom-Json).lensVersion
+          New-Item -ItemType Directory -Force -Path src/lens-bin | Out-Null
+          gh release download "v$LensVersion" -R Dygmalab/Dygma-Lens --pattern "*win32-x64*.zip" --dir . --clobber
+          $zip = Get-ChildItem -Filter "*win32-x64*.zip" | Select-Object -First 1
+          Expand-Archive -Path $zip.FullName -DestinationPath src/lens-bin -Force
+          Remove-Item $zip.FullName
+      - if: runner.os == 'macOS'
+        name: Download Lens executable (macOS)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          LENS_VERSION=$(node -p "require('./package.json').lensVersion")
+          mkdir -p src/lens-bin
+          TMP_DIR=$(mktemp -d)
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "arm64" ]; then PATTERN="*darwin-arm64*.zip"; else PATTERN="*darwin-x64*.zip"; fi
+          gh release download "v${LENS_VERSION}" -R Dygmalab/Dygma-Lens --pattern "$PATTERN" --dir "$TMP_DIR" --clobber
+          mkdir -p "$TMP_DIR/extracted"
+          unzip -q "$TMP_DIR"/*.zip -d "$TMP_DIR/extracted"
+          APP_BUNDLE=$(find "$TMP_DIR/extracted" -maxdepth 2 -name "*.app" | head -n1)
+          cp -R "$APP_BUNDLE" "src/lens-bin/Dygma Lens.app"
+          chmod +x "src/lens-bin/Dygma Lens.app/Contents/MacOS/dygma-lens"
+          rm -rf "$TMP_DIR"
+      - if: runner.os == 'Linux'
+        name: Download Lens executable (Linux)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          LENS_VERSION=$(node -p "require('./package.json').lensVersion")
+          mkdir -p src/lens-bin
+          gh release download "v${LENS_VERSION}" -R Dygmalab/Dygma-Lens --pattern "*.AppImage" --dir src/lens-bin --clobber
+          mv src/lens-bin/*.AppImage src/lens-bin/dygma-lens
+          chmod +x src/lens-bin/dygma-lens
       - if: runner.os == 'macOS'
         name: Setup Apple certificates
         env:

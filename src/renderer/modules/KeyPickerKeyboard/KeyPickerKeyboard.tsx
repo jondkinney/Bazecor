@@ -13,6 +13,7 @@ import {
   IconNote,
   IconThunder,
   IconWireless,
+  IconLens,
   IconWrench,
 } from "@Renderer/components/atoms/icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@Renderer/components/atoms/Tabs";
@@ -25,6 +26,7 @@ import SuperkeysTab from "@Renderer/modules/KeysTabs/SuperkeysTab";
 import MediaAndLightTab from "@Renderer/modules/KeysTabs/MediaAndLightTab";
 import MouseTab from "@Renderer/modules/KeysTabs/MouseTab";
 import WirelessTab from "@Renderer/modules/KeysTabs/WirelessTab";
+import LayerLensTab from "@Renderer/modules/KeysTabs/LayerLensTab";
 import CustomKeyCodeModal from "@Renderer/components/molecules/CustomModal/ModalCustomKeycode";
 import { Separator } from "@Renderer/components/atoms/Separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@Renderer/components/atoms/Tooltip";
@@ -301,6 +303,7 @@ function KeyPickerKeyboard(props: Props) {
     tabList.push("tabMedia");
     tabList.push("tabMouse");
     if (isWireless) tabList.push("tabWireless");
+    tabList.push("tabLayerLens");
 
     const lstate = { ...state };
     lstate.tabs = tabList;
@@ -331,7 +334,8 @@ function KeyPickerKeyboard(props: Props) {
     if (keyCode >= 20545 && keyCode <= 20560) tab = "tabMouse";
     if (keyCode >= 53852 && keyCode <= 53979) tab = "tabMacro";
     if (keyCode >= 53980 && keyCode <= 54109) tab = "tabSuperKeys";
-    if (keyCode >= 54108 && keyCode <= 54112) tab = "tabWireless";
+    if (keyCode >= 54108 && keyCode <= 54111) tab = "tabWireless";
+    if (keyCode >= 54112 && keyCode <= 54114) tab = "tabLayerLens";
 
     log.info("detectedTab", keyCode, tab);
     if (state.currentTab === "tabLayers" && tab === "tabKeys" && keyCode > 223) tab = "tabLayers";
@@ -443,6 +447,9 @@ function KeyPickerKeyboard(props: Props) {
                     <IconWireless size="sm" strokeWidth={1.2} /> {i18n.app.menu.wireless}
                   </TabsTrigger>
                 )}
+                <TabsTrigger value="tabLayerLens" variant="tab" className="text-sm [&_svg]:w-[20px] py-2" disabled={disable}>
+                  <IconLens size="sm" /> {i18n.editor.standardView.layerLens.title}
+                </TabsTrigger>
               </TabsList>
             </div>
           </div>
@@ -595,6 +602,11 @@ function KeyPickerKeyboard(props: Props) {
                 </motion.div>
               </TabsContent>
             )}
+            <TabsContent value="tabLayerLens" key="tabLayerLens">
+              <motion.div initial="hidden" animate="visible" key="tabLayerLens" variants={tabVariants}>
+                <LayerLensTab keyCode={code} onKeySelect={onKeySelect} disabled={disable} activeTab={actTab} action={action} />
+              </motion.div>
+            </TabsContent>
           </div>
         </div>
       </Tabs>
