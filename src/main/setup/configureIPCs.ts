@@ -1,5 +1,4 @@
 import { ipcMain, app, dialog, shell, nativeTheme, systemPreferences } from "electron";
-import { startLens, stopLens, isLensRunning } from "../lens-manager";
 import { uIOhook } from "uiohook-napi";
 import path from "path";
 import log from "electron-log/main";
@@ -22,9 +21,6 @@ const removeIPCs = () => {
   ipcMain.removeHandler("get-NativeTheme");
   ipcMain.removeHandler("ask-for-accessibility");
   ipcMain.removeHandler("get-defaultBackupPath");
-  ipcMain.removeHandler("lens:start");
-  ipcMain.removeHandler("lens:stop");
-  ipcMain.removeHandler("lens:status");
 };
 
 const configureIPCs = () => {
@@ -98,10 +94,6 @@ const configureIPCs = () => {
   });
 
   ipcMain.handle("get-NativeTheme", () => nativeTheme.shouldUseDarkColors);
-
-  ipcMain.handle("lens:start", () => startLens());
-  ipcMain.handle("lens:stop", () => stopLens());
-  ipcMain.handle("lens:status", () => isLensRunning());
 
   ipcMain.handle("ask-for-accessibility", async () => {
     log.verbose("someone asked for accessibility", process.platform);

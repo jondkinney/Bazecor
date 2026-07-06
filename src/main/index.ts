@@ -1,12 +1,17 @@
-import { app, BrowserWindow, Menu } from "electron";
+import { app, Menu } from "electron";
 import log from "electron-log/main";
 import createWindow from "./createWindow";
 import { setTheme } from "./setup/theme";
 import setBackup from "./setup/setBackup";
 import GlobalRecording from "./managers/GlobalRecording";
+import Window from "./managers/Window";
 import { addUSBListeners, removeUSBListeners } from "./setup/configureUSB";
 import { removeIPCs } from "./setup/configureIPCs";
 import configureAutoUpdate from "./setup/configureAutoUpdate";
+import configureLens from "./setup/configureLens";
+import configureTray, { openMainWindow } from "./setup/configureTray";
+import { getRunInBackground } from "../lens/main/lens-settings";
+import { overlayController } from "../lens/main/overlay-controller";
 
 if (process.env.NODE_ENV === "development") {
   log.transports.console.level = "verbose";
@@ -22,6 +27,16 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+// A second launch (e.g. from the login item while already tray-resident) must
+// focus the existing instance instead of spawning a second overlay/tray.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    openMainWindow();
+  });
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -29,8 +44,14 @@ app.on("ready", async () => {
   addUSBListeners();
   setBackup();
   setTheme();
-  // await setDevTools(); devtools do not work with latest electron
-  createWindow();
+  configureLens();
+  configureTray();
+  // Login-item launches pass --hidden (or wasOpenedAsHidden on macOS): start
+  // tray-resident with the overlay available but no main window.
+  const startHidden = process.argv.includes("--hidden") || app.getLoginItemSettings().wasOpenedAsHidden;
+  if (!(startHidden && getRunInBackground())) {
+    createWindow();
+  }
   // we do not want a menu on top of the window
   Menu.setApplicationMenu(null);
 });
@@ -42,12 +63,18 @@ app.on("before-quit", () => {
   removeUSBListeners();
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+app.on("will-quit", () => {
+  overlayController.shutdown();
+});
+
+// NOTE: with the Lens overlay window alive this event never fires — the real
+// "main window closed" handling lives in setup/onClose.ts. This stays as the
+// quit path for sessions where the overlay was never created.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
-    app.quit();
+    if (!getRunInBackground()) {
+      app.quit();
+    }
   } else {
     removeIPCs();
   }
@@ -56,9 +83,12 @@ app.on("window-all-closed", () => {
 app.on("activate", async () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
+  const win = Window.getWindow();
+  if (!win || win.isDestroyed()) {
     addUSBListeners();
     createWindow();
+  } else {
+    win.show();
   }
 });
 

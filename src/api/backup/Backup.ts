@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
+import { ipcRenderer } from "electron";
 import log from "electron-log/renderer";
-import { writeLensConfig } from "../../main/lens-bridge";
 import { Neuron } from "@Renderer/types/neurons";
 import { BackupType } from "@Renderer/types/backups";
 import { VirtualType } from "@Renderer/types/virtual";
@@ -192,7 +192,7 @@ export default class Backup {
           fs.mkdirSync(path.parse(fullPath).dir, { recursive: true });
         }
         fs.writeFileSync(fullPath, json);
-        writeLensConfig({ backupFolder: folder, neuronID: localBackup.neuronID, product });
+        ipcRenderer.send("lens:backup-saved", { backupFolder: folder, neuronID: localBackup.neuronID, product });
       } catch (error) {
         log.error(error);
         throw error;
@@ -229,8 +229,8 @@ export default class Backup {
       if (keymapIdx > -1) {
         const toMoveIdxs: number[] = [];
         for (let i = keymapIdx + 1; i < data.length; i += 1) {
-            const cmd = data[i]?.command;
-            if (typeof cmd === "string" && /^superkeys?\.map$/i.test(cmd)) {
+          const cmd = data[i]?.command;
+          if (typeof cmd === "string" && /^superkeys?\.map$/i.test(cmd)) {
             toMoveIdxs.push(i);
           }
         }
@@ -285,34 +285,41 @@ export default class Backup {
       try {
         log.info("Restoring all settings");
         const data = virtual.virtual;
-        
+
         // Check if we need to convert between different keyboard families
         const virtualProduct = virtual.device.info.product;
         const deviceProduct = device.device.info.product;
-        const needsRaiseConversion = (virtualProduct === "Raise" && deviceProduct === "Raise2") || 
-                                      (virtualProduct === "Raise2" && deviceProduct === "Raise");
+        const needsRaiseConversion =
+          (virtualProduct === "Raise" && deviceProduct === "Raise2") ||
+          (virtualProduct === "Raise2" && deviceProduct === "Raise");
         const needsDefySonseiConversion = virtualProduct === "Defy" && deviceProduct === "Sonsei";
-        
+
         for (const command in data) {
           if (data[command].eraseable === true) {
             // eslint-disable-next-line no-await-in-loop
             if (!(command.includes("wireless") || command.includes("led"))) {
               let commandData = data[command].data.trim();
-              
+
               // Convert keymap, colormap and palette between Raise and Raise2
               if (needsRaiseConversion) {
-                const keyboardType = device.device.info.keyboardType;
+                const { keyboardType } = device.device.info;
                 const backupKeyboardType = virtual.device.info.keyboardType;
-                
+
                 if (command === "keymap.custom") {
                   const keyLayerSize = 80;
                   const custom = parseKeymapRaw(commandData, keyLayerSize);
                   if (virtualProduct === "Raise" && deviceProduct === "Raise2") {
                     const keymapFinal = custom.map((layer: number[]) => convertKeymapRtoR2(layer, keyboardType));
-                    commandData = keymapFinal.flat().map(k => k.toString()).join(" ");
+                    commandData = keymapFinal
+                      .flat()
+                      .map(k => k.toString())
+                      .join(" ");
                   } else if (virtualProduct === "Raise2" && deviceProduct === "Raise") {
                     const keymapFinal = custom.map((layer: number[]) => convertKeymapR2toR(layer, keyboardType));
-                    commandData = keymapFinal.flat().map(k => k.toString()).join(" ");
+                    commandData = keymapFinal
+                      .flat()
+                      .map(k => k.toString())
+                      .join(" ");
                   }
                 } else if (command === "colormap.map") {
                   const sourceLayerSize = virtual.device.keyboardUnderglow.rows * virtual.device.keyboardUnderglow.columns;
@@ -321,12 +328,18 @@ export default class Backup {
                     const colormapFinal = colormap.map((layer: number[]) =>
                       convertColormapRtoR2(layer, keyboardType, backupKeyboardType),
                     );
-                    commandData = colormapFinal.flat().map(k => k.toString()).join(" ");
+                    commandData = colormapFinal
+                      .flat()
+                      .map(k => k.toString())
+                      .join(" ");
                   } else if (virtualProduct === "Raise2" && deviceProduct === "Raise") {
                     const colormapFinal = colormap.map((layer: number[]) =>
                       convertColormapR2toR(layer, keyboardType, backupKeyboardType),
                     );
-                    commandData = colormapFinal.flat().map(k => k.toString()).join(" ");
+                    commandData = colormapFinal
+                      .flat()
+                      .map(k => k.toString())
+                      .join(" ");
                   }
                 } else if (command === "palette") {
                   const isSourceRGBW = virtualProduct === "Raise2";
@@ -336,34 +349,49 @@ export default class Backup {
                       const rgbw = rgb2w(color);
                       return [rgbw.r, rgbw.g, rgbw.b, rgbw.w];
                     });
-                    commandData = paletteFinal.flat().map(v => v.toString()).join(" ");
+                    commandData = paletteFinal
+                      .flat()
+                      .map(v => v.toString())
+                      .join(" ");
                   } else if (virtualProduct === "Raise2" && deviceProduct === "Raise") {
                     const paletteFinal = palette.map(color => [color.r, color.g, color.b]);
-                    commandData = paletteFinal.flat().map(v => v.toString()).join(" ");
+                    commandData = paletteFinal
+                      .flat()
+                      .map(v => v.toString())
+                      .join(" ");
                   }
                 }
               }
-              
+
               // Convert keymap/colormap/palette between Defy and Sonsei
               if (needsDefySonseiConversion) {
                 if (command === "keymap.custom") {
                   const keyLayerSize = 80;
                   const custom = parseKeymapRaw(commandData, keyLayerSize);
                   const keymapFinal = custom.map((layer: number[]) => convertKeymapDefyToSonsei(layer));
-                  commandData = keymapFinal.flat().map(k => k.toString()).join(" ");
+                  commandData = keymapFinal
+                    .flat()
+                    .map(k => k.toString())
+                    .join(" ");
                 } else if (command === "colormap.map") {
                   const colorLayerSize = virtual.device.keyboardUnderglow.rows * virtual.device.keyboardUnderglow.columns;
                   const colormap = parseColormapRaw(commandData, colorLayerSize);
                   const colormapFinal = colormap.map((layer: number[]) => convertColormapDefyToSonsei(layer));
-                  commandData = colormapFinal.flat().map(k => k.toString()).join(" ");
+                  commandData = colormapFinal
+                    .flat()
+                    .map(k => k.toString())
+                    .join(" ");
                 } else if (command === "palette") {
                   // Defy uses RGBW, Sonsei uses RGB
                   const palette = parsePaletteRaw(commandData, true);
                   const paletteFinal = palette.map(color => [color.r, color.g, color.b]);
-                  commandData = paletteFinal.flat().map(v => v.toString()).join(" ");
+                  commandData = paletteFinal
+                    .flat()
+                    .map(v => v.toString())
+                    .join(" ");
                 }
               }
-              
+
               log.warn(`Going to send ${command} to keyboard`);
               // eslint-disable-next-line no-await-in-loop
               await device.command(command, commandData);

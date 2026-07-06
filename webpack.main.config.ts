@@ -21,6 +21,7 @@ const mainConfig: Configuration = {
     serialport: "serialport",
     "@serialport": "@serialport",
     usb: "usb",
+    "node-hid": "node-hid",
   },
 };
 

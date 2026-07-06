@@ -14,118 +14,79 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { ipcRenderer } from "electron";
-import path from "path";
-import os from "os";
-import fs from "fs";
 import { Card, CardContent, CardHeader, CardTitle } from "@Renderer/components/atoms/Card";
-import { Button } from "@Renderer/components/atoms/Button";
 import { Switch } from "@Renderer/components/atoms/Switch";
 import { Slider } from "@Renderer/components/atoms/slider";
-import { IconLens, IconLoader } from "@Renderer/components/atoms/icons";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@Renderer/components/atoms/Tooltip";
+import { IconLens } from "@Renderer/components/atoms/icons";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@Renderer/components/atoms/Tooltip";
 
-const LENS_SETTINGS_PATH = path.join(os.homedir(), ".lens", "settings.json");
-
-function readLensSettings(): Record<string, unknown> {
-  try {
-    return JSON.parse(fs.readFileSync(LENS_SETTINGS_PATH, "utf-8")) as Record<string, unknown>;
-  } catch {
-    return {};
-  }
+interface LensSettingsShape {
+  enabled: boolean;
+  opacity: number;
+  overlayAutoShow: boolean;
+  hoverMode: boolean;
 }
 
-function writeLensSettings(patch: Record<string, unknown>): void {
-  try {
-    const current = readLensSettings();
-    fs.mkdirSync(path.dirname(LENS_SETTINGS_PATH), { recursive: true });
-    fs.writeFileSync(LENS_SETTINGS_PATH, JSON.stringify({ ...current, ...patch }, null, 2));
-  } catch (err) {
-    console.error("[LayerLens] Failed to write settings:", err);
-  }
-}
-
-interface LayerLensSettingsProps {}
-
-const POLL_INTERVAL_MS = 600;
-const POLL_TIMEOUT_MS = 12000;
-
-const LayerLensSettings = ({}: LayerLensSettingsProps) => {
-  const [lensRunning, setLensRunning] = useState(false);
-  const [lensStarting, setLensStarting] = useState(false);
+const LayerLensSettings = () => {
+  const [lensEnabled, setLensEnabled] = useState(false);
   const [layerLensOnChange, setLayerLensOnChange] = useState(false);
   const [hoverMode, setHoverMode] = useState(false);
-  const [overlayTransparency, setOverlayTransparency] = useState([80]);
-  const [borderTransparency, setBorderTransparency] = useState([50]);
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [overlayTransparency, setOverlayTransparency] = useState([85]);
+  const [runInBackground, setRunInBackground] = useState(false);
 
-  const stopPolling = () => {
-    if (pollRef.current !== null) {
-      clearInterval(pollRef.current);
-      pollRef.current = null;
-    }
+  const applySettings = (s: Partial<LensSettingsShape>) => {
+    if (typeof s.enabled === "boolean") setLensEnabled(s.enabled);
+    if (typeof s.overlayAutoShow === "boolean") setLayerLensOnChange(s.overlayAutoShow);
+    if (typeof s.hoverMode === "boolean") setHoverMode(s.hoverMode);
+    if (typeof s.opacity === "number") setOverlayTransparency([Math.round(s.opacity * 100)]);
   };
 
   useEffect(() => {
-    ipcRenderer.invoke("lens:status").then((running: boolean) => {
-      setLensRunning(running);
-    }).catch(() => {});
+    ipcRenderer
+      .invoke("lens:get-settings")
+      .then((s: LensSettingsShape) => applySettings(s))
+      .catch(() => {});
+    ipcRenderer
+      .invoke("lens:get-run-in-background")
+      .then((v: boolean) => setRunInBackground(v))
+      .catch(() => {});
 
-    const s = readLensSettings();
-    if (typeof s.overlayAutoShow === "boolean") setLayerLensOnChange(s.overlayAutoShow as boolean);
-    if (typeof s.hoverMode === "boolean") setHoverMode(s.hoverMode as boolean);
-    if (typeof s.opacity === "number") setOverlayTransparency([Math.round((s.opacity as number) * 100)]);
-
-    return () => stopPolling();
+    // Keep in sync with changes made elsewhere (overlay window, tray, shortcut).
+    const onSettings = (_: unknown, s: LensSettingsShape) => applySettings(s);
+    ipcRenderer.on("lens:settings", onSettings);
+    return () => {
+      ipcRenderer.removeListener("lens:settings", onSettings);
+    };
   }, []);
 
-  const handleStartLens = async () => {
-    setLensStarting(true);
-    writeLensSettings({ overlayMode: true });
-    await ipcRenderer.invoke("lens:start");
-
-    const deadline = Date.now() + POLL_TIMEOUT_MS;
-    pollRef.current = setInterval(async () => {
-      const running: boolean = await ipcRenderer.invoke("lens:status").catch(() => false);
-      if (running || Date.now() > deadline) {
-        stopPolling();
-        setLensRunning(running);
-        setLensStarting(false);
-      }
-    }, POLL_INTERVAL_MS);
-  };
-
-  const handleStopLens = async () => {
-    stopPolling();
-    await ipcRenderer.invoke("lens:stop");
-    setLensRunning(false);
-    setLensStarting(false);
+  const handleLensEnabled = async (checked: boolean) => {
+    setLensEnabled(checked);
+    await ipcRenderer.invoke("lens:set-enabled", checked);
+    // Turning Lens on for the first time also turns on background mode (main side).
+    const bg: boolean = await ipcRenderer.invoke("lens:get-run-in-background").catch(() => runInBackground);
+    setRunInBackground(bg);
   };
 
   const handleLayerLensOnChange = (checked: boolean) => {
     setLayerLensOnChange(checked);
-    writeLensSettings({ overlayAutoShow: checked });
+    ipcRenderer.invoke("lens:set-overlay-auto-show", checked).catch(() => {});
   };
 
   const handleHoverMode = (checked: boolean) => {
     setHoverMode(checked);
-    writeLensSettings({ hoverMode: checked });
+    ipcRenderer.invoke("lens:set-hover-mode", checked).catch(() => {});
   };
 
   const handleOverlayTransparency = (value: number[]) => {
     setOverlayTransparency(value);
-    writeLensSettings({ opacity: value[0] / 100 });
+    ipcRenderer.invoke("lens:set-opacity", value[0] / 100).catch(() => {});
   };
 
-  const handleBorderTransparency = (value: number[]) => {
-    setBorderTransparency(value);
-    console.log("Overlay border transparency:", value[0]);
+  const handleRunInBackground = (checked: boolean) => {
+    setRunInBackground(checked);
+    ipcRenderer.invoke("lens:set-run-in-background", checked).catch(() => {});
   };
 
   return (
@@ -141,25 +102,21 @@ const LayerLensSettings = ({}: LayerLensSettingsProps) => {
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <label className="m-0 text-sm font-semibold tracking-tight cursor-help">
+                  <label htmlFor="lensEnabledSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
                     Layer Lens
                   </label>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="max-w-xs">Start or stop the Layer Lens overlay process.</p>
+                  <p className="max-w-xs">Shows a keyboard overlay with the active layer. Toggle it anytime with Ctrl+Alt+L.</p>
                 </TooltipContent>
               </Tooltip>
-              <Button
-                variant="config"
+              <Switch
+                id="lensEnabledSwitch"
+                checked={lensEnabled}
+                onCheckedChange={handleLensEnabled}
+                variant="default"
                 size="sm"
-                selected={lensRunning}
-                disabled={lensStarting}
-                onClick={lensRunning ? handleStopLens : handleStartLens}
-                icon={lensStarting ? <IconLoader /> : null}
-                iconDirection={lensStarting ? "left" : "none"}
-              >
-                {lensStarting ? "Starting…" : "Start Lens"}
-              </Button>
+              />
             </div>
 
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
@@ -171,8 +128,8 @@ const LayerLensSettings = ({}: LayerLensSettingsProps) => {
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
-                    Automatically shows Layer Lens for a few seconds whenever you switch to a different layer, then
-                    hides it again.
+                    Automatically shows Layer Lens for a few seconds whenever you switch to a different layer, then hides it
+                    again.
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -194,68 +151,63 @@ const LayerLensSettings = ({}: LayerLensSettingsProps) => {
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
-                    Lets you click, drag, and resize the Layer Lens overlay by hovering your mouse over it, instead of
-                    it staying click-through.
+                    Lets you click, drag, and resize the Layer Lens overlay by hovering your mouse over it, instead of it staying
+                    click-through.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+              <Switch id="hoverModeSwitch" checked={hoverMode} onCheckedChange={handleHoverMode} variant="default" size="sm" />
+            </div>
+
+            <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <label htmlFor="runInBackgroundSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
+                    Keep running in background
+                  </label>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs">
+                    Keeps Bazecor in the system tray when you close its window (and starts it at login), so Layer Lens stays
+                    available at all times.
                   </p>
                 </TooltipContent>
               </Tooltip>
               <Switch
-                id="hoverModeSwitch"
-                checked={hoverMode}
-                onCheckedChange={handleHoverMode}
+                id="runInBackgroundSwitch"
+                checked={runInBackground}
+                onCheckedChange={handleRunInBackground}
                 variant="default"
                 size="sm"
               />
             </div>
 
-            <div className="py-3 border-b-[1px] border-gray-50 dark:border-gray-700">
+            <div className="py-3">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <label htmlFor="overlayTransparencySlider" className="block mb-3 text-sm font-semibold tracking-tight cursor-help">
+                  <label
+                    htmlFor="overlayTransparencySlider"
+                    className="block mb-3 text-sm font-semibold tracking-tight cursor-help"
+                  >
                     Overlay transparency
                   </label>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="max-w-xs">Controls how see-through the Layer Lens overlay is, so it blends with whatever is behind it.</p>
+                  <p className="max-w-xs">
+                    Controls how see-through the Layer Lens overlay is, so it blends with whatever is behind it.
+                  </p>
                 </TooltipContent>
               </Tooltip>
               <Slider
                 id="overlayTransparencySlider"
                 value={overlayTransparency}
                 onValueChange={handleOverlayTransparency}
-                min={0}
+                min={10}
                 max={100}
                 step={1}
                 className="w-full"
               />
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
-                {overlayTransparency[0]}%
-              </div>
-            </div>
-
-            <div className="py-3">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <label htmlFor="borderTransparencySlider" className="block mb-3 text-sm font-semibold tracking-tight cursor-help">
-                    Overlay border transparency
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">Controls how visible the border drawn around the Layer Lens overlay is.</p>
-                </TooltipContent>
-              </Tooltip>
-              <Slider
-                id="borderTransparencySlider"
-                value={borderTransparency}
-                onValueChange={handleBorderTransparency}
-                min={0}
-                max={100}
-                step={1}
-                className="w-full"
-              />
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
-                {borderTransparency[0]}%
-              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">{overlayTransparency[0]}%</div>
             </div>
           </TooltipProvider>
         </form>
