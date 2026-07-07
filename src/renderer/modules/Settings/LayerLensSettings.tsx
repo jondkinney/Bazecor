@@ -114,15 +114,25 @@ const LayerLensSettings = () => {
             <p className="m-0 text-sm font-semibold tracking-tight text-orange-200">Input Monitoring permission required</p>
             <p className="mt-1 mb-2 text-xs text-gray-500 dark:text-gray-100">
               macOS is blocking Bazecor from receiving layer and overlay key events from your keyboard. Enable Bazecor under
-              Privacy &amp; Security → Input Monitoring, then quit and reopen the app if macOS asks you to.
+              Privacy &amp; Security → Input Monitoring, then restart Bazecor (closing the window is not enough while it runs in
+              the background).
             </p>
-            <button
-              type="button"
-              className="rounded-md px-3 py-1.5 text-xs font-semibold bg-orange-200 text-gray-25 hover:bg-orange-100 transition-colors"
-              onClick={() => ipcRenderer.send("lens:open-input-monitoring")}
-            >
-              Open System Settings
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="rounded-md px-3 py-1.5 text-xs font-semibold bg-orange-200 text-gray-25 hover:bg-orange-100 transition-colors"
+                onClick={() => ipcRenderer.send("lens:open-input-monitoring")}
+              >
+                Open System Settings
+              </button>
+              <button
+                type="button"
+                className="rounded-md px-3 py-1.5 text-xs font-semibold border border-orange-200/60 text-orange-200 hover:bg-orange-200/10 transition-colors"
+                onClick={() => ipcRenderer.send("lens:relaunch")}
+              >
+                Restart Bazecor
+              </button>
+            </div>
           </div>
         )}
         <form>

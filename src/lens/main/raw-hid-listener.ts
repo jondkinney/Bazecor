@@ -59,6 +59,7 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
   private running = false;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private lastEventTime: Record<string, number> = {};
+  private enumLogged = false;
 
   // Debounces per (source, eventType) pair so bouncy/duplicate packets from a
   // single physical press can't fire the same handler twice in quick succession.
@@ -83,9 +84,31 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
         d => d.vendorId === SONSEI_VENDOR_ID && d.productId === SONSEI_PRODUCT_ID && d.usagePage === 0xff00 && d.usage === 0x01,
       );
       if (!target || !target.path) {
-        log.verbose(
-          `[Lens/HID] Device not found (VID=0x${SONSEI_VENDOR_ID.toString(16)} PID=0x${SONSEI_PRODUCT_ID.toString(16)} usagePage=0xff00 usage=0x01)`,
-        );
+        // Once per session, dump what WAS enumerated so a platform-specific
+        // enumeration mismatch (wrong usagePage/usage, BT transport, etc.) shows
+        // up in the log instead of an endless silent retry loop.
+        if (!this.enumLogged) {
+          this.enumLogged = true;
+          const sonsei = devices
+            .filter(d => d.vendorId === SONSEI_VENDOR_ID)
+            .map(d => ({
+              productId: `0x${(d.productId ?? 0).toString(16)}`,
+              usagePage: `0x${(d.usagePage ?? 0).toString(16)}`,
+              usage: `0x${(d.usage ?? 0).toString(16)}`,
+              interface: d.interface,
+              product: d.product,
+              hasPath: !!d.path,
+            }));
+          log.info(
+            `[Lens/HID] Device not found (want VID=0x${SONSEI_VENDOR_ID.toString(16)} PID=0x${SONSEI_PRODUCT_ID.toString(16)} ` +
+              `usagePage=0xff00 usage=0x01). Enumerated ${devices.length} HID devices, ` +
+              `${sonsei.length} with Dygma VID: ${JSON.stringify(sonsei)}`,
+          );
+        } else {
+          log.verbose(
+            `[Lens/HID] Device not found (VID=0x${SONSEI_VENDOR_ID.toString(16)} PID=0x${SONSEI_PRODUCT_ID.toString(16)} usagePage=0xff00 usage=0x01)`,
+          );
+        }
         return;
       }
       try {

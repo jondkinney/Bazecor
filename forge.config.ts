@@ -115,6 +115,13 @@ const config: ForgeConfig = {
         "node-hid": "^3.1.1",
       };
 
+      if (platform === "darwin") {
+        // N-API prebuilt module used to check/request the Input Monitoring
+        // permission Layer Lens needs (its package.json restricts it to darwin,
+        // so it can't go in the common dependency list above).
+        packageJson.dependencies["node-mac-permissions"] = "^2.5.0";
+      }
+
       fs.writeFileSync(path.resolve(buildPath, "package.json"), JSON.stringify(packageJson));
       spawnSync("npm", ["install", "--omit=dev"], {
         cwd: buildPath,

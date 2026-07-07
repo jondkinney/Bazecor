@@ -6,12 +6,10 @@ import log from "electron-log/main";
 import type { LensSettings } from "../shared/types";
 import {
   isLegacyLensMigrated,
-  isRunInBackgroundUnset,
   markLegacyLensMigrated,
   sanitizeLensSettings,
   setLensKeyboard,
   setLensSettings,
-  setRunInBackground,
 } from "./lens-settings";
 
 const LENS_DIR = path.join(os.homedir(), ".lens");
@@ -102,11 +100,10 @@ export function migrateLegacyLens(): void {
   const legacySettings = readJson<Partial<LensSettings>>(LEGACY_SETTINGS_FILE);
   if (legacySettings) {
     const sanitized = sanitizeLensSettings(legacySettings);
-    // Standalone overlayMode=true meant "the user had Lens actively running as
-    // an overlay" — carry that over as the merged feature being enabled.
-    const wasActive = legacySettings.overlayMode === true;
-    setLensSettings({ ...sanitized, enabled: wasActive, overlayMode: true });
-    if (wasActive && isRunInBackgroundUnset()) setRunInBackground(true);
+    // Carry the visual preferences over, but never auto-enable: Lens stays off
+    // until the user flips the toggle in Bazecor's settings (auto-enabling also
+    // triggered the macOS permission flow without the user ever opting in).
+    setLensSettings({ ...sanitized, enabled: false, overlayMode: true });
   }
 
   const legacyConfig = readJson<LegacyLensConfig>(LEGACY_CONFIG_FILE);

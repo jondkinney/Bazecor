@@ -1,4 +1,4 @@
-import { ipcMain, shell } from "electron";
+import { app, ipcMain, shell } from "electron";
 import log from "electron-log/main";
 import type { LensKeyboardRef, LensSettings, LensState } from "../shared/types";
 import { MACOS_INPUT_MONITORING_SETTINGS_URL } from "../shared/constants";
@@ -89,6 +89,15 @@ export function registerLensIpc(onRunInBackgroundChange: (v: boolean) => void): 
   // the permission banner in Bazecor's Layer Lens settings).
   ipcMain.on("lens:open-input-monitoring", () => {
     shell.openExternal(MACOS_INPUT_MONITORING_SETTINGS_URL).catch(err => log.warn("[Lens] Could not open System Settings:", err));
+  });
+
+  // Full process relaunch — needed on macOS for a fresh Input Monitoring grant to
+  // take effect. With "run in background" on, closing the window doesn't restart
+  // the process, so the settings UI offers an explicit restart instead.
+  ipcMain.on("lens:relaunch", () => {
+    log.info("[Lens] Relaunching Bazecor (requested from Lens settings)");
+    app.relaunch();
+    app.exit(0);
   });
 
   ipcMain.handle("lens:get-run-in-background", (): boolean => getRunInBackground());

@@ -10,6 +10,7 @@ import {
   MACOS_INPUT_MONITORING_SETTINGS_URL,
 } from "../shared/constants";
 import { RawHidListener } from "./raw-hid-listener";
+import { getInputMonitoringStatus, requestInputMonitoringAccess } from "./macos-permissions";
 import { getLensKeyboard, getLensSettings, setLensSettings } from "./lens-settings";
 import { readLatestModel } from "./backup-reader";
 import {
@@ -98,6 +99,7 @@ class OverlayController {
       });
     }
     this.registerShortcut();
+    this.checkMacosPermission();
     this.hid.startWithRetry();
   }
 
@@ -112,6 +114,39 @@ class OverlayController {
     this.overlayActive = false;
     this.hid.stop();
     destroyOverlayWindow();
+    if (this.hidPermissionDenied) {
+      this.hidPermissionDenied = false;
+      broadcastState(this.getState());
+    }
+  }
+
+  /**
+   * macOS: asks TCC for the Input Monitoring status directly instead of waiting
+   * for a device-open failure (which never fires with the keyboard unplugged and
+   * doesn't always register Bazecor in the System Settings list). Fire-and-forget
+   * from enable().
+   */
+  private async checkMacosPermission(): Promise<void> {
+    if (process.platform !== "darwin") return;
+    const status = await getInputMonitoringStatus();
+    log.info(`[Lens] Input Monitoring status: ${status}`);
+    if (status === "authorized" || status === "unavailable") return;
+    if (!this.hidPermissionDenied) {
+      this.hidPermissionDenied = true;
+      broadcastState(this.getState());
+    }
+    if (status === "not determined") {
+      // Shows the native macOS prompt and registers Bazecor in the Input
+      // Monitoring list, so the user only has to flip the toggle.
+      const result = await requestInputMonitoringAccess();
+      log.info(`[Lens] Input Monitoring request result: ${result}`);
+      if (result === "authorized") {
+        this.hidPermissionDenied = false;
+        broadcastState(this.getState());
+        return;
+      }
+    }
+    this.showInputMonitoringDialog();
   }
 
   /** Called on app quit. */
@@ -267,6 +302,27 @@ class OverlayController {
   private async showInputMonitoringDialog(): Promise<void> {
     if (this.permissionDialogShown) return;
     this.permissionDialogShown = true;
+
+    // Quarantined apps launched from the DMG or Downloads run "translocated" from
+    // a randomized read-only path that changes on every launch, so TCC can never
+    // tie the Input Monitoring grant to the app — granting it has no effect until
+    // the user moves Bazecor.app into /Applications.
+    if (process.execPath.includes("/AppTranslocation/")) {
+      log.warn(`[Lens] App is translocated (${process.execPath}) — TCC grants will not stick`);
+      await dialog.showMessageBox({
+        type: "warning",
+        title: "Layer Lens",
+        message: "Move Bazecor to the Applications folder",
+        detail:
+          "Bazecor is running from a temporary location (macOS App Translocation), " +
+          "so macOS cannot remember the Input Monitoring permission Layer Lens needs.\n\n" +
+          "Quit Bazecor, drag Bazecor.app into the Applications folder, open it from " +
+          "there, and enable Layer Lens again.",
+        buttons: ["OK"],
+      });
+      return;
+    }
+
     const { response } = await dialog.showMessageBox({
       type: "warning",
       title: "Layer Lens",
@@ -275,8 +331,10 @@ class OverlayController {
         "macOS requires your approval before Bazecor can receive layer changes and " +
         "overlay key events from your Dygma keyboard.\n\n" +
         "In System Settings, go to Privacy & Security → Input Monitoring and enable " +
-        "Bazecor. If macOS asks you to quit and reopen the app, do so — Layer Lens " +
-        "will work right after.",
+        "Bazecor.\n\n" +
+        "Then restart Bazecor completely: closing the window is not enough while it " +
+        "keeps running in the menu bar — use the tray icon to quit, or the Restart " +
+        "button in Bazecor's Layer Lens settings.",
       buttons: ["Open System Settings", "Not Now"],
       defaultId: 0,
       cancelId: 1,

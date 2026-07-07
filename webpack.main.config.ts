@@ -22,6 +22,7 @@ const mainConfig: Configuration = {
     "@serialport": "@serialport",
     usb: "usb",
     "node-hid": "node-hid",
+    "node-mac-permissions": "node-mac-permissions",
   },
 };
 

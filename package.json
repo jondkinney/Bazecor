@@ -193,6 +193,9 @@
     "xstate": "^5.13.0",
     "zod": "^3.23.8"
   },
+  "optionalDependencies": {
+    "node-mac-permissions": "^2.5.0"
+  },
   "build": {
     "appId": "com.dygmalab.bazecor",
     "artifactName": "${productName}-${version}.${ext}",
