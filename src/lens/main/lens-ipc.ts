@@ -1,5 +1,7 @@
-import { ipcMain } from "electron";
+import { ipcMain, shell } from "electron";
+import log from "electron-log/main";
 import type { LensKeyboardRef, LensSettings, LensState } from "../shared/types";
+import { MACOS_INPUT_MONITORING_SETTINGS_URL } from "../shared/constants";
 import { getLensSettings, getRunInBackground, isRunInBackgroundUnset, setLensKeyboard, setLensSettings } from "./lens-settings";
 import { overlayController } from "./overlay-controller";
 import {
@@ -81,6 +83,12 @@ export function registerLensIpc(onRunInBackgroundChange: (v: boolean) => void): 
     const s = setLensSettings({ overlayAutoShow: v });
     broadcastSettings(s);
     return s;
+  });
+
+  // macOS: opens System Settings → Privacy & Security → Input Monitoring (used by
+  // the permission banner in Bazecor's Layer Lens settings).
+  ipcMain.on("lens:open-input-monitoring", () => {
+    shell.openExternal(MACOS_INPUT_MONITORING_SETTINGS_URL).catch(err => log.warn("[Lens] Could not open System Settings:", err));
   });
 
   ipcMain.handle("lens:get-run-in-background", (): boolean => getRunInBackground());

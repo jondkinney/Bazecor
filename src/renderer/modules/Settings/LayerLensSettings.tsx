@@ -29,12 +29,17 @@ interface LensSettingsShape {
   hoverMode: boolean;
 }
 
+interface LensStateShape {
+  hidPermissionDenied?: boolean;
+}
+
 const LayerLensSettings = () => {
   const [lensEnabled, setLensEnabled] = useState(false);
   const [layerLensOnChange, setLayerLensOnChange] = useState(false);
   const [hoverMode, setHoverMode] = useState(false);
   const [overlayTransparency, setOverlayTransparency] = useState([85]);
   const [runInBackground, setRunInBackground] = useState(false);
+  const [hidPermissionDenied, setHidPermissionDenied] = useState(false);
 
   const applySettings = (s: Partial<LensSettingsShape>) => {
     if (typeof s.enabled === "boolean") setLensEnabled(s.enabled);
@@ -52,12 +57,19 @@ const LayerLensSettings = () => {
       .invoke("lens:get-run-in-background")
       .then((v: boolean) => setRunInBackground(v))
       .catch(() => {});
+    ipcRenderer
+      .invoke("lens:get-state")
+      .then((s: LensStateShape) => setHidPermissionDenied(!!s.hidPermissionDenied))
+      .catch(() => {});
 
     // Keep in sync with changes made elsewhere (overlay window, tray, shortcut).
     const onSettings = (_: unknown, s: LensSettingsShape) => applySettings(s);
+    const onState = (_: unknown, s: LensStateShape) => setHidPermissionDenied(!!s.hidPermissionDenied);
     ipcRenderer.on("lens:settings", onSettings);
+    ipcRenderer.on("lens:state", onState);
     return () => {
       ipcRenderer.removeListener("lens:settings", onSettings);
+      ipcRenderer.removeListener("lens:state", onState);
     };
   }, []);
 
@@ -97,6 +109,22 @@ const LayerLensSettings = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {hidPermissionDenied && (
+          <div className="mb-3 rounded-md border border-orange-200/60 bg-orange-100/40 dark:border-orange-200/30 dark:bg-orange-200/10 p-3">
+            <p className="m-0 text-sm font-semibold tracking-tight text-orange-200">Input Monitoring permission required</p>
+            <p className="mt-1 mb-2 text-xs text-gray-500 dark:text-gray-100">
+              macOS is blocking Bazecor from receiving layer and overlay key events from your keyboard. Enable Bazecor under
+              Privacy &amp; Security → Input Monitoring, then quit and reopen the app if macOS asks you to.
+            </p>
+            <button
+              type="button"
+              className="rounded-md px-3 py-1.5 text-xs font-semibold bg-orange-200 text-gray-25 hover:bg-orange-100 transition-colors"
+              onClick={() => ipcRenderer.send("lens:open-input-monitoring")}
+            >
+              Open System Settings
+            </button>
+          </div>
+        )}
         <form>
           <TooltipProvider delayDuration={200}>
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">

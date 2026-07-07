@@ -1,13 +1,20 @@
-import { globalShortcut } from "electron";
+import { dialog, globalShortcut, shell } from "electron";
 import log from "electron-log/main";
 import GlobalRecording from "../../main/managers/GlobalRecording";
 import type { KeyboardModel, LensState } from "../shared/types";
-import { OVERLAY_EVENT_TAP, OVERLAY_EVENT_HOLD, OVERLAY_EVENT_RELEASE, OVERLAY_EVENT_DOUBLE_TAP } from "../shared/constants";
+import {
+  OVERLAY_EVENT_TAP,
+  OVERLAY_EVENT_HOLD,
+  OVERLAY_EVENT_RELEASE,
+  OVERLAY_EVENT_DOUBLE_TAP,
+  MACOS_INPUT_MONITORING_SETTINGS_URL,
+} from "../shared/constants";
 import { RawHidListener } from "./raw-hid-listener";
 import { getLensKeyboard, getLensSettings, setLensSettings } from "./lens-settings";
 import { readLatestModel } from "./backup-reader";
 import {
   broadcastSettings,
+  broadcastState,
   createOverlayWindow,
   destroyOverlayWindow,
   hideOverlay,
@@ -46,6 +53,11 @@ class OverlayController {
 
   private layerChangeHideTimer: ReturnType<typeof setTimeout> | null = null;
 
+  private hidPermissionDenied = false;
+
+  // Shown at most once per enable so the 2s HID retry loop can't spam dialogs.
+  private permissionDialogShown = false;
+
   isEnabled(): boolean {
     return this.enabled;
   }
@@ -55,6 +67,7 @@ class OverlayController {
       model: this.currentModel,
       activeLayer: this.activeLayer,
       configFound: getLensKeyboard() !== null,
+      hidPermissionDenied: this.hidPermissionDenied,
     };
   }
 
@@ -67,6 +80,9 @@ class OverlayController {
   enable(): void {
     if (this.enabled) return;
     this.enabled = true;
+    // Re-enabling is an explicit user action — let the permission dialog show
+    // again if the grant is still missing.
+    this.permissionDialogShown = false;
     log.info("[Lens] Enabling overlay");
     this.wireHidEvents();
     this.reloadModel(false);
@@ -141,6 +157,21 @@ class OverlayController {
   private wireHidEvents(): void {
     if (this.hidWired) return;
     this.hidWired = true;
+
+    this.hid.on("permission-denied", () => {
+      if (!this.hidPermissionDenied) {
+        this.hidPermissionDenied = true;
+        broadcastState(this.getState());
+      }
+      this.showInputMonitoringDialog();
+    });
+
+    this.hid.on("connected", () => {
+      if (this.hidPermissionDenied) {
+        this.hidPermissionDenied = false;
+        broadcastState(this.getState());
+      }
+    });
 
     this.hid.on("layer-change", ({ layer }) => {
       this.activeLayer = layer;
@@ -231,6 +262,30 @@ class OverlayController {
       this.layerAutoShowActive = false;
       hideOverlay();
     }, LAYER_CHANGE_AUTO_HIDE_MS);
+  }
+
+  private async showInputMonitoringDialog(): Promise<void> {
+    if (this.permissionDialogShown) return;
+    this.permissionDialogShown = true;
+    const { response } = await dialog.showMessageBox({
+      type: "warning",
+      title: "Layer Lens",
+      message: "Layer Lens needs the Input Monitoring permission",
+      detail:
+        "macOS requires your approval before Bazecor can receive layer changes and " +
+        "overlay key events from your Dygma keyboard.\n\n" +
+        "In System Settings, go to Privacy & Security → Input Monitoring and enable " +
+        "Bazecor. If macOS asks you to quit and reopen the app, do so — Layer Lens " +
+        "will work right after.",
+      buttons: ["Open System Settings", "Not Now"],
+      defaultId: 0,
+      cancelId: 1,
+    });
+    if (response === 0) {
+      shell
+        .openExternal(MACOS_INPUT_MONITORING_SETTINGS_URL)
+        .catch(err => log.warn("[Lens] Could not open System Settings:", err));
+    }
   }
 
   // A layer-change back to the model's default (resting) layer is the release of

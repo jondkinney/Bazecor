@@ -39,6 +39,9 @@ type RawHidEvents = {
   "layer-change": [event: LayerEvent];
   connected: [];
   disconnected: [];
+  /** macOS: the device is plugged in but TCC blocked the open (Input Monitoring
+   * not granted). Fired on every failed retry; consumers must dedupe. */
+  "permission-denied": [];
 };
 
 const RECONNECT_INTERVAL_MS = 2000;
@@ -85,8 +88,24 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
         );
         return;
       }
+      try {
+        this.device = new HID.HID(target.path);
+      } catch (openErr) {
+        // The device is enumerable but won't open. On macOS the raw HID collection
+        // lives on an IOHIDDevice that also exposes keyboard usages, so TCC blocks
+        // IOHIDDeviceOpen until the user grants Bazecor the Input Monitoring
+        // permission — by far the most likely cause of this failure on darwin.
+        // (The failed attempt also makes macOS add Bazecor to the Input Monitoring
+        // list in System Settings, so the user only has to flip the toggle.)
+        if (process.platform === "darwin") {
+          log.warn(`[Lens/HID] Open blocked (Input Monitoring permission missing?): ${openErr}`);
+          this.emit("permission-denied");
+        } else {
+          log.warn(`[Lens/HID] Cannot open device: ${openErr}`);
+        }
+        return;
+      }
       log.info(`[Lens/HID] Device opened: ${target.path}`);
-      this.device = new HID.HID(target.path);
       this.running = true;
       this.emit("connected");
       this.device.on("data", (buf: Buffer) => this.onData(buf));

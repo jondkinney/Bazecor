@@ -45,6 +45,9 @@ export interface LensState {
   model: KeyboardModel | null;
   activeLayer: number;
   configFound: boolean;
+  /** macOS only: the raw HID device exists but opening it was blocked by TCC
+   * (Input Monitoring permission not granted to Bazecor). */
+  hidPermissionDenied: boolean;
 }
 
 export interface DecodedKey {

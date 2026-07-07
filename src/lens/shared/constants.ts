@@ -23,3 +23,6 @@ export const OVERLAY_EVENT_DOUBLE_TAP = 0x03;
 // HID report ID for the Raw HID / vendor interface (firmware HID_REPORTID_RAWHID).
 // USB HID prepends this ID at buf[0]; BLE HID strips it.
 export const SONSEI_RAW_HID_REPORT_ID = 5;
+
+// Deep link to System Settings → Privacy & Security → Input Monitoring.
+export const MACOS_INPUT_MONITORING_SETTINGS_URL = "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent";

@@ -291,6 +291,14 @@ export function pushState(state: LensState): void {
   if (overlayAlive()) getWin()!.webContents.send("lens:state", state);
 }
 
+/** Sends state to the overlay AND the main Bazecor window (used for changes the
+ * settings UI must react to, e.g. the macOS Input Monitoring permission banner). */
+export function broadcastState(state: LensState): void {
+  pushState(state);
+  const main = Window.getWindow();
+  if (main && !main.isDestroyed()) main.webContents.send("lens:state", state);
+}
+
 /** Sends settings to the overlay AND the main Bazecor window so both UIs stay in sync. */
 export function broadcastSettings(settings: LensSettings): void {
   if (overlayAlive()) getWin()!.webContents.send("lens:settings", settings);
