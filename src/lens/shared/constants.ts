@@ -5,6 +5,63 @@ export const SONSEI_KEYS_PER_LAYER = 60;
 export const SONSEI_COLOR_LAYER_SIZE = 56;
 export const SONSEI_PALETTE_SIZE = 16;
 
+/**
+ * Every keyboard Lens can visualize. Centralizes the per-product bits that used
+ * to be Sonsei-only constants: the USB IDs used to detect the device over raw
+ * HID, how many keys/LEDs a backup layer holds, and whether the palette is RGB
+ * (3 bytes) or RGBW (4 bytes, e.g. Defy). Add a row here to support a new board
+ * (Raise 2 next). `productIds` lists every app-mode PID (wired + wireless).
+ *
+ * keysPerLayer/colorLayerSize verified against real backups:
+ *   Sonsei: 60 keys, 56 LEDs, RGB.   Defy: 80 keys, 178 LEDs, RGBW.
+ */
+export type LensProduct = "Sonsei" | "Defy" | "Raise2";
+
+export interface LensProductSpec {
+  product: LensProduct;
+  vendorId: number;
+  productIds: number[];
+  keysPerLayer: number;
+  colorLayerSize: number;
+  paletteFormat: "rgb" | "rgbw";
+}
+
+export const LENS_PRODUCTS: LensProductSpec[] = [
+  {
+    product: "Sonsei",
+    vendorId: SONSEI_VENDOR_ID,
+    productIds: [0x0031],
+    keysPerLayer: 60,
+    colorLayerSize: 56,
+    paletteFormat: "rgb",
+  },
+  {
+    product: "Defy",
+    vendorId: 0x35ef,
+    productIds: [0x0010, 0x0012],
+    keysPerLayer: 80,
+    colorLayerSize: 178,
+    paletteFormat: "rgbw",
+  },
+  // Raise2: fill in PIDs / keysPerLayer / colorLayerSize when available.
+];
+
+/** Lookup a product's spec by its Bazecor `product` name (case-insensitive). */
+export function getProductSpec(product: string): LensProductSpec | undefined {
+  return LENS_PRODUCTS.find(p => p.product.toLowerCase() === product.toLowerCase());
+}
+
+/** Match an enumerated HID device (VID/PID) to a supported product, or null. */
+export function productForUsbIds(vendorId: number, productId: number): LensProduct | null {
+  const spec = LENS_PRODUCTS.find(p => p.vendorId === vendorId && p.productIds.includes(productId));
+  return spec ? spec.product : null;
+}
+
+/** True if Lens knows how to visualize this Bazecor product. */
+export function isSupportedLensProduct(product: string | undefined): boolean {
+  return !!product && getProductSpec(product) !== undefined;
+}
+
 export const LENS_CONFIG_PATH_SEGMENTS = [".lens", "lens-config.json"];
 
 export const OVERLAY_MAGIC_BYTE = 0xaa;

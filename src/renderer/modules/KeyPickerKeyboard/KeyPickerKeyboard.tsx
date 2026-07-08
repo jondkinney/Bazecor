@@ -291,6 +291,13 @@ function KeyPickerKeyboard(props: Props) {
   const [keymapDB] = useState(new KeymapDB());
   const store = Store.getStore();
   const sk20 = Boolean(store.get("capabilities.sk20"));
+  // Layer Lens is available for Sonsei (fw >= 1.0.0) and Defy (fw >= 2.3.0) — see App.tsx,
+  // which writes capabilities.lens on connect. Raise2 and Raise (Raise1) never set the flag,
+  // so the Layer Lens tab stays hidden for them in both the Layout Editor and Superkeys view.
+  const lensCapabilityRaw = store.get("capabilities.lens");
+  const isLensAvailable =
+    lensCapabilityRaw === true || lensCapabilityRaw === "true" || lensCapabilityRaw === 1 || lensCapabilityRaw === "1";
+  log.info(`[Lens] KeyPickerKeyboard render -> capabilities.lens: ${lensCapabilityRaw}, showLayerLensTab: ${isLensAvailable}`);
 
   const { tabs, disable, currentTab, customModal } = state;
 
@@ -303,7 +310,7 @@ function KeyPickerKeyboard(props: Props) {
     tabList.push("tabMedia");
     tabList.push("tabMouse");
     if (isWireless) tabList.push("tabWireless");
-    tabList.push("tabLayerLens");
+    if (isLensAvailable) tabList.push("tabLayerLens");
 
     const lstate = { ...state };
     lstate.tabs = tabList;
@@ -447,9 +454,11 @@ function KeyPickerKeyboard(props: Props) {
                     <IconWireless size="sm" strokeWidth={1.2} /> {i18n.app.menu.wireless}
                   </TabsTrigger>
                 )}
-                <TabsTrigger value="tabLayerLens" variant="tab" className="text-sm [&_svg]:w-[20px] py-2" disabled={disable}>
-                  <IconLens size="sm" /> {i18n.editor.standardView.layerLens.title}
-                </TabsTrigger>
+                {isLensAvailable && (
+                  <TabsTrigger value="tabLayerLens" variant="tab" className="text-sm [&_svg]:w-[20px] py-2" disabled={disable}>
+                    <IconLens size="sm" /> {i18n.editor.standardView.layerLens.title}
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
           </div>
@@ -602,11 +611,13 @@ function KeyPickerKeyboard(props: Props) {
                 </motion.div>
               </TabsContent>
             )}
-            <TabsContent value="tabLayerLens" key="tabLayerLens">
-              <motion.div initial="hidden" animate="visible" key="tabLayerLens" variants={tabVariants}>
-                <LayerLensTab keyCode={code} onKeySelect={onKeySelect} disabled={disable} activeTab={actTab} action={action} />
-              </motion.div>
-            </TabsContent>
+            {isLensAvailable && (
+              <TabsContent value="tabLayerLens" key="tabLayerLens">
+                <motion.div initial="hidden" animate="visible" key="tabLayerLens" variants={tabVariants}>
+                  <LayerLensTab keyCode={code} onKeySelect={onKeySelect} disabled={disable} activeTab={actTab} action={action} />
+                </motion.div>
+              </TabsContent>
+            )}
           </div>
         </div>
       </Tabs>

@@ -84,6 +84,14 @@ const GeneralSettings = ({
   const [versionDialog, setVersionDialog] = useState(false);
   const { state } = useDevice();
 
+  // Layer Lens is available for Sonsei (fw >= 1.0.0) and Defy (fw >= 2.3.0). The
+  // capability is written to the store on connect (see App.tsx onKeyboardConnect).
+  // Raise2 and Raise (Raise1) never set this flag, so the section stays hidden.
+  const lensCapabilityRaw = store.get("capabilities.lens");
+  const isLensAvailable =
+    lensCapabilityRaw === true || lensCapabilityRaw === "true" || lensCapabilityRaw === 1 || lensCapabilityRaw === "1";
+  log.info(`[Lens] GeneralSettings render -> capabilities.lens: ${lensCapabilityRaw}, showLayerLensSettings: ${isLensAvailable}`);
+
   useEffect(() => {
     setSelectedLanguage(getLanguage(store.get("settings.language") as string));
   }, []);
@@ -205,7 +213,7 @@ const GeneralSettings = ({
           />
         </CardContent>
       </Card>
-      <LayerLensSettings />
+      {isLensAvailable && <LayerLensSettings />}
       <Card className="mt-3 max-w-2xl mx-auto" variant="default">
         <CardHeader>
           <CardTitle variant="default">

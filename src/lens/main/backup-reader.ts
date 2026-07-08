@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import type { KeyboardModel, LensKeyboardRef } from "../shared/types";
-import { SONSEI_KEYS_PER_LAYER, SONSEI_COLOR_LAYER_SIZE } from "../shared/constants";
-import { parseKeymap, parsePaletteRGB, parseColormap, parseSuperkeys, parseNames } from "./parsers";
+import { SONSEI_KEYS_PER_LAYER, SONSEI_COLOR_LAYER_SIZE, getProductSpec } from "../shared/constants";
+import { parseKeymap, parsePaletteRGB, parsePaletteRGBW, parseColormap, parseSuperkeys, parseNames } from "./parsers";
 
 interface BazecorNeuronLayer {
   id: number;
@@ -31,28 +31,13 @@ function getCommandData(backup: BazecorBackup, command: string): string {
   return backup.backup.find(e => e.command === command)?.data ?? "";
 }
 
-function keysPerLayer(product: string): number {
-  switch (product.toLowerCase()) {
-    case "sonsei":
-      return SONSEI_KEYS_PER_LAYER;
-    default:
-      return SONSEI_KEYS_PER_LAYER;
-  }
-}
-
-function colorLayerSize(product: string): number {
-  switch (product.toLowerCase()) {
-    case "sonsei":
-      return SONSEI_COLOR_LAYER_SIZE;
-    default:
-      return SONSEI_COLOR_LAYER_SIZE;
-  }
-}
-
 export function parseBackupToModel(backupRaw: string, product: string): KeyboardModel {
   const backup = JSON.parse(backupRaw) as BazecorBackup;
-  const kpl = keysPerLayer(product);
-  const cls = colorLayerSize(product);
+  // Per-product layout metrics; unknown products fall back to Sonsei (RGB).
+  const spec = getProductSpec(product);
+  const kpl = spec?.keysPerLayer ?? SONSEI_KEYS_PER_LAYER;
+  const cls = spec?.colorLayerSize ?? SONSEI_COLOR_LAYER_SIZE;
+  const parsePalette = spec?.paletteFormat === "rgbw" ? parsePaletteRGBW : parsePaletteRGB;
 
   const keymapRaw = getCommandData(backup, "keymap.custom");
   const paletteRaw = getCommandData(backup, "palette");
@@ -82,8 +67,9 @@ export function parseBackupToModel(backupRaw: string, product: string): Keyboard
       .map(m => m.name ?? "") ?? parseNames(getCommandData(backup, "macros.names"));
 
   return {
+    product,
     keymap: parseKeymap(keymapRaw, kpl),
-    palette: parsePaletteRGB(paletteRaw),
+    palette: parsePalette(paletteRaw),
     colormap: parseColormap(colormapRaw, cls),
     defaultLayer: parseInt(defaultLayerRaw.trim() || "0", 10),
     superkeys: parseSuperkeys(superkeysRaw),

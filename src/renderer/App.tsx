@@ -238,12 +238,28 @@ function App() {
         if (detected) {
           log.info("SK 2.0 detected");
         }
+
+        // Layer Lens is available for Sonsei (fw >= 1.0.0) and Defy (fw >= 2.3.0,
+        // when the overlay HID feature shipped in Defy firmware). Raise2 and Raise
+        // (Raise1) never expose Lens, regardless of firmware.
+        const sonseiLensMin: [number, number, number] = [1, 0, 0];
+        const defyLensMin: [number, number, number] = [2, 3, 0];
+        const lensAvailable =
+          (isSonsei && compareSemver(semver, sonseiLensMin) >= 0) || (isDefy && compareSemver(semver, defyLensMin) >= 0);
+        store.set("capabilities.lens", lensAvailable);
+        log.info(
+          `[Lens] capability check -> product: ${product}, firmware: ${semver.join(".")}, isSonsei: ${isSonsei}, isDefy: ${isDefy}, lensAvailable: ${lensAvailable}`,
+        );
       } else {
         store.set("capabilities.sk20", false);
+        store.set("capabilities.lens", false);
+        log.info(`[Lens] capability disabled (missing semver or product). semver: ${semver}, product: ${product}`);
       }
     } catch (e) {
       log.warn("Error reading or parsing firmware version", e);
       store.set("capabilities.sk20", false);
+      store.set("capabilities.lens", false);
+      log.info("[Lens] capability disabled due to firmware version read/parse error");
     }
 
     setConnected(true);

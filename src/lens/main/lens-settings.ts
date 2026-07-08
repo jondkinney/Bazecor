@@ -31,7 +31,18 @@ export function sanitizeLensSettings(s: Partial<LensSettings>): LensSettings {
 
 function readState(): LensStoreState {
   const raw = Store.getStore().get("lens");
-  return { ...sanitizeLensSettings(raw ?? {}), keyboard: raw?.keyboard, migratedFromStandalone: raw?.migratedFromStandalone };
+  // Migrate the legacy single `keyboard` ref into the per-product `keyboards` map
+  // the first time we see it, so old installs keep their stored Sonsei board.
+  let keyboards = raw?.keyboards;
+  if (!keyboards && raw?.keyboard?.product) {
+    keyboards = { [raw.keyboard.product]: raw.keyboard };
+  }
+  return {
+    ...sanitizeLensSettings(raw ?? {}),
+    keyboard: raw?.keyboard,
+    keyboards,
+    migratedFromStandalone: raw?.migratedFromStandalone,
+  };
 }
 
 function writeState(state: LensStoreState): void {
@@ -49,13 +60,35 @@ export function setLensSettings(updates: Partial<LensSettings>): LensSettings {
   return sanitizeLensSettings(next);
 }
 
-export function getLensKeyboard(): LensKeyboardRef | null {
-  const kb = readState().keyboard;
-  return kb && kb.backupFolder && kb.neuronID && kb.product ? kb : null;
+function isValidRef(kb: LensKeyboardRef | undefined): kb is LensKeyboardRef {
+  return !!kb && !!kb.backupFolder && !!kb.neuronID && !!kb.product;
+}
+
+/** Backup ref for a specific product ("Sonsei", "Defy", …), or null if unknown. */
+export function getLensKeyboard(product: string): LensKeyboardRef | null {
+  const kb = readState().keyboards?.[product];
+  return isValidRef(kb) ? kb : null;
+}
+
+/** All stored per-product backup refs. */
+export function getAllLensKeyboards(): Record<string, LensKeyboardRef> {
+  const map = readState().keyboards ?? {};
+  const out: Record<string, LensKeyboardRef> = {};
+  for (const [product, kb] of Object.entries(map)) {
+    if (isValidRef(kb)) out[product] = kb;
+  }
+  return out;
+}
+
+/** True if any keyboard has ever been registered with Lens. */
+export function hasAnyLensKeyboard(): boolean {
+  return Object.keys(getAllLensKeyboards()).length > 0;
 }
 
 export function setLensKeyboard(keyboard: LensKeyboardRef): void {
-  writeState({ ...readState(), keyboard });
+  const state = readState();
+  const keyboards = { ...(state.keyboards ?? {}), [keyboard.product]: keyboard };
+  writeState({ ...state, keyboards });
 }
 
 export function isLegacyLensMigrated(): boolean {

@@ -121,7 +121,7 @@ export function App() {
         <div className="centered" style={{ flexDirection: "column", gap: 12 }}>
           <div style={{ fontSize: 22, fontWeight: 700, color: "#eef2f7" }}>Waiting for Bazecor…</div>
           <div style={{ fontSize: 14, color: "#6b7280", maxWidth: 320, textAlign: "center" }}>
-            Open Bazecor with a Sonsei keyboard connected to generate the config file.
+            Open Bazecor with a Dygma keyboard connected to generate the config file.
           </div>
         </div>
       </div>

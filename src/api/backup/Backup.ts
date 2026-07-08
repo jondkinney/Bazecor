@@ -21,6 +21,7 @@ import {
   parsePaletteRaw,
 } from "../parsers";
 import { rgb2w } from "../color";
+import { isSupportedLensProduct } from "../../lens/shared/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const glob = require(`glob`);
@@ -192,7 +193,16 @@ export default class Backup {
           fs.mkdirSync(path.parse(fullPath).dir, { recursive: true });
         }
         fs.writeFileSync(fullPath, json);
-        ipcRenderer.send("lens:backup-saved", { backupFolder: folder, neuronID: localBackup.neuronID, product });
+        // Notify Layer Lens for every board it can visualize (Sonsei, Defy, …).
+        // Lens stores the ref per product and only displays it when that board is
+        // the active (last-connected) device, so an idle Defy backup is harmless.
+        // Unsupported products (e.g. Raise1) are still skipped.
+        if (isSupportedLensProduct(product)) {
+          log.info(`[Lens] backup saved for ${product} -> notifying Lens (neuronID: ${localBackup.neuronID})`);
+          ipcRenderer.send("lens:backup-saved", { backupFolder: folder, neuronID: localBackup.neuronID, product });
+        } else {
+          log.info(`[Lens] backup saved for ${product} -> not a Lens-supported board, ignored`);
+        }
       } catch (error) {
         log.error(error);
         throw error;

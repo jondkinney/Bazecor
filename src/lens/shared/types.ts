@@ -7,6 +7,9 @@ export interface PaletteColor {
 }
 
 export interface KeyboardModel {
+  /** Bazecor product name this model was parsed from (e.g. "Sonsei", "Defy").
+   * Drives which keyboard geometry the renderer draws. */
+  product: string;
   keymap: number[][];
   palette: PaletteColor[];
   colormap: number[][];
@@ -37,7 +40,12 @@ export interface LensSettings {
 
 /** Shape of the `lens` key persisted in Bazecor's electron-store. */
 export interface LensStoreState extends LensSettings {
+  /** Legacy single-keyboard ref (Sonsei-only Lens). Kept for one-time migration
+   * into `keyboards`; new code writes/reads `keyboards`. */
   keyboard?: LensKeyboardRef;
+  /** Per-product backup refs, keyed by Bazecor product name ("Sonsei", "Defy", …).
+   * Lens reads the ref for whichever keyboard is currently the active device. */
+  keyboards?: Record<string, LensKeyboardRef>;
   migratedFromStandalone?: boolean;
 }
 
@@ -45,6 +53,9 @@ export interface LensState {
   model: KeyboardModel | null;
   activeLayer: number;
   configFound: boolean;
+  /** Product name of the keyboard currently driving the overlay (last connected),
+   * or null when none is active. */
+  activeProduct: string | null;
   /** macOS only: the raw HID device exists but opening it was blocked by TCC
    * (Input Monitoring permission not granted to Bazecor). */
   hidPermissionDenied: boolean;

@@ -1,7 +1,7 @@
 import { app, ipcMain, shell } from "electron";
 import log from "electron-log/main";
 import type { LensKeyboardRef, LensSettings, LensState } from "../shared/types";
-import { MACOS_INPUT_MONITORING_SETTINGS_URL } from "../shared/constants";
+import { MACOS_INPUT_MONITORING_SETTINGS_URL, isSupportedLensProduct } from "../shared/constants";
 import { getLensSettings, getRunInBackground, isRunInBackgroundUnset, setLensKeyboard, setLensSettings } from "./lens-settings";
 import { overlayController } from "./overlay-controller";
 import {
@@ -110,8 +110,16 @@ export function registerLensIpc(onRunInBackgroundChange: (v: boolean) => void): 
   // Fired by the Bazecor renderer (Backup.ts) right after a backup is written to
   // disk — replaces the old ~/.lens/lens-config.json file bridge.
   ipcMain.on("lens:backup-saved", (_, keyboard: LensKeyboardRef) => {
+    // Defensive guard: only accept boards Lens knows how to visualize. Even though
+    // the renderer (Backup.ts) already filters this, we double-check here so a
+    // stray/unsupported backup can never repoint Lens at the wrong device.
+    if (!isSupportedLensProduct(keyboard?.product)) {
+      log.info(`[Lens] lens:backup-saved ignored for unsupported product "${keyboard?.product}"`);
+      return;
+    }
+    log.info(`[Lens] lens:backup-saved accepted for ${keyboard.product} (neuronID: ${keyboard.neuronID}) -> stored`);
     setLensKeyboard(keyboard);
-    overlayController.reloadModel();
+    overlayController.reloadForSavedBackup(keyboard.product);
   });
 
   // Overlay drag / resize in hover mode.

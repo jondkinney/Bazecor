@@ -11,7 +11,7 @@ import {
 } from "../shared/constants";
 import { RawHidListener } from "./raw-hid-listener";
 import { getInputMonitoringStatus, requestInputMonitoringAccess } from "./macos-permissions";
-import { getLensKeyboard, getLensSettings, setLensSettings } from "./lens-settings";
+import { getAllLensKeyboards, getLensKeyboard, getLensSettings, hasAnyLensKeyboard, setLensSettings } from "./lens-settings";
 import { readLatestModel } from "./backup-reader";
 import {
   broadcastSettings,
@@ -46,6 +46,10 @@ class OverlayController {
 
   private currentModel: KeyboardModel | null = null;
 
+  // Product name of the board currently shown (last-connected wins). Set by the
+  // HID listener's active-changed event; drives which stored backup we load.
+  private currentProduct: string | null = null;
+
   private activeLayer = 0;
 
   private holdKeyActive = false;
@@ -67,7 +71,8 @@ class OverlayController {
     return {
       model: this.currentModel,
       activeLayer: this.activeLayer,
-      configFound: getLensKeyboard() !== null,
+      configFound: hasAnyLensKeyboard(),
+      activeProduct: this.currentProduct,
       hidPermissionDenied: this.hidPermissionDenied,
     };
   }
@@ -158,20 +163,65 @@ class OverlayController {
   }
 
   /**
-   * Re-reads the newest backup for the stored keyboard and pushes it to the
-   * overlay. Called at startup and every time Bazecor saves a backup.
+   * Re-reads the newest backup for the active keyboard and pushes it to the
+   * overlay. Called at startup, when the active board changes (active-changed),
+   * and every time Bazecor saves a backup for the active board.
+   *
+   * "Active" is whichever keyboard the HID listener currently tracks (last
+   * connected). Before any board is detected we preload the sole registered
+   * keyboard, if exactly one, so re-enabling Lens shows it without a flash.
    */
   reloadModel(push = true): void {
-    const keyboard = getLensKeyboard();
-    if (!keyboard) return;
-    const model = readLatestModel(keyboard);
-    if (!model) return;
+    const product = this.currentProduct ?? this.hid.getActiveProduct();
+
+    if (!product) {
+      const all = getAllLensKeyboards();
+      const only = Object.keys(all).length === 1 ? Object.values(all)[0] : null;
+      if (!only) return;
+      const model = readLatestModel(only);
+      if (!model) return;
+      this.currentProduct = only.product;
+      this.currentModel = model;
+      this.activeLayer = model.defaultLayer;
+      if (push) {
+        pushModel(model);
+        pushActiveLayer(this.activeLayer);
+      }
+      return;
+    }
+
+    this.currentProduct = product;
+    const keyboard = getLensKeyboard(product);
+    const model = keyboard ? readLatestModel(keyboard) : null;
+    if (!model) {
+      // Active board has no stored backup yet (or it failed to read): clear the
+      // view so the renderer shows the "waiting for Bazecor" screen instead of a
+      // stale model from another keyboard.
+      this.currentModel = null;
+      if (push) pushState(this.getState());
+      return;
+    }
     this.currentModel = model;
     this.activeLayer = model.defaultLayer;
     if (push) {
       pushModel(model);
       pushActiveLayer(this.activeLayer);
     }
+  }
+
+  /**
+   * Bazecor saved a backup for `product`. A backup save only ever happens for the
+   * board currently connected to Bazecor (it runs on connect and on edits), so
+   * it's an authoritative "this board is active now" signal — treat it as a
+   * last-connected event and switch to it. We deliberately do NOT defer to HID's
+   * active product here: node-hid can lag on unplug (on Windows it may not emit
+   * an "error" until the next scan), so a stale HID-active board must never block
+   * the real device's backup from taking over the overlay.
+   */
+  reloadForSavedBackup(product: string): void {
+    log.info(`[Lens] backup for ${product} -> adopting as active board`);
+    this.currentProduct = product;
+    this.reloadModel();
   }
 
   toggleOverlay(): void {
@@ -206,6 +256,15 @@ class OverlayController {
         this.hidPermissionDenied = false;
         broadcastState(this.getState());
       }
+    });
+
+    // A different board became the active one (plugged in, or the active one was
+    // unplugged and another took over) — swap the displayed model to match.
+    this.hid.on("active-changed", product => {
+      if (product === this.currentProduct && this.currentModel) return;
+      log.info(`[Lens] Active keyboard -> ${product}, loading its model`);
+      this.currentProduct = product;
+      this.reloadModel();
     });
 
     this.hid.on("layer-change", ({ layer }) => {

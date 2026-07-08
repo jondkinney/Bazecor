@@ -1,6 +1,7 @@
 import React from "react";
 import type { KeyboardModel } from "../shared/types";
 import { SONSEI_KEYS } from "./geometry-sonsei";
+import { DefyKeyboardView } from "./DefyKeyboardView";
 import { decodeKey, superkeyIndex, layoutOverrides } from "./keycodes";
 
 interface Props {
@@ -70,6 +71,12 @@ function fg(r: number, g: number, b: number) {
 }
 
 export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, layerNames }) => {
+  // Each product has its own geometry; dispatch to the matching view. The Sonsei
+  // rendering below is the default (also covers unknown products).
+  if (model.product?.toLowerCase() === "defy") {
+    return <DefyKeyboardView model={model} activeLayer={activeLayer} layout={layout} layerNames={layerNames} />;
+  }
+
   const overrides = layoutOverrides(layout);
   const layer = Math.min(activeLayer, model.keymap.length - 1);
   const keymapLayer = model.keymap[layer] ?? [];

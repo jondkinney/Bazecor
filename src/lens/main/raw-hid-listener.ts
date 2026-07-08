@@ -1,8 +1,6 @@
 import { EventEmitter } from "events";
 import log from "electron-log/main";
 import {
-  SONSEI_VENDOR_ID,
-  SONSEI_PRODUCT_ID,
   OVERLAY_MAGIC_BYTE,
   OVERLAY_PACKET_SIZE,
   PACKET_TYPE_OVERLAY,
@@ -10,7 +8,33 @@ import {
   PACKET_TYPE_OVERLAY_TAP,
   PACKET_TYPE_OVERLAY_HOLD,
   SONSEI_RAW_HID_REPORT_ID,
+  LENS_PRODUCTS,
+  productForUsbIds,
+  type LensProduct,
 } from "../shared/constants";
+
+// Minimal local shapes for node-hid so this file does not depend on the package's
+// (sometimes missing) type declarations. Only the members we actually use.
+interface HidDeviceInfo {
+  vendorId?: number;
+  productId?: number;
+  usagePage?: number;
+  usage?: number;
+  interface?: number;
+  product?: string;
+  path?: string;
+}
+
+interface NodeHidDevice {
+  on(event: "data", cb: (buf: Buffer) => void): void;
+  on(event: "error", cb: (err: unknown) => void): void;
+  close(): void;
+}
+
+interface NodeHidModule {
+  devices(): HidDeviceInfo[];
+  HID: new (path: string) => NodeHidDevice;
+}
 
 export interface OverlayEvent {
   type: "overlay";
@@ -39,12 +63,16 @@ type RawHidEvents = {
   "layer-change": [event: LayerEvent];
   connected: [];
   disconnected: [];
+  /** The keyboard driving the overlay changed (a new board was plugged in, or the
+   * active one was unplugged and another took over). Carries the Bazecor product
+   * name so the controller can load that keyboard's model. */
+  "active-changed": [product: LensProduct];
   /** macOS: the device is plugged in but TCC blocked the open (Input Monitoring
    * not granted). Fired on every failed retry; consumers must dedupe. */
   "permission-denied": [];
 };
 
-const RECONNECT_INTERVAL_MS = 2000;
+const SCAN_INTERVAL_MS = 2000;
 
 const DEBOUNCE_MS: Record<number, number> = {
   0x00: 80, // RELEASE
@@ -54,12 +82,36 @@ const DEBOUNCE_MS: Record<number, number> = {
 };
 const DEFAULT_DEBOUNCE_MS = 150;
 
+interface SeenDevice {
+  product: LensProduct;
+  firstSeen: number;
+}
+
+/**
+ * Watches every supported Dygma keyboard over raw HID and keeps a single "active"
+ * board — the most recently connected one (last-connected-wins). When boards are
+ * plugged/unplugged it re-picks the active one and emits `active-changed`, opening
+ * a HID handle only on the active device to receive its overlay/layer packets.
+ */
 export class RawHidListener extends EventEmitter<RawHidEvents> {
-  private device: import("node-hid").HID | null = null;
+  private hidModule: NodeHidModule | null = null;
+
+  private device: NodeHidDevice | null = null;
+
   private running = false;
-  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private scanTimer: ReturnType<typeof setTimeout> | null = null;
+
   private lastEventTime: Record<string, number> = {};
+
   private enumLogged = false;
+
+  // path -> {product, firstSeen}. Rebuilt from HID enumeration each scan.
+  private seen = new Map<string, SeenDevice>();
+
+  private activePath: string | null = null;
+
+  private activeProduct: LensProduct | null = null;
 
   // Debounces per (source, eventType) pair so bouncy/duplicate packets from a
   // single physical press can't fire the same handler twice in quick succession.
@@ -76,92 +128,212 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
     return true;
   }
 
-  async start(): Promise<void> {
-    try {
-      const HID = await import("node-hid");
-      const devices = HID.devices();
-      const target = devices.find(
-        d => d.vendorId === SONSEI_VENDOR_ID && d.productId === SONSEI_PRODUCT_ID && d.usagePage === 0xff00 && d.usage === 0x01,
-      );
-      if (!target || !target.path) {
-        // Once per session, dump what WAS enumerated so a platform-specific
-        // enumeration mismatch (wrong usagePage/usage, BT transport, etc.) shows
-        // up in the log instead of an endless silent retry loop.
-        if (!this.enumLogged) {
-          this.enumLogged = true;
-          const sonsei = devices
-            .filter(d => d.vendorId === SONSEI_VENDOR_ID)
-            .map(d => ({
-              productId: `0x${(d.productId ?? 0).toString(16)}`,
-              usagePage: `0x${(d.usagePage ?? 0).toString(16)}`,
-              usage: `0x${(d.usage ?? 0).toString(16)}`,
-              interface: d.interface,
-              product: d.product,
-              hasPath: !!d.path,
-            }));
-          log.info(
-            `[Lens/HID] Device not found (want VID=0x${SONSEI_VENDOR_ID.toString(16)} PID=0x${SONSEI_PRODUCT_ID.toString(16)} ` +
-              `usagePage=0xff00 usage=0x01). Enumerated ${devices.length} HID devices, ` +
-              `${sonsei.length} with Dygma VID: ${JSON.stringify(sonsei)}`,
-          );
-        } else {
-          log.verbose(
-            `[Lens/HID] Device not found (VID=0x${SONSEI_VENDOR_ID.toString(16)} PID=0x${SONSEI_PRODUCT_ID.toString(16)} usagePage=0xff00 usage=0x01)`,
-          );
-        }
-        return;
-      }
-      try {
-        this.device = new HID.HID(target.path);
-      } catch (openErr) {
-        // The device is enumerable but won't open. On macOS the raw HID collection
-        // lives on an IOHIDDevice that also exposes keyboard usages, so TCC blocks
-        // IOHIDDeviceOpen until the user grants Bazecor the Input Monitoring
-        // permission — by far the most likely cause of this failure on darwin.
-        // (The failed attempt also makes macOS add Bazecor to the Input Monitoring
-        // list in System Settings, so the user only has to flip the toggle.)
-        if (process.platform === "darwin") {
-          log.warn(`[Lens/HID] Open blocked (Input Monitoring permission missing?): ${openErr}`);
-          this.emit("permission-denied");
-        } else {
-          log.warn(`[Lens/HID] Cannot open device: ${openErr}`);
-        }
-        return;
-      }
-      log.info(`[Lens/HID] Device opened: ${target.path}`);
-      this.running = true;
-      this.emit("connected");
-      this.device.on("data", (buf: Buffer) => this.onData(buf));
-      this.device.on("error", () => {
-        this.device = null;
-        this.running = false;
-        this.emit("disconnected");
-        log.info("[Lens/HID] Device disconnected, scheduling reconnect...");
-        this.scheduleReconnect();
-      });
-    } catch (err) {
-      log.warn("[Lens/HID] start() error:", err);
-    }
-  }
-
   isConnected(): boolean {
     return this.running;
   }
 
-  /** Keeps retrying until the device shows up (used when Lens is enabled before plugging in). */
-  startWithRetry(): void {
-    this.start().then(() => {
-      if (!this.running) this.scheduleReconnect();
-    });
+  /** Product name of the board currently driving the overlay, or null. */
+  getActiveProduct(): LensProduct | null {
+    return this.activeProduct;
   }
 
-  private scheduleReconnect(): void {
-    if (this.reconnectTimer) return;
-    this.reconnectTimer = setTimeout(async () => {
-      this.reconnectTimer = null;
-      await this.start();
-      if (!this.running) this.scheduleReconnect();
-    }, RECONNECT_INTERVAL_MS);
+  /** Loads node-hid once (CJS module normalized across webpack/ESM interop). */
+  private async loadHid(): Promise<NodeHidModule | null> {
+    if (this.hidModule) return this.hidModule;
+    try {
+      const mod = (await import("node-hid")) as unknown as NodeHidModule & { default?: NodeHidModule };
+      const HID: NodeHidModule = mod.default ?? mod;
+      if (typeof HID.devices !== "function") {
+        log.warn(
+          `[Lens/HID] node-hid did not expose devices(); module keys: ${Object.keys(mod).join(", ")}, resolved keys: ${Object.keys(HID).join(", ")}`,
+        );
+        return null;
+      }
+      this.hidModule = HID;
+      return HID;
+    } catch (err) {
+      log.warn("[Lens/HID] Failed to load node-hid:", err);
+      return null;
+    }
+  }
+
+  /** Begin watching; keeps scanning on an interval until stop(). */
+  startWithRetry(): void {
+    this.scan().then(() => this.scheduleScan());
+  }
+
+  private scheduleScan(): void {
+    if (this.scanTimer) return;
+    this.scanTimer = setTimeout(async () => {
+      this.scanTimer = null;
+      await this.scan();
+      this.scheduleScan();
+    }, SCAN_INTERVAL_MS);
+  }
+
+  /**
+   * Enumerates supported keyboards, updates the connected set, and re-picks the
+   * active device (last connected wins; on removal of the active one, falls back
+   * to the most-recently-seen board still present).
+   */
+  private async scan(): Promise<void> {
+    const HID = await this.loadHid();
+    if (!HID) return;
+
+    let devices: HidDeviceInfo[];
+    try {
+      devices = HID.devices();
+    } catch (err) {
+      log.warn("[Lens/HID] devices() enumeration failed:", err);
+      return;
+    }
+
+    // Keep only the raw HID / vendor collection (usagePage 0xff00, usage 0x01) of
+    // supported boards — the same interface the overlay firmware reports on.
+    const matches = devices.filter(
+      d => d.path && d.usagePage === 0xff00 && d.usage === 0x01 && productForUsbIds(d.vendorId ?? 0, d.productId ?? 0) !== null,
+    );
+
+    const now = Date.now();
+    const present = new Set<string>();
+    let newestNewPath: string | null = null;
+
+    for (const d of matches) {
+      const path = d.path as string;
+      present.add(path);
+      if (!this.seen.has(path)) {
+        const product = productForUsbIds(d.vendorId ?? 0, d.productId ?? 0) as LensProduct;
+        this.seen.set(path, { product, firstSeen: now });
+        newestNewPath = path; // a freshly-connected board wins the active slot
+        log.info(`[Lens/HID] Detected ${product} (path ${path})`);
+      }
+    }
+
+    // Drop boards that are no longer enumerated.
+    let activeRemoved = false;
+    for (const path of [...this.seen.keys()]) {
+      if (!present.has(path)) {
+        const gone = this.seen.get(path);
+        this.seen.delete(path);
+        log.info(`[Lens/HID] ${gone?.product ?? "device"} disconnected (path ${path})`);
+        if (path === this.activePath) activeRemoved = true;
+      }
+    }
+
+    if (this.seen.size === 0) {
+      this.logNoDeviceOnce(devices);
+    } else {
+      this.enumLogged = false;
+    }
+
+    if (newestNewPath) {
+      this.setActive(newestNewPath, HID);
+    } else if (activeRemoved) {
+      this.setActive(this.mostRecentPath(), HID);
+    } else if (!this.device && this.seen.size > 0) {
+      // No open device but a supported board is still connected. Covers two cases:
+      //   * the active board was unplugged via a device "error" (onDeviceError
+      //     nulls activePath before this scan), leaving another board connected
+      //     that isn't "new" — activate it so unplugging one of two boards falls
+      //     back to the other;
+      //   * an earlier open failed (e.g. macOS TCC) — retry it.
+      this.setActive(this.mostRecentPath(), HID, true);
+    }
+  }
+
+  /** Path of the most-recently-connected board still present, or null. */
+  private mostRecentPath(): string | null {
+    let best: string | null = null;
+    let bestTime = -1;
+    for (const [path, info] of this.seen) {
+      if (info.firstSeen > bestTime) {
+        bestTime = info.firstSeen;
+        best = path;
+      }
+    }
+    return best;
+  }
+
+  /** Makes `path` the active board and opens a HID handle on it. */
+  private setActive(path: string | null, HID: NodeHidModule, force = false): void {
+    if (path === this.activePath && !force) return;
+
+    this.closeDevice();
+    this.activePath = path;
+    this.activeProduct = path ? (this.seen.get(path)?.product ?? null) : null;
+
+    if (!path || !this.activeProduct) {
+      this.running = false;
+      this.emit("disconnected");
+      return;
+    }
+
+    try {
+      this.device = new HID.HID(path);
+    } catch (openErr) {
+      // Enumerable but won't open. On macOS the raw HID collection lives on an
+      // IOHIDDevice that also exposes keyboard usages, so TCC blocks the open
+      // until the user grants Input Monitoring — by far the most likely cause.
+      if (process.platform === "darwin") {
+        log.warn(`[Lens/HID] Open blocked (Input Monitoring permission missing?): ${openErr}`);
+        this.emit("permission-denied");
+      } else {
+        log.warn(`[Lens/HID] Cannot open ${this.activeProduct}: ${openErr}`);
+      }
+      // Keep activePath set so a later scan retries the open (grant may arrive).
+      this.running = false;
+      return;
+    }
+
+    log.info(`[Lens/HID] Active device: ${this.activeProduct} (${path})`);
+    this.running = true;
+    this.emit("connected");
+    this.emit("active-changed", this.activeProduct);
+    this.device.on("data", (buf: Buffer) => this.onData(buf));
+    this.device.on("error", () => this.onDeviceError());
+  }
+
+  private onDeviceError(): void {
+    const lostPath = this.activePath;
+    log.info(`[Lens/HID] Active device error (${this.activeProduct}), re-scanning...`);
+    this.closeDevice();
+    if (lostPath) this.seen.delete(lostPath);
+    this.activePath = null;
+    this.activeProduct = null;
+    this.running = false;
+    this.emit("disconnected");
+    // Re-evaluate immediately: another board may still be connected, or the same
+    // one may re-enumerate.
+    this.scan();
+  }
+
+  private closeDevice(): void {
+    try {
+      this.device?.close();
+    } catch {
+      // ignore
+    }
+    this.device = null;
+  }
+
+  private logNoDeviceOnce(devices: HidDeviceInfo[]): void {
+    if (this.enumLogged) return;
+    this.enumLogged = true;
+    const vendorIds = new Set(LENS_PRODUCTS.map(p => p.vendorId));
+    const dygma = devices
+      .filter(d => vendorIds.has(d.vendorId ?? 0))
+      .map(d => ({
+        productId: `0x${(d.productId ?? 0).toString(16)}`,
+        usagePage: `0x${(d.usagePage ?? 0).toString(16)}`,
+        usage: `0x${(d.usage ?? 0).toString(16)}`,
+        interface: d.interface,
+        product: d.product,
+        hasPath: !!d.path,
+      }));
+    log.info(
+      `[Lens/HID] No supported keyboard found (want usagePage=0xff00 usage=0x01). ` +
+        `Enumerated ${devices.length} HID devices, ${dygma.length} with a Dygma VID: ${JSON.stringify(dygma)}`,
+    );
   }
 
   private onData(buf: Buffer): void {
@@ -196,15 +368,13 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
 
   stop(): void {
     this.running = false;
-    if (this.reconnectTimer) {
-      clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = null;
+    if (this.scanTimer) {
+      clearTimeout(this.scanTimer);
+      this.scanTimer = null;
     }
-    try {
-      this.device?.close();
-    } catch {
-      // ignore
-    }
-    this.device = null;
+    this.closeDevice();
+    this.seen.clear();
+    this.activePath = null;
+    this.activeProduct = null;
   }
 }

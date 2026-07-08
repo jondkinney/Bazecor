@@ -4,6 +4,7 @@ import os from "os";
 import path from "path";
 import log from "electron-log/main";
 import type { LensSettings } from "../shared/types";
+import { isSupportedLensProduct } from "../shared/constants";
 import {
   isLegacyLensMigrated,
   markLegacyLensMigrated,
@@ -108,8 +109,13 @@ export function migrateLegacyLens(): void {
 
   const legacyConfig = readJson<LegacyLensConfig>(LEGACY_CONFIG_FILE);
   const kb = legacyConfig?.keyboard;
-  if (kb?.backupFolder && kb?.neuronID && kb?.product) {
-    setLensKeyboard({ backupFolder: kb.backupFolder, neuronID: kb.neuronID, product: kb.product });
+  // Import the legacy keyboard reference if it's a board Lens can visualize
+  // (the standalone app only tracked Sonsei, but be tolerant of any supported one).
+  if (kb?.backupFolder && kb?.neuronID && isSupportedLensProduct(kb.product)) {
+    log.info(`[Lens] Migration: importing ${kb.product} keyboard reference (neuronID: ${kb.neuronID})`);
+    setLensKeyboard({ backupFolder: kb.backupFolder, neuronID: kb.neuronID, product: kb.product as string });
+  } else if (kb?.product) {
+    log.info(`[Lens] Migration: skipping keyboard reference for unsupported product "${kb.product}"`);
   }
 
   removeStandaloneAutostart();
