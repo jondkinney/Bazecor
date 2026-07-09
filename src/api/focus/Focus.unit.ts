@@ -6,8 +6,7 @@ import { SerialPort } from "serialport";
 // import { DygmaDeviceType } from "@Types/dygmaDefs";
 import { Focus } from "./Focus";
 
-// Skipping tests because vitest cannot inject a mock SerialPort when imported as: const sp = eval('require("serialport")');
-describe.skip("Focus", () => {
+describe("Focus", () => {
   beforeEach(() => {
     vi.mock("serialport");
     vi.mock("@serialport/stream");
