@@ -409,7 +409,83 @@ describe("Focus", () => {
 
       vi.useRealTimers();
     });
+
+    it("should handle errors gracefully when closing the port", async () => {
+      const focus = Focus.getInstance();
+      await focus.open("Defy-Wired", deviceToFind);
+      
+      // Mock isOpen with a mutable state to avoid any infinite loop
+      let localIsOpen = true;
+      Object.defineProperty(focus._port, "isOpen", {
+        get: () => localIsOpen,
+        set: (v) => { localIsOpen = v; },
+        configurable: true,
+      });
+
+      // Spy on port close and make it reject with an error, and set localIsOpen to false
+      const closeSpy = vi.spyOn(focus._port, "close").mockImplementationOnce(() => {
+        localIsOpen = false;
+        return Promise.reject(new Error("Close failed"));
+      });
+
+      await focus.close();
+      expect(log.error).toHaveBeenCalledWith("error when closing", new Error("Close failed"));
+      closeSpy.mockRestore();
+    });
+
+    it("should call close, removeAllListeners, and destroy on successful port close", async () => {
+      const focus = Focus.getInstance();
+      await focus.open("Defy-Wired", deviceToFind);
+
+      let localIsOpen = true;
+      Object.defineProperty(focus._port, "isOpen", {
+        get: () => localIsOpen,
+        set: (v) => { localIsOpen = v; },
+        configurable: true,
+      });
+
+      const removeAllListenersSpy = vi.spyOn(focus._port, "removeAllListeners");
+      const destroySpy = vi.spyOn(focus._port, "destroy");
+      const closeSpy = vi.spyOn(focus._port, "close").mockImplementationOnce(() => {
+        localIsOpen = false;
+        return Promise.resolve();
+      });
+
+      await focus.close();
+      expect(closeSpy).toHaveBeenCalled();
+      expect(removeAllListenersSpy).toHaveBeenCalled();
+      expect(destroySpy).toHaveBeenCalled();
+      expect(focus.closed).toBe(true);
+
+      closeSpy.mockRestore();
+      removeAllListenersSpy.mockRestore();
+      destroySpy.mockRestore();
+    });
+
+    it("should log warning and continue when _help fails during open", async () => {
+      const focus = Focus.getInstance();
+
+      // Mock write to throw to force _help to reject
+      vi.mocked(SerialPort).prototype.write = vi.fn().mockImplementation(() => {
+        throw new Error("help command fails");
+      });
+
+      const value = await focus.open("Defy-Wired", deviceToFind);
+      expect(value).toBeDefined();
+      // NOTE: Focus.ts catches the raw rejection and wraps it in a new Error("Error sending request from focus") before returning it to the caller, which logs it.
+      expect(log.warn).toHaveBeenCalledWith(new Error("Error sending request from focus"));
+    });
+
+    it("should reject and log errors if request is made while disconnected", async () => {
+      const focus = Focus.getInstance();
+      // Ensure it is closed
+      await focus.close();
+
+      await expect(focus.request("help")).rejects.toThrow("Error sending request from focus");
+      expect(log.info).toHaveBeenCalledWith("Error sending request from focus", new Error("Device not connected!"));
+    });
   });
+
 
   describe("failing to establish a connection", () => {
     const baseDeviceToFind: DygmaDeviceType = {
