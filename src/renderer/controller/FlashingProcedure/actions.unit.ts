@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import log from "electron-log/renderer";
 import { ipcRenderer } from "electron";
 import fs from "fs";
+import path from "path";
 import { DeviceTools } from "@Renderer/DeviceContext";
 import Device from "../../../api/comms/Device";
 import { resetKeyboard } from "../../../api/flash/RaiseTools";
@@ -282,7 +283,7 @@ describe("actions", () => {
       const res = await uploadDefyWired(context);
       expect(res).toBe(context);
       expect(fs.writeFileSync).toHaveBeenCalledWith(
-        "mock-volume-path/default.uf2",
+        path.join("mock-volume-path", "default.uf2"),
         expect.any(Buffer),
         expect.any(Object)
       );
