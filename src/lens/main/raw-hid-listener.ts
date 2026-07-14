@@ -33,7 +33,7 @@ interface NodeHidDevice {
 
 interface NodeHidModule {
   devices(): HidDeviceInfo[];
-  HID: new (path: string) => NodeHidDevice;
+  HID: new (path: string, options?: { nonExclusive: boolean }) => NodeHidDevice;
 }
 
 export interface OverlayEvent {
@@ -269,7 +269,11 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
     }
 
     try {
-      this.device = new HID.HID(path);
+      // macOS: hidapi seizes the device by default (exclusive open), which the
+      // system denies for anything enumerated as a keyboard — the event system
+      // already owns it. A shared (non-exclusive) open is all we need to read
+      // the raw HID reports; the flag is ignored on other platforms.
+      this.device = new HID.HID(path, { nonExclusive: true });
     } catch (openErr) {
       // Enumerable but won't open. On macOS the raw HID collection lives on an
       // IOHIDDevice that also exposes keyboard usages, so TCC blocks the open

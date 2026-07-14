@@ -58,6 +58,15 @@ export function applyOverlayMode(enabled: boolean): void {
       ? { width: overlayBounds.width, height: overlayBounds.height }
       : { width: normalBounds.width, height: normalBounds.height };
     win.setOpacity(settings.opacity);
+    // macOS: follow the user to whatever Space/full-screen app they're on, so
+    // showing the overlay never switches Spaces. Joining a full-screen Space as
+    // an auxiliary window only works while the window itself is not
+    // fullscreenable, and the window level must be raised after the collection
+    // behavior is set. skipTransformProcessType keeps the Dock icon stable.
+    if (process.platform === "darwin") {
+      win.setFullScreenable(false);
+      win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true });
+    }
     win.setAlwaysOnTop(true, "screen-saver");
     win.setIgnoreMouseEvents(!settings.hoverMode, { forward: true });
     win.setResizable(false);
@@ -80,6 +89,9 @@ export function applyOverlayMode(enabled: boolean): void {
     overlayBounds = win.getBounds();
     win.setOpacity(1.0);
     win.setAlwaysOnTop(false);
+    if (process.platform === "darwin") {
+      win.setVisibleOnAllWorkspaces(false, { skipTransformProcessType: true });
+    }
     win.setIgnoreMouseEvents(false);
     win.setResizable(true);
     win.webContents.executeJavaScript(`document.body.classList.remove('overlay','hover-mode');`).catch(() => {});
@@ -136,6 +148,12 @@ export function createOverlayWindow(onReady: () => void): BrowserWindow {
     backgroundColor: "#00000000",
     alwaysOnTop: false,
     skipTaskbar: true,
+    // Required on macOS for visibleOnFullScreen (fullScreenAuxiliary) to stick.
+    fullscreenable: false,
+    // macOS: a non-activating NSPanel is the only window kind that can float
+    // over other apps' full-screen Spaces without transforming the process to
+    // UIElement (which would hide Bazecor's Dock icon).
+    ...(process.platform === "darwin" ? { type: "panel" as const } : {}),
     webPreferences: {
       preload: LENS_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: true,
@@ -151,7 +169,9 @@ export function createOverlayWindow(onReady: () => void): BrowserWindow {
     log.info("[Lens] Overlay window ready-to-show");
     overlayVisible = true;
     applyOverlayMode(true);
-    w.show();
+    // showInactive: an overlay must never activate Bazecor — on macOS a plain
+    // show() focuses the app, yanking the user out of whatever they're doing.
+    w.showInactive();
     onReady();
   });
 
@@ -190,7 +210,8 @@ export function showOverlay(): void {
   if (settings.overlayMode && !overlayStyleApplied) applyOverlayMode(true);
   const target = overlayStyleApplied ? settings.opacity : 1.0;
   win.setOpacity(0);
-  win.show();
+  if (overlayStyleApplied) win.showInactive();
+  else win.show();
   fadeWindowOpacity(target, FADE_IN_DURATION_MS);
 }
 
@@ -209,7 +230,7 @@ export function setOverlayShown(shown: boolean): void {
   overlayVisible = shown;
   if (shown) {
     applyOverlayMode(true);
-    win.show();
+    win.showInactive();
   } else {
     applyOverlayMode(false);
     win.hide();
