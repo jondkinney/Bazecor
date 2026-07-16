@@ -159,7 +159,7 @@ export default class Backup {
       }
       return true;
     }
-    const { product } = device.device.info;
+    const { product, keyboardType } = device.device.info;
     const d = new Date();
     const folder = store.get("settings.backupFolder") as string;
     try {
@@ -199,7 +199,7 @@ export default class Backup {
         // Unsupported products (e.g. Raise1) are still skipped.
         if (isSupportedLensProduct(product)) {
           log.info(`[Lens] backup saved for ${product} -> notifying Lens (neuronID: ${localBackup.neuronID})`);
-          ipcRenderer.send("lens:backup-saved", { backupFolder: folder, neuronID: localBackup.neuronID, product });
+          ipcRenderer.send("lens:backup-saved", { backupFolder: folder, neuronID: localBackup.neuronID, product, keyboardType });
         } else {
           log.info(`[Lens] backup saved for ${product} -> not a Lens-supported board, ignored`);
         }

@@ -10,6 +10,10 @@ export interface KeyboardModel {
   /** Bazecor product name this model was parsed from (e.g. "Sonsei", "Defy").
    * Drives which keyboard geometry the renderer draws. */
   product: string;
+  /** Bazecor `info.keyboardType` ("ANSI"/"ISO"), for products that ship both
+   * (e.g. Raise2). Lets the renderer pick the matching geometry/shape variant
+   * instead of always assuming ANSI. Undefined for products with a single layout. */
+  keyboardType?: string;
   keymap: number[][];
   palette: PaletteColor[];
   colormap: number[][];
@@ -25,6 +29,8 @@ export interface LensKeyboardRef {
   backupFolder: string;
   neuronID: string;
   product: string;
+  /** Bazecor `info.keyboardType` ("ANSI"/"ISO"), when the product has variants. */
+  keyboardType?: string;
 }
 
 export interface LensSettings {
@@ -38,8 +44,19 @@ export interface LensSettings {
   hoverMode: boolean;
 }
 
+/** Last position/size of the overlay window, persisted so the overlay reopens
+ * where the user left it instead of recentering on the primary display. */
+export interface OverlayBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 /** Shape of the `lens` key persisted in Bazecor's electron-store. */
 export interface LensStoreState extends LensSettings {
+  /** Saved overlay window bounds (updated on move/resize/close). */
+  overlayBounds?: OverlayBounds;
   /** Legacy single-keyboard ref (Sonsei-only Lens). Kept for one-time migration
    * into `keyboards`; new code writes/reads `keyboards`. */
   keyboard?: LensKeyboardRef;

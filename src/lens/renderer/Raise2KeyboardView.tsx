@@ -1,7 +1,9 @@
 import React from "react";
 import type { DecodedKey, KeyboardModel } from "../shared/types";
-import { DEFY_KEYS, DEFY_SVG_W, DEFY_VIEW_Y, DEFY_VIEW_H } from "./geometry-defy";
-import { DEFY_THUMB_PATHS } from "./defy-thumb-paths";
+import { RAISE2_ANSI_KEYS, RAISE2_ANSI_SVG_W, RAISE2_ANSI_VIEW_Y, RAISE2_ANSI_VIEW_H } from "./geometry-raise2-ansi";
+import { RAISE2_ISO_KEYS, RAISE2_ISO_SVG_W, RAISE2_ISO_VIEW_Y, RAISE2_ISO_VIEW_H } from "./geometry-raise2-iso";
+import { RAISE2_THUMB_PATHS } from "./raise2-thumb-paths";
+import { RAISE2_ISO_ENTER_PATH } from "./raise2-iso-enter-path";
 import { decodeKey, superkeyIndex, layoutOverrides } from "./keycodes";
 import { keyLabel, fg } from "./key-label";
 
@@ -13,14 +15,26 @@ interface Props {
 }
 
 /**
- * Renders the Defy layout in the overlay. Shares Lens' key-cell look with the
- * Sonsei view (same fonts, modifier boxes, color/contrast rules) but drives it
- * from DEFY_KEYS geometry. Regular keys are rounded rects; thumb keys use their
- * real Layout-Editor silhouettes (DEFY_THUMB_PATHS: outer bezel + inset color
- * face). Unlike the Sonsei view the two halves are not rotated — the Defy
- * coordinates already bake the split-ergo stagger into their y values.
+ * Renders the Raise2 layout in the overlay. Shares Lens' key-cell look with the
+ * Sonsei/Defy views (same fonts, modifier boxes, color/contrast rules) but
+ * drives it from RAISE2_KEYS geometry. Regular keys are rounded rects; the two
+ * thumb wing keys (t5/t8) use their real Layout-Editor silhouettes
+ * (RAISE2_THUMB_PATHS: outer bezel + inset color face) — the rest of the thumb
+ * row is plain rects, since Raise2's thumb cluster (unlike Defy's) is mostly
+ * regular keys with only those two special shapes.
  */
-export const DefyKeyboardView: React.FC<Props> = ({ model, activeLayer, layout, layerNames }) => {
+export const Raise2KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, layerNames }) => {
+  // Raise2 ships as ANSI or ISO; the two layouts only diverge near Enter and the
+  // left-Shift row (see geometry-raise2-iso.ts), but that's enough to need a
+  // distinct key set/silhouette table. ANSI is the fallback for boards where
+  // keyboardType wasn't captured (e.g. backups saved before this field existed).
+  const isIso = model.keyboardType?.toLowerCase() === "iso";
+  const keys = isIso ? RAISE2_ISO_KEYS : RAISE2_ANSI_KEYS;
+  const svgW = isIso ? RAISE2_ISO_SVG_W : RAISE2_ANSI_SVG_W;
+  const viewY = isIso ? RAISE2_ISO_VIEW_Y : RAISE2_ANSI_VIEW_Y;
+  const viewH = isIso ? RAISE2_ISO_VIEW_H : RAISE2_ANSI_VIEW_H;
+  const thumbPaths = isIso ? { ...RAISE2_THUMB_PATHS, ...RAISE2_ISO_ENTER_PATH } : RAISE2_THUMB_PATHS;
+
   const overrides = layoutOverrides(layout);
   const layer = Math.min(activeLayer, model.keymap.length - 1);
   const keymapLayer = model.keymap[layer] ?? [];
@@ -45,15 +59,16 @@ export const DefyKeyboardView: React.FC<Props> = ({ model, activeLayer, layout, 
     return decodeKey(code, overrides, names, macroNames);
   }
 
-  function renderKey(key: (typeof DEFY_KEYS)[0]) {
+  function renderKey(key: (typeof RAISE2_ANSI_KEYS)[0]) {
     const color = getColor(key.ledIndex);
     const label = getLabel(key.index);
     const fgColor = fg(color.r, color.g, color.b);
     const { x, y, w, h } = key;
 
-    // Thumb keys: draw the editor silhouette (outer bezel + inset color face) in a
-    // group translated to the key origin, so the extracted paths' local coords hold.
-    const thumb = key.thumbType ? DEFY_THUMB_PATHS[key.thumbType] : undefined;
+    // Non-rect keys (thumb wings, ISO's tall Enter): draw the editor silhouette
+    // (outer bezel + inset color face) in a group translated to the key origin,
+    // so the extracted paths' local coords hold.
+    const thumb = key.thumbType ? thumbPaths[key.thumbType] : undefined;
     if (thumb) {
       const lcx = 4 + (w - 8) / 2;
       const lcy = (h - 8) / 2;
@@ -83,15 +98,11 @@ export const DefyKeyboardView: React.FC<Props> = ({ model, activeLayer, layout, 
 
   return (
     <div className="keyboard-view">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox={`0 ${DEFY_VIEW_Y} ${DEFY_SVG_W} ${DEFY_VIEW_H}`}
-        style={{ width: "100%", display: "block" }}
-      >
-        <g id="defy-keyshapes">{DEFY_KEYS.map(renderKey)}</g>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 ${viewY} ${svgW} ${viewH}`} style={{ width: "100%", display: "block" }}>
+        <g id="raise2-keyshapes">{keys.map(renderKey)}</g>
         <text
-          x={DEFY_SVG_W / 2}
-          y={DEFY_VIEW_Y + DEFY_VIEW_H - 12}
+          x={svgW / 2}
+          y={viewY + viewH - 12}
           textAnchor="middle"
           fontSize={13}
           fill="rgba(255,255,255,0.35)"

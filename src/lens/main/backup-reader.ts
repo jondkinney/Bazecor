@@ -31,7 +31,7 @@ function getCommandData(backup: BazecorBackup, command: string): string {
   return backup.backup.find(e => e.command === command)?.data ?? "";
 }
 
-export function parseBackupToModel(backupRaw: string, product: string): KeyboardModel {
+export function parseBackupToModel(backupRaw: string, product: string, keyboardType?: string): KeyboardModel {
   const backup = JSON.parse(backupRaw) as BazecorBackup;
   // Per-product layout metrics; unknown products fall back to Sonsei (RGB).
   const spec = getProductSpec(product);
@@ -68,6 +68,7 @@ export function parseBackupToModel(backupRaw: string, product: string): Keyboard
 
   return {
     product,
+    keyboardType,
     keymap: parseKeymap(keymapRaw, kpl),
     palette: parsePalette(paletteRaw),
     colormap: parseColormap(colormapRaw, cls),
@@ -100,7 +101,7 @@ export function readLatestModel(keyboard: LensKeyboardRef): KeyboardModel | null
   if (!filePath) return null;
   try {
     const raw = fs.readFileSync(filePath, "utf-8");
-    return parseBackupToModel(raw, keyboard.product);
+    return parseBackupToModel(raw, keyboard.product, keyboard.keyboardType);
   } catch {
     return null;
   }

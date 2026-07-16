@@ -1,5 +1,5 @@
 import Store from "../../main/managers/Store";
-import type { LensKeyboardRef, LensSettings, LensStoreState } from "../shared/types";
+import type { LensKeyboardRef, LensSettings, LensStoreState, OverlayBounds } from "../shared/types";
 
 export const LENS_DEFAULTS: LensSettings = {
   enabled: false,
@@ -42,6 +42,7 @@ function readState(): LensStoreState {
     keyboard: raw?.keyboard,
     keyboards,
     migratedFromStandalone: raw?.migratedFromStandalone,
+    overlayBounds: raw?.overlayBounds,
   };
 }
 
@@ -89,6 +90,28 @@ export function setLensKeyboard(keyboard: LensKeyboardRef): void {
   const state = readState();
   const keyboards = { ...(state.keyboards ?? {}), [keyboard.product]: keyboard };
   writeState({ ...state, keyboards });
+}
+
+function isValidBounds(b: OverlayBounds | undefined): b is OverlayBounds {
+  return (
+    !!b &&
+    Number.isFinite(b.x) &&
+    Number.isFinite(b.y) &&
+    Number.isFinite(b.width) &&
+    Number.isFinite(b.height) &&
+    b.width >= 100 &&
+    b.height >= 60
+  );
+}
+
+/** Saved overlay window bounds from the last session, or null if none/invalid. */
+export function getOverlayBounds(): OverlayBounds | null {
+  const b = readState().overlayBounds;
+  return isValidBounds(b) ? b : null;
+}
+
+export function setOverlayBounds(bounds: OverlayBounds): void {
+  writeState({ ...readState(), overlayBounds: bounds });
 }
 
 export function isLegacyLensMigrated(): boolean {

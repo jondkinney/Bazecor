@@ -14,6 +14,7 @@ export const SONSEI_PALETTE_SIZE = 16;
  *
  * keysPerLayer/colorLayerSize verified against real backups:
  *   Sonsei: 60 keys, 56 LEDs, RGB.   Defy: 80 keys, 178 LEDs, RGBW.
+ *   Raise2: 80 keys, 176 LEDs (69 key + 107 underglow), RGBW.
  */
 export type LensProduct = "Sonsei" | "Defy" | "Raise2";
 
@@ -43,7 +44,18 @@ export const LENS_PRODUCTS: LensProductSpec[] = [
     colorLayerSize: 178,
     paletteFormat: "rgbw",
   },
-  // Raise2: fill in PIDs / keysPerLayer / colorLayerSize when available.
+  {
+    // App-mode PID is 0x0021 for both ANSI and ISO in the current hardware
+    // definitions (src/api/hardware-dygma-raise2-*/index.ts); 0x0023 is the PID
+    // the ISO variant's own comment says it should use. Listing both so
+    // detection keeps working if that gets corrected.
+    product: "Raise2",
+    vendorId: 0x35ef,
+    productIds: [0x0021, 0x0023],
+    keysPerLayer: 80,
+    colorLayerSize: 176,
+    paletteFormat: "rgbw",
+  },
 ];
 
 /** Lookup a product's spec by its Bazecor `product` name (case-insensitive). */

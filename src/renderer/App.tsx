@@ -239,16 +239,20 @@ function App() {
           log.info("SK 2.0 detected");
         }
 
-        // Layer Lens is available for Sonsei (fw >= 1.0.0) and Defy (fw >= 2.3.0,
-        // when the overlay HID feature shipped in Defy firmware). Raise2 and Raise
-        // (Raise1) never expose Lens, regardless of firmware.
+        // Layer Lens is available for Sonsei (fw >= 1.0.0), Defy (fw >= 2.3.0, when
+        // the overlay HID feature shipped in Defy firmware), and Raise2 (fw >= 1.4.0,
+        // reusing the same minimum as the SK 2.0 threshold above). Raise (Raise1)
+        // never exposes Lens, regardless of firmware.
         const sonseiLensMin: [number, number, number] = [1, 0, 0];
         const defyLensMin: [number, number, number] = [2, 3, 0];
+        const raise2LensMin: [number, number, number] = [1, 4, 0];
         const lensAvailable =
-          (isSonsei && compareSemver(semver, sonseiLensMin) >= 0) || (isDefy && compareSemver(semver, defyLensMin) >= 0);
+          (isSonsei && compareSemver(semver, sonseiLensMin) >= 0) ||
+          (isDefy && compareSemver(semver, defyLensMin) >= 0) ||
+          (isRaise2 && compareSemver(semver, raise2LensMin) >= 0);
         store.set("capabilities.lens", lensAvailable);
         log.info(
-          `[Lens] capability check -> product: ${product}, firmware: ${semver.join(".")}, isSonsei: ${isSonsei}, isDefy: ${isDefy}, lensAvailable: ${lensAvailable}`,
+          `[Lens] capability check -> product: ${product}, firmware: ${semver.join(".")}, isSonsei: ${isSonsei}, isDefy: ${isDefy}, isRaise2: ${isRaise2}, lensAvailable: ${lensAvailable}`,
         );
       } else {
         store.set("capabilities.sk20", false);

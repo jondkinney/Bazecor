@@ -1,7 +1,17 @@
 import type { DecodedKey } from "../shared/types";
 
+/* Firmware keycode → display label decoding for the Lens overlay.
+ *
+ * Labels mirror Bazecor's keymap DB (src/api/keymap/db/*) so a key reads the
+ * same in the overlay as in the Layout Editor: single-line keys use the DB's
+ * `primary` label, and keys the DB renders as a small `top` tag over a primary
+ * ("MACRO 3", "Mouse UP", "Num 7", …) become two stacked lines here. Icons the
+ * editor draws as React components (layer shift/lock tags, media glyphs) are
+ * approximated with text/unicode equivalents. */
+
+// Single-line labels, keyed by keycode. Letter/digit/punctuation entries can be
+// overridden per language layout (see layouts.ts).
 const BASE: Record<number, string> = {
-  0: "",
   4: "A",
   5: "B",
   6: "C",
@@ -38,11 +48,11 @@ const BASE: Record<number, string> = {
   37: "8",
   38: "9",
   39: "0",
-  40: "Enter",
-  41: "Esc",
-  42: "Bksp",
-  43: "Tab",
-  44: "Space",
+  40: "ENTER",
+  41: "ESC",
+  42: "BACKSPACE",
+  43: "TAB",
+  44: "SPACE",
   45: "-",
   46: "=",
   47: "[",
@@ -54,7 +64,7 @@ const BASE: Record<number, string> = {
   54: ",",
   55: ".",
   56: "/",
-  57: "Caps",
+  57: "CAPS LOCK",
   58: "F1",
   59: "F2",
   60: "F3",
@@ -67,38 +77,21 @@ const BASE: Record<number, string> = {
   67: "F10",
   68: "F11",
   69: "F12",
-  70: "PrtSc",
-  71: "ScrLk",
-  72: "Pause",
-  73: "Ins",
-  74: "Home",
-  75: "PgUp",
-  76: "Del",
-  77: "End",
-  78: "PgDn",
+  70: "PRINT SCRN",
+  71: "SCROLL LCK",
+  72: "PAUSE",
+  73: "INSERT",
+  74: "HOME",
+  75: "PAGE UP",
+  76: "DEL",
+  77: "END",
+  78: "PAGE DOWN",
   79: "→",
   80: "←",
   81: "↓",
   82: "↑",
-  83: "NumLk",
-  84: "KP/",
-  85: "KP*",
-  86: "KP-",
-  87: "KP+",
-  88: "KPEnt",
-  89: "KP1",
-  90: "KP2",
-  91: "KP3",
-  92: "KP4",
-  93: "KP5",
-  94: "KP6",
-  95: "KP7",
-  96: "KP8",
-  97: "KP9",
-  98: "KP0",
-  99: "KP.",
   100: "<>",
-  101: "Menu",
+  101: "MENU",
   104: "F13",
   105: "F14",
   106: "F15",
@@ -111,14 +104,77 @@ const BASE: Record<number, string> = {
   113: "F22",
   114: "F23",
   115: "F24",
-  224: "Ctrl",
-  225: "Shift",
-  226: "Alt",
-  227: "OS",
-  228: "Ctrl",
-  229: "Shift",
-  230: "AltGr",
-  231: "OS",
+};
+
+// Keys Bazecor renders as a small `top` group tag above the `primary` label —
+// shown in Lens as two stacked lines ([line1, line2]).
+const TWO_LINE: Record<number, [string, string]> = {
+  // Modifiers (db/modifiers.ts)
+  224: ["LEFT", "CTRL"],
+  225: ["LEFT", "SHIFT"],
+  226: ["LEFT", "ALT"],
+  227: ["LEFT", "OS"],
+  228: ["RIGHT", "CTRL"],
+  229: ["RIGHT", "SHIFT"],
+  230: ["ALT GR", ""],
+  231: ["RIGHT", "OS"],
+
+  // Numpad (db/numpad.ts)
+  83: ["Num", "LOCK"],
+  84: ["Num", "/"],
+  85: ["Num", "*"],
+  86: ["Num", "-"],
+  87: ["Num", "+"],
+  88: ["Num", "ENTER"],
+  89: ["Num", "1"],
+  90: ["Num", "2"],
+  91: ["Num", "3"],
+  92: ["Num", "4"],
+  93: ["Num", "5"],
+  94: ["Num", "6"],
+  95: ["Num", "7"],
+  96: ["Num", "8"],
+  97: ["Num", "9"],
+  98: ["Num", "0"],
+  99: ["Num", "."],
+
+  // Mouse movement / wheel / buttons / warp (db/mousecontrols.ts)
+  20481: ["Mouse", "UP"],
+  20482: ["Mouse", "DOWN"],
+  20484: ["Mouse", "LEFT"],
+  20488: ["Mouse", "RIGHT"],
+  20497: ["M.Wheel", "UP"],
+  20498: ["M.Wheel", "DOWN"],
+  20500: ["M.Wheel", "LEFT"],
+  20504: ["M.Wheel", "RIGHT"],
+  20545: ["M.Btn", "LEFT"],
+  20546: ["M.Btn", "RIGHT"],
+  20548: ["M.Btn", "MIDDLE"],
+  20552: ["M.Btn", "BACK"],
+  20560: ["M.Btn", "FORW."],
+  20576: ["M.Warp", "END"],
+  20517: ["M.Warp", "NW"],
+  20518: ["M.Warp", "SW"],
+  20521: ["M.Warp", "NE"],
+  20522: ["M.Warp", "SE"],
+
+  // LED effects (db/ledeffects.tsx)
+  17152: ["LED", "NEXT"],
+  17153: ["LED", "PREV."],
+  17154: ["LED", "TOGGLE"],
+
+  // SpaceCadet (db/spacecadet.ts)
+  53591: ["SCadet", "ENABLE"],
+  53592: ["SCadet", "DISABLE"],
+
+  // Wireless / Lens (db/wireless.ts). 54112 is claimed by both RF STATUS and the
+  // Lens superkey; Bazecor's key picker treats it as the Lens key, so we do too.
+  54108: ["BATT.", "LEVEL"],
+  54109: ["BLUET.", "PAIR."],
+  54111: ["ENERGY", "STATUS"],
+  54112: ["LENS", "SK-LENS"],
+  54113: ["LENS", "TAP"],
+  54114: ["LENS", "HOLD"],
 };
 
 const ONE_SHOT_MOD: Record<number, string> = {
@@ -132,6 +188,8 @@ const ONE_SHOT_MOD: Record<number, string> = {
   49160: "OS",
 };
 
+// Media / miscellaneous singles (db/mediacontrols.tsx, db/miscellaneous.tsx —
+// rendered as icons in Bazecor; text equivalents of their verbose names here).
 const FUNCTION: Record<number, string> = {
   19682: "Mute",
   23785: "Vol+",
@@ -141,18 +199,11 @@ const FUNCTION: Record<number, string> = {
   22710: "Prev",
   22711: "Stop",
   22712: "Eject",
-  22713: "Shfl",
-  18552: "Cam",
+  22713: "Shuffle",
+  18552: "Camera",
   18834: "Calc",
-  23663: "Bri+",
-  23664: "Bri-",
-  17152: "LED+",
-  17153: "LED-",
-  17154: "LED",
-  54108: "Batt",
-  54109: "BT",
-  54111: "Engy",
-  54112: "RF",
+  23663: "Bright+",
+  23664: "Bright-",
   20865: "Off",
   20866: "Sleep",
 };
@@ -171,9 +222,34 @@ const LAYER_MOVE_MAX = 17501;
 const LAYER_ONESHOT_MIN = 49161;
 const LAYER_ONESHOT_MAX = 49168;
 
+// Dual-use modifier — db/dualuse.tsx: base + keyCode, Ctrl/Shift/Alt/OS are
+// contiguous 256-wide blocks from 49169; AltGr sits apart at 50705.
+const DUAL_MOD_MIN = 49169;
+const DUAL_MOD_MAX = 50192; // 49937 (OS) + 255
+const DUAL_MOD_NAMES = ["Ctrl", "Shift", "Alt", "OS"];
+const DUAL_ALTGR_MIN = 50705;
+const DUAL_ALTGR_MAX = 50960;
+
 // Dual-use layer — db/dualuse.tsx: base 51218 + (layerIdx)*256 + keyCode, layers 1-8
 const LAYER_DUAL_MIN = 51218;
 const LAYER_DUAL_MAX = 53265;
+
+// TapDance / Leader — db/tapdance.ts (53267 + 0..63), db/leader.ts (53283-53290,
+// inside the tapdance range; Bazecor's DB gives Leader priority, so we do too).
+const TAPDANCE_MIN = 53267;
+const TAPDANCE_MAX = 53330;
+const LEADER_MIN = 53283;
+const LEADER_MAX = 53290;
+
+// Steno — db/steno.ts, codes 53549-53590 in table order.
+const STENO_MIN = 53549;
+// prettier-ignore
+const STENO_LABELS = [
+  "FN", "N1", "N2", "N3", "N4", "N5", "N6", "S1", "S2", "TL", "KL", "PL", "WL", "HL",
+  "RL", "A", "O", "ST1", "ST2", "RE1", "RE2", "PWR", "ST3", "ST4", "E", "U", "FR",
+  "RR", "PR", "BR", "LR", "GR", "TR", "SR", "DR", "N7", "N8", "N9", "NA", "NB", "NC", "ZR",
+];
+const STENO_MAX = STENO_MIN + STENO_LABELS.length - 1;
 
 // Macros and superkeys — verified against Bazecor src/api/keymap/db/macros.ts & superkeys.ts
 const MACRO_MIN = 53852; // 53852 + index (128 macros)
@@ -182,17 +258,16 @@ const SUPERKEY_MIN = 53980; // 53980 + index (128 superkeys)
 const SUPERKEY_MAX = 54107;
 
 /* eslint-disable no-bitwise -- decoding firmware keycodes is inherently bit-mask work */
+// Modifier flag bits per Bazecor's withModifiers() offsets (db/utils.ts):
+// Control +256, Alt +512, AltGr +1024, Shift +2048, OS +4096.
 function modBitsToArray(modByte: number): string[] {
   const mods: string[] = [];
   if (modByte & 0x01) mods.push("Ctrl");
-  if (modByte & 0x02) mods.push("Shift");
-  if (modByte & 0x04) mods.push("Alt");
-  if (modByte & 0x08) mods.push("OS");
-  if (modByte & 0x10) mods.push("Ctrl");
-  if (modByte & 0x20) mods.push("Shift");
-  if (modByte & 0x40) mods.push("AltGr");
-  if (modByte & 0x80) mods.push("OS");
-  return [...new Set(mods)];
+  if (modByte & 0x02) mods.push("Alt");
+  if (modByte & 0x04) mods.push("AltGr");
+  if (modByte & 0x08) mods.push("Shift");
+  if (modByte & 0x10) mods.push("OS");
+  return mods;
 }
 
 export function superkeyIndex(code: number): number | null {
@@ -200,24 +275,55 @@ export function superkeyIndex(code: number): number | null {
   return null;
 }
 
-function layerName(num: number, layerNames: string[]): string {
-  return layerNames[num - 1] || `L${num}`;
+/** Tap-label for a plain HID code inside a compound key (dual-use, key+modifier). */
+function baseLabelFor(code: number, layout: Record<number, string>): string {
+  if (layout[code]) return layout[code];
+  if (BASE[code] !== undefined) return BASE[code];
+  const twoLine = TWO_LINE[code];
+  if (twoLine) return twoLine[1] ? `${twoLine[0]} ${twoLine[1]}` : twoLine[0];
+  return "";
 }
 
+function layerName(num: number, layerNames: string[]): string {
+  return layerNames[num - 1] || "";
+}
+
+/* Layer keys mirror Bazecor's LayerTag (shift/lock icon + layer number) as
+ * "⇧n" / "⇪n", with the layer's custom name (when set) as the small hold line —
+ * the overlay's added context over the editor. */
 function decodeLayerKey(code: number, layerNames: string[], layout: Record<number, string>): DecodedKey | null {
-  if (code >= LAYER_LOCK_MIN && code <= LAYER_LOCK_MAX)
-    return { primary: layerName(code - LAYER_LOCK_MIN + 1, layerNames), hold: "lock" };
-  if (code >= LAYER_SHIFT_MIN && code <= LAYER_SHIFT_MAX)
-    return { primary: layerName(code - LAYER_SHIFT_MIN + 1, layerNames), hold: "shft" };
-  if (code >= LAYER_MOVE_MIN && code <= LAYER_MOVE_MAX)
-    return { primary: `>${layerName(code - LAYER_MOVE_MIN + 1, layerNames)}`, hold: "move" };
-  if (code >= LAYER_ONESHOT_MIN && code <= LAYER_ONESHOT_MAX)
-    return { primary: layerName(code - LAYER_ONESHOT_MIN + 1, layerNames), hold: "1shot" };
+  if (code >= LAYER_LOCK_MIN && code <= LAYER_LOCK_MAX) {
+    const n = code - LAYER_LOCK_MIN + 1;
+    return { primary: `⇪${n}`, hold: layerName(n, layerNames) || "lock" };
+  }
+  if (code >= LAYER_SHIFT_MIN && code <= LAYER_SHIFT_MAX) {
+    const n = code - LAYER_SHIFT_MIN + 1;
+    return { primary: `⇧${n}`, hold: layerName(n, layerNames) };
+  }
+  if (code >= LAYER_MOVE_MIN && code <= LAYER_MOVE_MAX) {
+    const n = code - LAYER_MOVE_MIN + 1;
+    return { primary: `⇪${n}`, hold: layerName(n, layerNames) || "move" };
+  }
+  if (code >= LAYER_ONESHOT_MIN && code <= LAYER_ONESHOT_MAX) {
+    const n = code - LAYER_ONESHOT_MIN + 1;
+    return { primary: `⇧${n}`, hold: layerName(n, layerNames) || "1shot" };
+  }
   if (code >= LAYER_DUAL_MIN && code <= LAYER_DUAL_MAX) {
     const layerIdx = Math.trunc((code - LAYER_DUAL_MIN) / 256);
-    const tapLabel = layout[(code - LAYER_DUAL_MIN) % 256] ?? BASE[(code - LAYER_DUAL_MIN) % 256] ?? "";
+    const tapLabel = baseLabelFor((code - LAYER_DUAL_MIN) % 256, layout);
     const name = layerName(layerIdx + 1, layerNames);
-    return { primary: tapLabel || name, hold: name };
+    return { primary: tapLabel || `⇧${layerIdx + 1}`, hold: name || `⇧${layerIdx + 1}` };
+  }
+  return null;
+}
+
+function decodeDualUseModifier(code: number, layout: Record<number, string>): DecodedKey | null {
+  if (code >= DUAL_MOD_MIN && code <= DUAL_MOD_MAX) {
+    const modName = DUAL_MOD_NAMES[(code - DUAL_MOD_MIN) >> 8];
+    return { primary: baseLabelFor((code - DUAL_MOD_MIN) % 256, layout) || modName, hold: modName };
+  }
+  if (code >= DUAL_ALTGR_MIN && code <= DUAL_ALTGR_MAX) {
+    return { primary: baseLabelFor(code - DUAL_ALTGR_MIN, layout) || "AltGr", hold: "AltGr" };
   }
   return null;
 }
@@ -228,29 +334,40 @@ export function decodeKey(
   layerNames: string[] = [],
   macroNames: string[] = [],
 ): DecodedKey {
-  if (code === 0) return { primary: "NoKey", hold: "" };
-  if (code === 1 || code === 65535) return { primary: "Trans", hold: "" };
+  if (code === 0) return { primary: "NO", subtitle: "KEY", hold: "" };
+  if (code === 1 || code === 65535) return { primary: "TRANS", hold: "" };
   if (layout[code]) return { primary: layout[code], hold: "" };
   if (BASE[code] !== undefined) return { primary: BASE[code], hold: "" };
-  if (ONE_SHOT_MOD[code]) return { primary: ONE_SHOT_MOD[code], hold: "" };
+  const twoLine = TWO_LINE[code];
+  if (twoLine) return twoLine[1] ? { primary: twoLine[0], subtitle: twoLine[1], hold: "" } : { primary: twoLine[0], hold: "" };
+  if (ONE_SHOT_MOD[code]) return { primary: ONE_SHOT_MOD[code], hold: "1shot" };
   if (FUNCTION[code]) return { primary: FUNCTION[code], hold: "" };
 
   const layerKey = decodeLayerKey(code, layerNames, layout);
   if (layerKey) return layerKey;
 
-  if (code >= SUPERKEY_MIN && code <= SUPERKEY_MAX) return { primary: `SK${code - SUPERKEY_MIN}`, hold: "" };
+  const dualMod = decodeDualUseModifier(code, layout);
+  if (dualMod) return dualMod;
+
+  if (code >= SUPERKEY_MIN && code <= SUPERKEY_MAX) return { primary: `SK${code - SUPERKEY_MIN + 1}`, hold: "" };
 
   if (code >= MACRO_MIN && code <= MACRO_MAX) {
     const idx = code - MACRO_MIN;
-    return { primary: "Macro", subtitle: macroNames[idx] || `M${idx + 1}`, hold: "" };
+    return { primary: "MACRO", subtitle: macroNames[idx] || `${idx + 1}`, hold: "" };
   }
+
+  if (code >= STENO_MIN && code <= STENO_MAX) return { primary: "Steno", subtitle: STENO_LABELS[code - STENO_MIN], hold: "" };
+  // Leader shares codes with the middle of the TapDance range; Bazecor resolves
+  // the collision in Leader's favor, so check it first.
+  if (code >= LEADER_MIN && code <= LEADER_MAX) return { primary: "Leader", subtitle: `#${code - LEADER_MIN}`, hold: "" };
+  if (code >= TAPDANCE_MIN && code <= TAPDANCE_MAX) return { primary: "TAPD", subtitle: `${code - TAPDANCE_MIN}`, hold: "" };
 
   // Key + modifier combination: high byte = modifier flags, low byte = HID keycode.
   // Checked last so all named ranges above take priority.
   const modFlags = (code >> 8) & 0xff;
   const baseCode = code & 0xff;
   if (modFlags !== 0) {
-    const baseLabel = layout[baseCode] ?? BASE[baseCode];
+    const baseLabel = baseLabelFor(baseCode, layout);
     if (baseLabel) return { primary: baseLabel, hold: "", modifiers: modBitsToArray(modFlags) };
   }
 

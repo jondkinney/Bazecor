@@ -2,7 +2,9 @@ import React from "react";
 import type { KeyboardModel } from "../shared/types";
 import { SONSEI_KEYS } from "./geometry-sonsei";
 import { DefyKeyboardView } from "./DefyKeyboardView";
+import { Raise2KeyboardView } from "./Raise2KeyboardView";
 import { decodeKey, superkeyIndex, layoutOverrides } from "./keycodes";
+import { keyLabel, fg, fitFontSize } from "./key-label";
 
 interface Props {
   model: KeyboardModel;
@@ -19,25 +21,6 @@ const VIEW_H = 462; // bottom = 512, giving 10px below the innermost thumb key p
 // (thumb arcs extend to ~y=503 after rotation — wider than the rect bounds)
 const FS = 13;
 const FSS = 11; // two-line keys (Super/name, Macro/name) — same size both lines
-const FSH = 9;
-const MOD_BOX_H = 9;
-const MOD_BOX_GAP = 2;
-const MOD_BOX_FS = 6;
-const MOD_BOX_PX = 3;
-// Approximate char width at MOD_BOX_FS for system-ui proportional font
-const MOD_CHAR_W = 3.5;
-const MOD_WIDTH: Record<string, number> = {
-  Ctrl: 4,
-  Shift: 5,
-  Alt: 3,
-  AltGr: 5,
-  OS: 2,
-};
-
-function modBoxWidth(label: string): number {
-  const chars = MOD_WIDTH[label] ?? label.length;
-  return chars * MOD_CHAR_W + MOD_BOX_PX * 2;
-}
 
 // Outer silhouette paths for each Sonsei thumb key type (from Bazecor Key.tsx)
 const THUMB_PATHS: Record<number, string> = {
@@ -63,18 +46,14 @@ const THUMB_TEXT: Record<number, [number, number, number]> = {
   59: [28, 24, 0], // sonsei-tR1: rect, horizontal
 };
 
-function lum(r: number, g: number, b: number) {
-  return 0.299 * r + 0.587 * g + 0.114 * b;
-}
-function fg(r: number, g: number, b: number) {
-  return lum(r, g, b) > 128 ? "#111" : "#eee";
-}
-
 export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, layerNames }) => {
   // Each product has its own geometry; dispatch to the matching view. The Sonsei
   // rendering below is the default (also covers unknown products).
   if (model.product?.toLowerCase() === "defy") {
     return <DefyKeyboardView model={model} activeLayer={activeLayer} layout={layout} layerNames={layerNames} />;
+  }
+  if (model.product?.toLowerCase() === "raise2") {
+    return <Raise2KeyboardView model={model} activeLayer={activeLayer} layout={layout} layerNames={layerNames} />;
   }
 
   const overrides = layoutOverrides(layout);
@@ -96,7 +75,7 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
     const sk = superkeyIndex(code);
     if (sk !== null) {
       const name = model.superkeyNames?.[sk] || `SK${sk + 1}`;
-      return { primary: "Super", subtitle: name, hold: "" };
+      return { primary: "SUPER", subtitle: name, hold: "" };
     }
     return decodeKey(code, overrides, names, macroNames);
   }
@@ -106,8 +85,6 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
     const label = getLabel(key.index);
     const fgColor = fg(color.r, color.g, color.b);
     const hasSub = Boolean(label.subtitle);
-    const mods = label.modifiers ?? [];
-    const hasMods = mods.length > 0;
 
     const thumbPath = THUMB_PATHS[key.index];
     if (thumbPath) {
@@ -122,7 +99,7 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
               y={ty - 6}
               textAnchor="middle"
               dominantBaseline="middle"
-              fontSize={FSS}
+              fontSize={fitFontSize(label.primary, FSS)}
               fontWeight="700"
               fontFamily="system-ui,-apple-system,sans-serif"
               fill={fgColor}
@@ -135,7 +112,7 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
               y={ty + 6}
               textAnchor="middle"
               dominantBaseline="middle"
-              fontSize={FSS}
+              fontSize={fitFontSize(label.subtitle ?? "", FSS)}
               fontWeight="700"
               fontFamily="system-ui,-apple-system,sans-serif"
               fill={fgColor}
@@ -153,7 +130,7 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
             textAnchor="middle"
             dominantBaseline="middle"
             transform={rot}
-            fontSize={FS}
+            fontSize={fitFontSize(label.primary, FS)}
             fontWeight="700"
             fontFamily="system-ui,-apple-system,sans-serif"
             fill={fgColor}
@@ -176,122 +153,11 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
     const cx = x + 4 + (w - 8) / 2;
     const cy = y + (h - 8) / 2;
 
-    let primaryY = cy + 1;
-    if (hasMods) primaryY = cy - 5;
-    else if (label.hold) primaryY = cy - 2;
-
-    let primaryContent: JSX.Element | null = null;
-    if (hasSub) {
-      primaryContent = (
-        <>
-          <text
-            x={cx}
-            y={cy - 6}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize={FSS}
-            fontWeight="700"
-            fontFamily="system-ui,-apple-system,sans-serif"
-            fill={fgColor}
-            pointerEvents="none"
-          >
-            {label.primary}
-          </text>
-          <text
-            x={cx}
-            y={cy + 6}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize={FSS}
-            fontWeight="700"
-            fontFamily="system-ui,-apple-system,sans-serif"
-            fill={fgColor}
-            pointerEvents="none"
-          >
-            {label.subtitle}
-          </text>
-        </>
-      );
-    } else if (label.primary) {
-      primaryContent = (
-        <text
-          x={cx}
-          y={primaryY}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontSize={FS}
-          fontWeight="700"
-          fontFamily="system-ui,-apple-system,sans-serif"
-          fill={fgColor}
-          pointerEvents="none"
-        >
-          {label.primary}
-        </text>
-      );
-    }
-
-    let secondaryContent: JSX.Element[] | JSX.Element | null = null;
-    if (hasMods) {
-      const totalW = mods.reduce((s, m) => s + modBoxWidth(m), 0) + MOD_BOX_GAP * (mods.length - 1);
-      const boxY = y + h - 6 - MOD_BOX_H;
-      let bx = cx - totalW / 2;
-      secondaryContent = mods.map(m => {
-        const bw = modBoxWidth(m);
-        const el = (
-          <g key={m}>
-            <rect
-              x={bx}
-              y={boxY}
-              width={bw}
-              height={MOD_BOX_H}
-              rx={2}
-              fill="rgba(0,0,0,0.28)"
-              stroke="rgba(255,255,255,0.18)"
-              strokeWidth={0.5}
-            />
-            <text
-              x={bx + bw / 2}
-              y={boxY + MOD_BOX_H / 2 + 0.5}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize={MOD_BOX_FS}
-              fontWeight="600"
-              fontFamily="system-ui,-apple-system,sans-serif"
-              fill={fgColor}
-              pointerEvents="none"
-            >
-              {m}
-            </text>
-          </g>
-        );
-        bx += bw + MOD_BOX_GAP;
-        return el;
-      });
-    } else if (label.hold) {
-      secondaryContent = (
-        <text
-          x={cx}
-          y={y + h - 10}
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontSize={FSH}
-          fontWeight="600"
-          fontFamily="system-ui,-apple-system,sans-serif"
-          fill={fgColor}
-          opacity={0.7}
-          pointerEvents="none"
-        >
-          {label.hold}
-        </text>
-      );
-    }
-
     return (
       <g key={`k-${key.index}`}>
         <rect x={x} y={y} width={w} height={h} rx={4} fill="#303949" />
         <rect x={x + 4} y={y} width={w - 8} height={h - 8} rx={4} fill={color.css} />
-        {primaryContent}
-        {secondaryContent}
+        {keyLabel(cx, cy, y, h, label, fgColor)}
       </g>
     );
   }
