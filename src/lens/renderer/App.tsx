@@ -16,13 +16,22 @@ function ResizeFrame() {
       e.preventDefault();
       e.stopPropagation();
       document.body.classList.add("resizing");
-      let lastX = e.clientX;
-      let lastY = e.clientY;
+      // Screen-absolute coords, not clientX/clientY: resizing from an n/w edge
+      // moves the window itself under a physically-stationary cursor, which
+      // shifts where that cursor lands in the window's own (client) coordinate
+      // space — Chromium then fires a synthetic mousemove reporting that shift
+      // as if the mouse had moved, which fed straight back into another
+      // resize call and oscillated forever (visible as the "vibrating" jitter,
+      // and never on a pure se resize, which never moves the window). screenX/
+      // screenY are unaffected by the window's own position, same fix already
+      // used for the move handle below.
+      let lastX = e.screenX;
+      let lastY = e.screenY;
       const onMove = (ev: MouseEvent) => {
-        const dx = ev.clientX - lastX;
-        const dy = ev.clientY - lastY;
-        lastX = ev.clientX;
-        lastY = ev.clientY;
+        const dx = ev.screenX - lastX;
+        const dy = ev.screenY - lastY;
+        lastX = ev.screenX;
+        lastY = ev.screenY;
         window.lens?.winResize(dir, dx, dy);
       };
       const onUp = () => {

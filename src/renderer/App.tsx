@@ -85,7 +85,11 @@ function App() {
     log.verbose("Retrieving settings: ", oldSettings);
     const locale = await ipcRenderer.invoke("get-Locale");
     if (store.get("settings.language") !== undefined) {
-      i18n.setLanguage(store.get("settings.language").toString());
+      const storedLanguage = store.get("settings.language").toString();
+      i18n.setLanguage(storedLanguage);
+      // Lens may already be enabled from a previous session (background mode)
+      // by the time this renders, with no other chance to learn the language.
+      ipcRenderer.invoke("lens:set-layout", storedLanguage).catch(() => {});
     }
 
     // when moving from other version, config may for superkeys may contain wrong data (wrong legnth, nulls)

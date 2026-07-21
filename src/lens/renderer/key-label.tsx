@@ -40,13 +40,35 @@ export function fitFontSize(text: string, base: number): number {
   return base;
 }
 
+/** Ported from Bazecor's own `getDivideKeys` (per-hardware Keymap.jsx): a
+ * single word longer than 7 characters — and not a modifier combo like
+ * "C+A" — gets cut at 4 chars onto two lines ("BACKSPACE" -> "BACK"/"SPACE")
+ * instead of overflowing the key face. Multi-word labels are left alone (they
+ * already wrap on the space). */
+export function splitLongWord(text: string): [string, string] | null {
+  if (!text || text.includes(" ")) return null;
+  if (text.length <= 7) return null;
+  if (text.startsWith("C+") || text.startsWith("A+") || text.startsWith("AGr+")) return null;
+  return [text.slice(0, 4), text.slice(4)];
+}
+
 /**
  * Text/modifier content for one key, positioned around center (cx, cy). `boxTop`
  * and `boxH` bound the key face so the hold line / modifier boxes sit near the
  * bottom. Shared by both rectangular keys (absolute coords) and silhouette keys
- * (local coords inside their translated group).
+ * (local coords inside their translated group). `rotation` (degrees, about
+ * (cx, cy)) tilts the whole label block to follow a curved key silhouette
+ * (Defy's fanned thumb keys) instead of sitting flat/horizontal.
  */
-export function keyLabel(cx: number, cy: number, boxTop: number, boxH: number, label: DecodedKey, fgColor: string): JSX.Element {
+export function keyLabel(
+  cx: number,
+  cy: number,
+  boxTop: number,
+  boxH: number,
+  label: DecodedKey,
+  fgColor: string,
+  rotation = 0,
+): JSX.Element {
   const hasSub = Boolean(label.subtitle);
   const mods = label.modifiers ?? [];
   const hasMods = mods.length > 0;
@@ -88,21 +110,55 @@ export function keyLabel(cx: number, cy: number, boxTop: number, boxH: number, l
       </>
     );
   } else if (label.primary) {
-    primaryContent = (
-      <text
-        x={cx}
-        y={primaryY}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize={fitFontSize(label.primary, FS)}
-        fontWeight="700"
-        fontFamily="system-ui,-apple-system,sans-serif"
-        fill={fgColor}
-        pointerEvents="none"
-      >
-        {label.primary}
-      </text>
-    );
+    const split = splitLongWord(label.primary);
+    if (split) {
+      primaryContent = (
+        <>
+          <text
+            x={cx}
+            y={primaryY - 6}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize={fitFontSize(split[0], FSS)}
+            fontWeight="700"
+            fontFamily="system-ui,-apple-system,sans-serif"
+            fill={fgColor}
+            pointerEvents="none"
+          >
+            {split[0]}
+          </text>
+          <text
+            x={cx}
+            y={primaryY + 6}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize={fitFontSize(split[1], FSS)}
+            fontWeight="700"
+            fontFamily="system-ui,-apple-system,sans-serif"
+            fill={fgColor}
+            pointerEvents="none"
+          >
+            {split[1]}
+          </text>
+        </>
+      );
+    } else {
+      primaryContent = (
+        <text
+          x={cx}
+          y={primaryY}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={fitFontSize(label.primary, FS)}
+          fontWeight="700"
+          fontFamily="system-ui,-apple-system,sans-serif"
+          fill={fgColor}
+          pointerEvents="none"
+        >
+          {label.primary}
+        </text>
+      );
+    }
   }
 
   let secondaryContent: JSX.Element[] | JSX.Element | null = null;
@@ -143,10 +199,14 @@ export function keyLabel(cx: number, cy: number, boxTop: number, boxH: number, l
       return el;
     });
   } else if (label.hold) {
+    // boxTop+boxH is the full key cell, but the color face is inset 4px top/
+    // bottom (see the "-8" rect height at each call site) — "-10" left this
+    // (layer names, superkey/oneshot hints) sitting only 2px above the face's
+    // real bottom edge, cramped against it.
     secondaryContent = (
       <text
         x={cx}
-        y={boxTop + boxH - 10}
+        y={boxTop + boxH - 13}
         textAnchor="middle"
         dominantBaseline="middle"
         fontSize={fitFontSize(label.hold, FSH)}
@@ -161,10 +221,13 @@ export function keyLabel(cx: number, cy: number, boxTop: number, boxH: number, l
     );
   }
 
-  return (
+  const content = (
     <>
       {primaryContent}
       {secondaryContent}
     </>
   );
+
+  if (!rotation) return content;
+  return <g transform={`rotate(${rotation},${cx},${cy})`}>{content}</g>;
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import type { DecodedKey, KeyboardModel } from "../shared/types";
 import { DEFY_KEYS, DEFY_SVG_W, DEFY_VIEW_Y, DEFY_VIEW_H } from "./geometry-defy";
-import { DEFY_THUMB_PATHS } from "./defy-thumb-paths";
+import { DEFY_THUMB_PATHS, DEFY_THUMB_ROTATION, DEFY_THUMB_CENTER } from "./defy-thumb-paths";
 import { decodeKey, superkeyIndex, layoutOverrides } from "./keycodes";
 import { keyLabel, fg } from "./key-label";
 
@@ -55,15 +55,16 @@ export const DefyKeyboardView: React.FC<Props> = ({ model, activeLayer, layout, 
     // group translated to the key origin, so the extracted paths' local coords hold.
     const thumb = key.thumbType ? DEFY_THUMB_PATHS[key.thumbType] : undefined;
     if (thumb) {
-      const lcx = 4 + (w - 8) / 2;
-      const lcy = (h - 8) / 2;
+      const fallbackCenter: [number, number] = [4 + (w - 8) / 2, (h - 8) / 2];
+      const [lcx, lcy] = key.thumbType ? (DEFY_THUMB_CENTER[key.thumbType] ?? fallbackCenter) : fallbackCenter;
+      const rotation = key.thumbType ? (DEFY_THUMB_ROTATION[key.thumbType] ?? 0) : 0;
       return (
         <g key={`k-${key.index}`} transform={`translate(${x},${y})`}>
           <path d={thumb.base} fill="#303949" />
           <g transform="translate(4,0)">
             <path d={thumb.inner} fill={color.css} />
           </g>
-          {keyLabel(lcx, lcy, 0, h, label, fgColor)}
+          {keyLabel(lcx, lcy, 0, h, label, fgColor, rotation)}
         </g>
       );
     }

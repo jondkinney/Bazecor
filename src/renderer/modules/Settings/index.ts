@@ -22,6 +22,7 @@ import EnergyManagement from "./EnergyManagement";
 import FileBackUpHandling from "./FileBackUpHandling";
 import GeneralSettings from "./GeneralSettings";
 import LayerLensSettings from "./LayerLensSettings";
+import LayoutLensOnboarding from "./LayoutLensOnboarding";
 import LEDSettings from "./LEDSettings";
 import NeuronSettings from "./NeuronSettings";
 import RFSettings from "./RFSettings";
@@ -35,6 +36,7 @@ export {
   FileBackUpHandling,
   GeneralSettings,
   LayerLensSettings,
+  LayoutLensOnboarding,
   LEDSettings,
   NeuronSettings,
   RFSettings,

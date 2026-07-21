@@ -37,7 +37,7 @@ function createTray(): void {
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: "Open Bazecor", click: () => openMainWindow() },
-      { label: "Toggle Lens overlay (Ctrl+Alt+L)", click: () => overlayController.toggleOverlay() },
+      { label: "Toggle Layout Lens", click: () => overlayController.toggleOverlay() },
       { type: "separator" },
       {
         label: "Quit",

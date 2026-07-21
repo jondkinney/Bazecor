@@ -9,6 +9,53 @@ export interface ThumbPath {
   inner: string;
 }
 
+/* Label rotation (degrees) per thumb key, transcribed from Bazecor's own
+ * Layout Editor CSS (the ".defy-t2" .. ".defy-tR8" ".keyContentLabelRotate"
+ * rules in src/renderer/views/LayoutEditor.tsx) so the overlay's thumb-key text follows
+ * the same curve as the real editor instead of sitting flat/horizontal. Keys
+ * absent here (t1, t5, tR1, tR5 — the near-rectangular end caps) have no rule
+ * in Bazecor either, i.e. 0deg. */
+/* Visual center [x, y] for each thumb key's label, in the same local coordinate
+ * space as `base` (the outer/full silhouette — the group these labels render
+ * into is translated to the key origin but not further offset). Each value is
+ * that key's own SVG path bounding-box center, not an eyeballed guess: these
+ * silhouettes intentionally paint outside a naive 57x57 cell (that's how the
+ * fanned thumb keys avoid gaps at the pivot), so a nominal-cell-center guess
+ * put labels off-center, worst on the most-fanned keys (t4/t8, tR4/tR8). */
+export const DEFY_THUMB_CENTER: Record<string, [number, number]> = {
+  "defy-t1": [41.1, 26.9],
+  "defy-t2": [31.1, 27.9],
+  "defy-t3": [36.5, 35.3],
+  "defy-t4": [37.5, 41.0],
+  "defy-t5": [38.0, 26.0],
+  "defy-t6": [30.1, 28.5],
+  "defy-t7": [38.3, 36.5],
+  "defy-t8": [54.0, 54.5],
+  "defy-tR1": [41.3, 25.9],
+  "defy-tR2": [31.3, 27.9],
+  "defy-tR3": [36.5, 35.3],
+  "defy-tR4": [37.5, 41.0],
+  "defy-tR5": [38.0, 26.0],
+  "defy-tR6": [29.9, 28.5],
+  "defy-tR7": [37.5, 36.5],
+  "defy-tR8": [54.0, 54.5],
+};
+
+export const DEFY_THUMB_ROTATION: Record<string, number> = {
+  "defy-t2": 3,
+  "defy-t3": 10,
+  "defy-t4": 37,
+  "defy-t6": 5,
+  "defy-t7": 15,
+  "defy-t8": 54,
+  "defy-tR2": -5,
+  "defy-tR3": -25,
+  "defy-tR4": -54,
+  "defy-tR6": -8,
+  "defy-tR7": -46,
+  "defy-tR8": -60,
+};
+
 export const DEFY_THUMB_PATHS: Record<string, ThumbPath> = {
   "defy-t1": {
     base: "M0 4.989a4 4 0 014-4h74.202a4 4 0 013.994 4.217l-2.39 43.81a4 4 0 01-3.994 3.783H4a4 4 0 01-4-4V4.989z",

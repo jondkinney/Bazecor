@@ -4,7 +4,8 @@ import { SONSEI_KEYS } from "./geometry-sonsei";
 import { DefyKeyboardView } from "./DefyKeyboardView";
 import { Raise2KeyboardView } from "./Raise2KeyboardView";
 import { decodeKey, superkeyIndex, layoutOverrides } from "./keycodes";
-import { keyLabel, fg, fitFontSize } from "./key-label";
+import { keyLabel, fg, fitFontSize, splitLongWord } from "./key-label";
+import { DEFY_THUMB_ROTATION } from "./defy-thumb-paths";
 
 interface Props {
   model: KeyboardModel;
@@ -34,16 +35,24 @@ const THUMB_PATHS: Record<number, string> = {
   59: "M57.426 4a4 4 0 00-4-4H4.224A4 4 0 00.23 4.218l2.39 43.81a4 4 0 003.994 3.782h46.812a4 4 0 004-4V4z",
 };
 
-// Approximate visual center [x, y] and rotation (degrees) for each thumb key label
-const THUMB_TEXT: Record<number, [number, number, number]> = {
-  48: [28, 25, 0], // sonsei-t1:  rect, horizontal
-  49: [28, 22, -12], // defy-t2:    tapered, slight angle
-  50: [32, 30, -24], // defy-t3:    arc
-  51: [26, 32, -38], // defy-t4:    fan, most angled
-  56: [48, 32, 38], // defy-tR4:   fan mirrored
-  57: [38, 30, 24], // defy-tR3:   arc mirrored
-  58: [33, 22, 12], // defy-tR2:   tapered mirrored
-  59: [28, 24, 0], // sonsei-tR1: rect, horizontal
+// Visual center [x, y] for each thumb key label, plus the Defy keyType whose
+// rotation to reuse. Sonsei's own keymap (Keymap.jsx) renders these middle
+// thumb keys with the literal "defy-t2"/"defy-t3"/"defy-t4" (and
+// "defy-tR2..4") keyTypes and the same rotate(10,320,680)/rotate(-10,960,680)
+// half-group wrapper Lens uses below — so DEFY_THUMB_ROTATION's angles (taken
+// from Bazecor's own CSS) apply here unchanged. Centers are each key's own
+// SVG path bounding-box center (computed from THUMB_PATHS below), not
+// eyeballed — the fanned-out keys (t4/tR4 especially) paint well outside a
+// naive 57x57 cell, so a nominal-box guess put the label off-center.
+const THUMB_TEXT: Record<number, [number, number, string]> = {
+  48: [28.6, 26.9, ""], // sonsei-t1:  rect, horizontal (no rotation rule)
+  49: [31.1, 27.9, "defy-t2"],
+  50: [36.5, 35.3, "defy-t3"],
+  51: [37.5, 41.0, "defy-t4"],
+  56: [37.5, 41.0, "defy-tR4"],
+  57: [36.5, 35.3, "defy-tR3"],
+  58: [31.3, 27.9, "defy-tR2"],
+  59: [28.8, 25.9, ""], // sonsei-tR1: rect, horizontal (no rotation rule)
 };
 
 export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, layerNames }) => {
@@ -88,7 +97,8 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
 
     const thumbPath = THUMB_PATHS[key.index];
     if (thumbPath) {
-      const [tx, ty, tr] = THUMB_TEXT[key.index] ?? [28, 24, 0];
+      const [tx, ty, rotKeyType] = THUMB_TEXT[key.index] ?? [28, 24, ""];
+      const tr = rotKeyType ? (DEFY_THUMB_ROTATION[rotKeyType] ?? 0) : 0;
       const rot = tr === 0 ? undefined : `rotate(${tr},${tx},${ty})`;
       let thumbLabel: JSX.Element | null = null;
       if (hasSub) {
@@ -123,7 +133,37 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
           </g>
         );
       } else if (label.primary) {
-        thumbLabel = (
+        const split = splitLongWord(label.primary);
+        thumbLabel = split ? (
+          <g transform={rot}>
+            <text
+              x={tx}
+              y={ty - 6}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize={fitFontSize(split[0], FSS)}
+              fontWeight="700"
+              fontFamily="system-ui,-apple-system,sans-serif"
+              fill={fgColor}
+              pointerEvents="none"
+            >
+              {split[0]}
+            </text>
+            <text
+              x={tx}
+              y={ty + 6}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize={fitFontSize(split[1], FSS)}
+              fontWeight="700"
+              fontFamily="system-ui,-apple-system,sans-serif"
+              fill={fgColor}
+              pointerEvents="none"
+            >
+              {split[1]}
+            </text>
+          </g>
+        ) : (
           <text
             x={tx}
             y={ty}

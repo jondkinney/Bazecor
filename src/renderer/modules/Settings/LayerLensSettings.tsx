@@ -105,7 +105,7 @@ const LayerLensSettings = () => {
     <Card className="mt-3 max-w-2xl mx-auto" variant="default">
       <CardHeader>
         <CardTitle variant="default">
-          <IconLens /> Layer Lens
+          <IconLens /> Settings
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -141,7 +141,7 @@ const LayerLensSettings = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <label htmlFor="lensEnabledSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
-                    Layer Lens
+                    Layout Lens
                   </label>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -161,12 +161,12 @@ const LayerLensSettings = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <label htmlFor="layerLensOnChangeSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
-                    Layer Lens on layer change
+                    Show only on layer
                   </label>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
-                    Automatically shows Layer Lens for a few seconds whenever you switch to a different layer, then hides it
+                    Automatically shows Layout Lens for a few seconds whenever you switch to a different layer, then hides it
                     again.
                   </p>
                 </TooltipContent>
@@ -184,12 +184,12 @@ const LayerLensSettings = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <label htmlFor="hoverModeSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
-                    Hover mode
+                    Resize Mode
                   </label>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
-                    Lets you click, drag, and resize the Layer Lens overlay by hovering your mouse over it, instead of it staying
+                    Lets you click, drag, and resize the Layout Lens overlay by hovering your mouse over it, instead of it staying
                     click-through.
                   </p>
                 </TooltipContent>
@@ -206,7 +206,7 @@ const LayerLensSettings = () => {
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
-                    Keeps Bazecor in the system tray when you close its window (and starts it at login), so Layer Lens stays
+                    Keeps Bazecor in the system tray when you close its window (and starts it at login), so Layout Lens stays
                     available at all times.
                   </p>
                 </TooltipContent>
@@ -232,7 +232,7 @@ const LayerLensSettings = () => {
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
-                    Controls how see-through the Layer Lens overlay is, so it blends with whatever is behind it.
+                    Controls how see-through the Layout Lens overlay is, so it blends with whatever is behind it.
                   </p>
                 </TooltipContent>
               </Tooltip>

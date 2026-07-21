@@ -14,8 +14,16 @@ let overlayVisible = false;
 let overlayStyleApplied = false;
 let normalBounds: Electron.Rectangle | null = null;
 let overlayBounds: Electron.Rectangle | null = null;
-let overlayLockedSize: { width: number; height: number } | null = null;
-let fixingOverlayResize = false;
+// The full intended bounds while overlay mode is active — our own source of
+// truth for move/resize math (see overlayMove/overlayResize/guardOverlayBounds
+// below), never read back from win.getBounds() mid-gesture: DWM rounds
+// transparent/frameless window rects on Windows, and since resize deltas are
+// small per-frame increments applied on top of the previous step, trusting a
+// drifted read-back compounds that error every frame — most visibly on
+// n/w-side resizes, where the drift shows up as position jitter (an e/s-only
+// resize never touches x/y, so the same drift there is invisible).
+let overlayLockedBounds: Electron.Rectangle | null = null;
+let fixingOverlayBounds = false;
 
 function getWin(): BrowserWindow | null {
   return LensOverlay.getWindow();
@@ -72,15 +80,22 @@ export function isOverlayVisible(): boolean {
   return overlayVisible;
 }
 
-function guardOverlayResize(): void {
+// Corrects the window back to overlayLockedBounds if it drifts from it (e.g.
+// DWM rounding). Must correct the FULL rect (x/y/width/height) together, not
+// just size: win.setSize() alone re-anchors to the window's current top-left,
+// which silently overrides the position half of an in-progress n/w-side
+// resize — that fight between "resize sets x and width" and "guard resets
+// only width, implicitly freezing x" is what produced the jitter.
+function guardOverlayBounds(): void {
   const win = getWin();
-  if (!win || !overlayLockedSize || fixingOverlayResize) return;
-  const { width, height } = win.getBounds();
-  if (width !== overlayLockedSize.width || height !== overlayLockedSize.height) {
-    fixingOverlayResize = true;
-    win.setSize(overlayLockedSize.width, overlayLockedSize.height);
+  if (!win || !overlayLockedBounds || fixingOverlayBounds) return;
+  const b = win.getBounds();
+  const target = overlayLockedBounds;
+  if (b.x !== target.x || b.y !== target.y || b.width !== target.width || b.height !== target.height) {
+    fixingOverlayBounds = true;
+    win.setBounds(target);
     setImmediate(() => {
-      fixingOverlayResize = false;
+      fixingOverlayBounds = false;
     });
   }
 }
@@ -96,9 +111,7 @@ export function applyOverlayMode(enabled: boolean): void {
   overlayStyleApplied = enabled;
   if (enabled) {
     normalBounds = win.getBounds();
-    overlayLockedSize = overlayBounds
-      ? { width: overlayBounds.width, height: overlayBounds.height }
-      : { width: normalBounds.width, height: normalBounds.height };
+    overlayLockedBounds = { ...(overlayBounds ?? normalBounds) };
     win.setOpacity(settings.opacity);
     // macOS: follow the user to whatever Space/full-screen app they're on, so
     // showing the overlay never switches Spaces. Joining a full-screen Space as
@@ -113,9 +126,9 @@ export function applyOverlayMode(enabled: boolean): void {
     win.setIgnoreMouseEvents(!settings.hoverMode, { forward: true });
     win.setResizable(false);
     win.removeListener("will-resize", preventOverlayResize);
-    win.removeListener("resize", guardOverlayResize);
+    win.removeListener("resize", guardOverlayBounds);
     win.on("will-resize", preventOverlayResize);
-    win.on("resize", guardOverlayResize);
+    win.on("resize", guardOverlayBounds);
     win.webContents
       .executeJavaScript(
         `document.body.classList.add('overlay');${
@@ -125,9 +138,9 @@ export function applyOverlayMode(enabled: boolean): void {
       .catch(() => {});
     if (overlayBounds) win.setBounds(overlayBounds);
   } else {
-    overlayLockedSize = null;
+    overlayLockedBounds = null;
     win.removeListener("will-resize", preventOverlayResize);
-    win.removeListener("resize", guardOverlayResize);
+    win.removeListener("resize", guardOverlayBounds);
     overlayBounds = win.getBounds();
     persistOverlayBounds();
     win.setOpacity(1.0);
@@ -223,6 +236,16 @@ export function createOverlayWindow(onReady: () => void): BrowserWindow {
 
   w.webContents.setVisualZoomLevelLimits(1, 1);
 
+  // Fires on app quit (and any other path that closes the window without going
+  // through destroyOverlayWindow(), which persists explicitly before destroy()).
+  // destroy() itself never emits "close", so the two paths don't double-save.
+  w.on("close", () => {
+    if (overlayStyleApplied) {
+      overlayBounds = w.getBounds();
+      persistOverlayBounds();
+    }
+  });
+
   w.on("closed", () => {
     LensOverlay.setWindow(null);
     overlayVisible = false;
@@ -250,7 +273,7 @@ export function destroyOverlayWindow(): void {
   LensOverlay.setWindow(null);
   overlayVisible = false;
   overlayStyleApplied = false;
-  overlayLockedSize = null;
+  overlayLockedBounds = null;
 }
 
 export function showOverlay(): void {
@@ -310,47 +333,58 @@ export function overlayMove(x: number, y: number): void {
   if (!win) return;
   // Absolute positioning: the renderer computes the target top-left from the
   // cursor's screen position minus the grab offset, so it self-corrects every
-  // frame and never accumulates. We must NOT read position back from
-  // getBounds() (DWM rounding on transparent/frameless Windows drifts it).
-  // Pin the size to the intended overlay size so a move can never resize.
-  const { width, height } = win.getBounds();
-  const w = overlayLockedSize?.width ?? width;
-  const h = overlayLockedSize?.height ?? height;
-  win.setBounds({ x: Math.round(x), y: Math.round(y), width: w, height: h });
+  // frame and never accumulates. Pin the size to the locked overlay size (our
+  // own bookkeeping, not a fresh getBounds() read — see overlayLockedBounds)
+  // so a move can never resize.
+  const base = overlayLockedBounds ?? win.getBounds();
+  const next = { x: Math.round(x), y: Math.round(y), width: base.width, height: base.height };
+  if (overlayLockedBounds) overlayLockedBounds = next;
+  win.setBounds(next);
   schedulePersistBounds();
 }
 
 export function overlayMoveBy(dx: number, dy: number): void {
   const win = getWin();
   if (!win) return;
-  const { x, y, width, height } = win.getBounds();
-  const w = overlayLockedSize?.width ?? width;
-  const h = overlayLockedSize?.height ?? height;
-  win.setBounds({ x: x + Math.round(dx), y: y + Math.round(dy), width: w, height: h });
+  // Same reasoning as overlayResize below: build on our own last-known bounds,
+  // not a fresh (potentially DWM-rounded) read-back, so per-frame deltas can't
+  // compound into drift.
+  const base = overlayLockedBounds ?? win.getBounds();
+  const next = { x: base.x + Math.round(dx), y: base.y + Math.round(dy), width: base.width, height: base.height };
+  if (overlayLockedBounds) overlayLockedBounds = next;
+  win.setBounds(next);
   schedulePersistBounds();
 }
 
 export function overlayResize(dir: string, dx: number, dy: number): void {
   const win = getWin();
   if (!win) return;
-  const [wx, wy] = win.getPosition();
-  const [ww, wh] = win.getSize();
-  let nx = wx;
-  let ny = wy;
-  let nw = ww;
-  let nh = wh;
-  if (dir.includes("e")) nw = Math.max(400, ww + dx);
-  if (dir.includes("s")) nh = Math.max(200, wh + dy);
+  // dx/dy are small per-frame deltas (see App.tsx's ResizeFrame), applied on
+  // top of the PREVIOUS step's result — so that base must be our own trusted
+  // overlayLockedBounds, never a fresh win.getBounds()/getPosition() read.
+  // Reading back drifts under DWM's rounding on transparent/frameless windows,
+  // and unlike a move (position-only), a resize from the n/w edges changes x/y
+  // *and* w/h together, so that per-step drift showed up as the window visibly
+  // jittering/repositioning itself — invisible on a pure se resize, which
+  // never touches x/y.
+  const base = overlayLockedBounds ?? win.getBounds();
+  let nx = base.x;
+  let ny = base.y;
+  let nw = base.width;
+  let nh = base.height;
+  if (dir.includes("e")) nw = Math.max(400, base.width + dx);
+  if (dir.includes("s")) nh = Math.max(200, base.height + dy);
   if (dir.includes("w")) {
-    nx = wx + dx;
-    nw = Math.max(400, ww - dx);
+    nx = base.x + dx;
+    nw = Math.max(400, base.width - dx);
   }
   if (dir.includes("n")) {
-    ny = wy + dy;
-    nh = Math.max(200, wh - dy);
+    ny = base.y + dy;
+    nh = Math.max(200, base.height - dy);
   }
-  if (overlayLockedSize) overlayLockedSize = { width: nw, height: nh };
-  win.setBounds({ x: nx, y: ny, width: nw, height: nh });
+  const next = { x: Math.round(nx), y: Math.round(ny), width: Math.round(nw), height: Math.round(nh) };
+  if (overlayLockedBounds) overlayLockedBounds = next;
+  win.setBounds(next);
   schedulePersistBounds();
 }
 

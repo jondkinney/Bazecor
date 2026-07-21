@@ -15,6 +15,7 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { ipcRenderer } from "electron";
 import Styled from "styled-components";
 import { toast } from "react-toastify";
 import log from "electron-log/renderer";
@@ -35,7 +36,6 @@ import getLanguage from "@Renderer/utils/language";
 import ToastMessage from "@Renderer/components/atoms/ToastMessage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@Renderer/components/atoms/Select";
 import { Button } from "@Renderer/component/Button";
-import LayerLensSettings from "./LayerLensSettings";
 
 import { i18n } from "@Renderer/i18n";
 import Keymap from "../../../api/keymap";
@@ -84,22 +84,20 @@ const GeneralSettings = ({
   const [versionDialog, setVersionDialog] = useState(false);
   const { state } = useDevice();
 
-  // Layer Lens is available for Sonsei (fw >= 1.0.0) and Defy (fw >= 2.3.0). The
-  // capability is written to the store on connect (see App.tsx onKeyboardConnect).
-  // Raise2 and Raise (Raise1) never set this flag, so the section stays hidden.
-  const lensCapabilityRaw = store.get("capabilities.lens");
-  const isLensAvailable =
-    lensCapabilityRaw === true || lensCapabilityRaw === "true" || lensCapabilityRaw === 1 || lensCapabilityRaw === "1";
-  log.info(`[Lens] GeneralSettings render -> capabilities.lens: ${lensCapabilityRaw}, showLayerLensSettings: ${isLensAvailable}`);
-
   useEffect(() => {
-    setSelectedLanguage(getLanguage(store.get("settings.language") as string));
+    const storedLanguage = store.get("settings.language") as string;
+    setSelectedLanguage(getLanguage(storedLanguage));
+    // Sync on mount too: Lens may already be running (background mode, or the
+    // overlay was enabled in a previous session) with no way to have learned
+    // the current language otherwise.
+    if (storedLanguage) ipcRenderer.invoke("lens:set-layout", storedLanguage).catch(() => {});
   }, []);
 
   const changeLanguage = (language: LangOptions) => {
     try {
       setSelectedLanguage(language);
       store.set("settings.language", `${language}`);
+      ipcRenderer.invoke("lens:set-layout", language).catch(() => {});
       if (state.currentDevice && !state.currentDevice.isClosed) {
         const deviceLang = { ...state.currentDevice.device, language: true };
         state.currentDevice.commands.keymap = new Keymap(deviceLang);
@@ -213,7 +211,6 @@ const GeneralSettings = ({
           />
         </CardContent>
       </Card>
-      {isLensAvailable && <LayerLensSettings />}
       <Card className="mt-3 max-w-2xl mx-auto" variant="default">
         <CardHeader>
           <CardTitle variant="default">

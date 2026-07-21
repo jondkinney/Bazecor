@@ -26,6 +26,9 @@ function LayerLensTab(props: LayerLensTabProps) {
   const superKeyDisabled = disabled || isSuperkeyContext;
   // Toggle Layer Lens (OVERLAY_TAP) only makes sense on the two tap-triggered slots.
   const toggleDisabled = disabled || (isSuperkeyContext && !SUPERKEY_TAP_SLOTS.includes(action));
+  // Hold Layer Lens (OVERLAY_HOLD) is the inverse: a Tap/2Tap slot already only
+  // fires on a tap gesture, so a "hold" assignment there could never trigger.
+  const holdDisabled = disabled || (isSuperkeyContext && SUPERKEY_TAP_SLOTS.includes(action));
 
   const KC = useMemo(() => {
     if (typeof keyCode === "number") {
@@ -79,6 +82,7 @@ function LayerLensTab(props: LayerLensTabProps) {
                   onKeySelect(OverlayCodes.OVERLAY_HOLD);
                 }}
                 selected={KC === OverlayCodes.OVERLAY_HOLD}
+                disabled={holdDisabled}
                 className="w-max-[124px] w-[124px] text-center mt-2"
                 size="sm"
               >
