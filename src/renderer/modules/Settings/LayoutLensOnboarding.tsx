@@ -25,18 +25,17 @@ interface Step {
 
 const steps: Step[] = [
   {
-    title: "Turn it on",
-    description: "Enable Layout Lens in Settings below. You can also toggle it anytime with Ctrl+Alt+L.",
+    title: "Assign the Lens Keys",
+    description: "Open the layout editor and assign LENS TAP / LENS HOLD to a key to show or hide the keyboard overlay.",
   },
   {
-    title: "Assign the keys",
-    description:
-      "Open your keymap's Layout Lens tab and assign LENS TAP / LENS HOLD to a key to show or hide the overlay from your keyboard.",
+    title: "Turn it on",
+    description: "Enable Layout Lens in the Settings below.",
   },
   {
     title: "Show it your way",
     description:
-      'Turn on "Show only on layer" to automatically reveal the overlay for a few seconds every time you switch layers.',
+      'Turn on "Show only on layer change" to automatically reveal the overlay for a few seconds every time you switch layers.',
   },
   {
     title: "Move and resize it",

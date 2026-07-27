@@ -288,31 +288,31 @@ function layerName(num: number, layerNames: string[]): string {
   return layerNames[num - 1] || "";
 }
 
-/* Layer keys mirror Bazecor's LayerTag (shift/lock icon + layer number) as
- * "⇧n" / "⇪n", with the layer's custom name (when set) as the small hold line —
- * the overlay's added context over the editor. */
+/* Layer keys mirror Bazecor's LayerTag (shift/lock icon + layer number):
+ * the primary line shows the target layer number or name, and holdIcon tells
+ * key-label.tsx to draw the matching lock/shift/oneshot glyph in place of text. */
 function decodeLayerKey(code: number, layerNames: string[], layout: Record<number, string>): DecodedKey | null {
   if (code >= LAYER_LOCK_MIN && code <= LAYER_LOCK_MAX) {
     const n = code - LAYER_LOCK_MIN + 1;
-    return { primary: `⇪${n}`, hold: layerName(n, layerNames) || "lock" };
+    return { primary: layerName(n, layerNames) || `${n}`, hold: "lock", holdIcon: "lock" };
   }
   if (code >= LAYER_SHIFT_MIN && code <= LAYER_SHIFT_MAX) {
     const n = code - LAYER_SHIFT_MIN + 1;
-    return { primary: `⇧${n}`, hold: layerName(n, layerNames) };
+    return { primary: layerName(n, layerNames) || `${n}`, hold: "shift", holdIcon: "shift" };
   }
   if (code >= LAYER_MOVE_MIN && code <= LAYER_MOVE_MAX) {
     const n = code - LAYER_MOVE_MIN + 1;
-    return { primary: `⇪${n}`, hold: layerName(n, layerNames) || "move" };
+    return { primary: layerName(n, layerNames) || `${n}`, hold: "lock", holdIcon: "lock" };
   }
   if (code >= LAYER_ONESHOT_MIN && code <= LAYER_ONESHOT_MAX) {
     const n = code - LAYER_ONESHOT_MIN + 1;
-    return { primary: `⇧${n}`, hold: layerName(n, layerNames) || "1shot" };
+    return { primary: layerName(n, layerNames) || `${n}`, hold: "1shot", holdIcon: "oneshot" };
   }
   if (code >= LAYER_DUAL_MIN && code <= LAYER_DUAL_MAX) {
     const layerIdx = Math.trunc((code - LAYER_DUAL_MIN) / 256);
     const tapLabel = baseLabelFor((code - LAYER_DUAL_MIN) % 256, layout);
     const name = layerName(layerIdx + 1, layerNames);
-    return { primary: tapLabel || `⇧${layerIdx + 1}`, hold: name || `⇧${layerIdx + 1}` };
+    return { primary: tapLabel || name || `${layerIdx + 1}`, hold: name || `${layerIdx + 1}` };
   }
   return null;
 }

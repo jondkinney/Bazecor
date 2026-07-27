@@ -1,4 +1,4 @@
-import { dialog, globalShortcut, shell } from "electron";
+import { dialog, globalShortcut, powerMonitor, shell } from "electron";
 import log from "electron-log/main";
 import GlobalRecording from "../../main/managers/GlobalRecording";
 import type { KeyboardModel, LensState } from "../shared/types";
@@ -14,6 +14,7 @@ import { getInputMonitoringStatus, requestInputMonitoringAccess } from "./macos-
 import { getAllLensKeyboards, getLensKeyboard, getLensSettings, hasAnyLensKeyboard, setLensSettings } from "./lens-settings";
 import { readLatestModel } from "./backup-reader";
 import {
+  applyAspectRatioFor,
   broadcastSettings,
   broadcastState,
   createOverlayWindow,
@@ -95,6 +96,12 @@ class OverlayController {
     if (!overlayAlive()) {
       createOverlayWindow(() => {
         this.overlayActive = true;
+        // reloadModel(false) above ran before this window existed, so its own
+        // applyAspectRatioFor() call was a no-op (getWin() was still null) —
+        // and createOverlayWindow()/applyOverlayMode() restore whatever bounds
+        // were persisted from the last session, which may predate this ratio
+        // lock entirely. Re-apply it now that the window is actually there.
+        applyAspectRatioFor(this.currentModel?.product);
         if (this.currentModel) {
           pushModel(this.currentModel);
           pushActiveLayer(this.activeLayer);
@@ -183,6 +190,7 @@ class OverlayController {
       this.currentProduct = only.product;
       this.currentModel = model;
       this.activeLayer = model.defaultLayer;
+      applyAspectRatioFor(model.product);
       if (push) {
         pushModel(model);
         pushActiveLayer(this.activeLayer);
@@ -203,6 +211,7 @@ class OverlayController {
     }
     this.currentModel = model;
     this.activeLayer = model.defaultLayer;
+    applyAspectRatioFor(model.product);
     if (push) {
       pushModel(model);
       pushActiveLayer(this.activeLayer);
@@ -243,6 +252,17 @@ class OverlayController {
     if (this.hidWired) return;
     this.hidWired = true;
 
+    // A laptop suspend/resume (most likely while Lens sits hidden for a long
+    // stretch — exactly when nobody notices) typically drops and re-enumerates
+    // USB HID devices at the OS level. The scan loop would eventually pick the
+    // board back up on its own next 2s tick, but force an immediate rescan on
+    // resume anyway so overlay/layer-change events aren't left dead for even
+    // one extra cycle right when the user comes back.
+    powerMonitor.on("resume", () => {
+      log.info("[Lens/HID] System resumed from sleep — forcing a rescan");
+      this.hid.startWithRetry();
+    });
+
     this.hid.on("permission-denied", () => {
       if (!this.hidPermissionDenied) {
         this.hidPermissionDenied = true;
@@ -268,6 +288,9 @@ class OverlayController {
     });
 
     this.hid.on("layer-change", ({ layer }) => {
+      // TODO(lens-idle-debug): confirm this handler still fires after the
+      // overlay's been hidden for a while.
+      log.info(`[Lens/idle-debug] layer-change received: layer=${layer}, overlayVisible=${isOverlayVisible()}`);
       this.activeLayer = layer;
       pushActiveLayer(layer);
       const defaultLayer = this.currentModel?.defaultLayer ?? 0;
@@ -279,6 +302,9 @@ class OverlayController {
     });
 
     this.hid.on("overlay", ({ eventType }) => {
+      log.info(
+        `[Lens/idle-debug] overlay event received: eventType=0x${eventType.toString(16)}, overlayVisible=${isOverlayVisible()}`,
+      );
       if (eventType === OVERLAY_EVENT_TAP) {
         this.onOverlayTapAction();
       } else if (eventType === OVERLAY_EVENT_HOLD) {
@@ -291,10 +317,16 @@ class OverlayController {
     });
 
     this.hid.on("overlay-tap", ({ eventType }) => {
+      log.info(
+        `[Lens/idle-debug] overlay-tap event received: eventType=0x${eventType.toString(16)}, overlayVisible=${isOverlayVisible()}`,
+      );
       if (eventType === OVERLAY_EVENT_TAP) this.onOverlayTapAction();
     });
 
     this.hid.on("overlay-hold", ({ eventType }) => {
+      log.info(
+        `[Lens/idle-debug] overlay-hold event received: eventType=0x${eventType.toString(16)}, overlayVisible=${isOverlayVisible()}`,
+      );
       if (eventType === OVERLAY_EVENT_HOLD) this.onOverlayHoldStart();
       else if (eventType === OVERLAY_EVENT_RELEASE) this.onOverlayHoldEnd();
     });

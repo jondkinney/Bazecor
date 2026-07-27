@@ -8,6 +8,7 @@ import {
   applyHoverModeLive,
   applyOpacityLive,
   applyOverlayMode,
+  applyResizeModeLive,
   broadcastSettings,
   overlayMove,
   overlayMoveBy,
@@ -48,6 +49,13 @@ export function registerLensIpc(onRunInBackgroundChange: (v: boolean) => void): 
   ipcMain.handle("lens:set-hover-mode", (_, v: boolean): LensSettings => {
     const s = setLensSettings({ hoverMode: v });
     applyHoverModeLive(s.hoverMode);
+    broadcastSettings(s);
+    return s;
+  });
+
+  ipcMain.handle("lens:set-resize-mode", (_, v: boolean): LensSettings => {
+    const s = setLensSettings({ resizeMode: v });
+    applyResizeModeLive(s.resizeMode);
     broadcastSettings(s);
     return s;
   });

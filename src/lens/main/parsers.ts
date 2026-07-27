@@ -24,7 +24,13 @@ export function parsePaletteRGBW(raw: string): PaletteColor[] {
   const out: PaletteColor[] = [];
   for (let i = 0; i + 3 < nums.length; i += 4) {
     const [r, g, b, w] = nums.slice(i, i + 4);
-    out.push({ r, g, b, w, rgb: `rgb(${r},${g},${b})` });
+    // Match Bazecor's rgbw2b (src/api/color/RGBWtoRGB.ts): the white channel is
+    // additive on top of r/g/b, clamped to 255. Without this, a pure white LED
+    // (r=g=b=0, w=255) would render as black.
+    const dr = Math.min(255, Math.max(0, r) + Math.max(0, w));
+    const dg = Math.min(255, Math.max(0, g) + Math.max(0, w));
+    const db = Math.min(255, Math.max(0, b) + Math.max(0, w));
+    out.push({ r: dr, g: dg, b: db, w, rgb: `rgb(${dr},${dg},${db})` });
   }
   return out;
 }

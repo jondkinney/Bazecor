@@ -52,6 +52,41 @@ function schedulePersistBounds(): void {
   }, 500);
 }
 
+// Width/height ratio of each product's SVG viewBox in the overlay renderer
+// (src/lens/renderer/geometry-*.ts — keep these in sync if those ever change).
+// The SVG scales at width:100% with no fixed height, so the browser's default
+// preserveAspectRatio ("xMidYMid meet") fits it to the window without
+// distorting it — but if the window itself isn't in the same ratio, that
+// leaves blank (transparent, still-draggable) bars in the window around the
+// actual keyboard image. Locking the window to the right ratio makes the
+// image fill it exactly, so there's no dead space to grab.
+const KEYBOARD_ASPECT_RATIO: Record<string, number> = {
+  sonsei: 1270 / 462,
+  defy: 1270 / 515,
+  raise2: 1222 / 430,
+};
+const DEFAULT_ASPECT_RATIO = KEYBOARD_ASPECT_RATIO.sonsei;
+
+/** Locks the window to the active keyboard's aspect ratio and, while the
+ * overlay is showing, immediately corrects its current height to match
+ * (setAspectRatio alone only constrains future resizes, it doesn't retroactively
+ * fix a size that's already off-ratio). Call whenever the active model/product
+ * changes. */
+export function applyAspectRatioFor(product: string | null | undefined): void {
+  const win = getWin();
+  if (!win) return;
+  const ratio = (product && KEYBOARD_ASPECT_RATIO[product.toLowerCase()]) || DEFAULT_ASPECT_RATIO;
+  win.setAspectRatio(ratio);
+  if (!overlayStyleApplied) return;
+  const base = overlayLockedBounds ?? win.getBounds();
+  const targetHeight = Math.round(base.width / ratio);
+  if (targetHeight === base.height) return;
+  const next = { x: base.x, y: base.y, width: base.width, height: targetHeight };
+  if (overlayLockedBounds) overlayLockedBounds = next;
+  win.setBounds(next);
+  schedulePersistBounds();
+}
+
 function restoreOverlayBounds(): void {
   if (overlayBounds) return; // session bounds take priority over the stored ones
   const saved = getOverlayBounds();
@@ -155,8 +190,8 @@ export function applyOverlayMode(enabled: boolean): void {
   }
 }
 
-const FADE_IN_DURATION_MS = 160;
-const FADE_OUT_DURATION_MS = 320;
+const FADE_IN_DURATION_MS = 80;
+const FADE_OUT_DURATION_MS = 150;
 const FADE_INTERVAL_MS = 16;
 let fadeTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -278,6 +313,11 @@ export function destroyOverlayWindow(): void {
 
 export function showOverlay(): void {
   const win = getWin();
+  // TODO(lens-idle-debug): confirm the window itself is still alive/valid and
+  // this function is actually reached after a long idle-hidden gap.
+  log.info(
+    `[Lens/idle-debug] showOverlay() called: win=${!!win} destroyed=${win?.isDestroyed()} overlayStyleApplied=${overlayStyleApplied}`,
+  );
   if (!win) return;
   overlayVisible = true;
   const settings = getLensSettings();

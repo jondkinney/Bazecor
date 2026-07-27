@@ -10,6 +10,7 @@ export const LENS_DEFAULTS: LensSettings = {
   overlayMode: true,
   overlayAutoShow: true,
   hoverMode: false,
+  resizeMode: false,
 };
 
 function clamp(v: number, min: number, max: number): number {
@@ -26,6 +27,7 @@ export function sanitizeLensSettings(s: Partial<LensSettings>): LensSettings {
     overlayMode: typeof s.overlayMode === "boolean" ? s.overlayMode : LENS_DEFAULTS.overlayMode,
     overlayAutoShow: typeof s.overlayAutoShow === "boolean" ? s.overlayAutoShow : LENS_DEFAULTS.overlayAutoShow,
     hoverMode: typeof s.hoverMode === "boolean" ? s.hoverMode : LENS_DEFAULTS.hoverMode,
+    resizeMode: typeof s.resizeMode === "boolean" ? s.resizeMode : LENS_DEFAULTS.resizeMode,
   };
 }
 

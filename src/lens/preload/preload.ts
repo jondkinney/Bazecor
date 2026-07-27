@@ -36,6 +36,10 @@ contextBridge.exposeInMainWorld("lens", {
     return ipcRenderer.invoke("lens:set-hover-mode", v);
   },
 
+  setResizeMode(v: boolean): Promise<LensSettings> {
+    return ipcRenderer.invoke("lens:set-resize-mode", v);
+  },
+
   setShowUnderglow(v: boolean): Promise<LensSettings> {
     return ipcRenderer.invoke("lens:set-show-underglow", v);
   },

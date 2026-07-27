@@ -16,16 +16,20 @@ interface LayerLensTabProps extends TabLayoutEditorProps {
 
 // Superkey action slots, by index: 0 = Tap, 1 = Hold, 2 = Tap & hold, 3 = 2Tap, 4 = 2Tap & hold.
 const SUPERKEY_TAP_SLOTS = [0, 3];
+// LENS TAP (OVERLAY_TAP) is also allowed on the Hold slot, so a superkey can send the
+// "toggle Layout Lens" keycode when the key is held.
+const TOGGLE_LENS_ALLOWED_SLOTS = [0, 1, 3];
 
 function LayerLensTab(props: LayerLensTabProps) {
   const { keyCode, onKeySelect, disabled, activeTab, action } = props;
 
   const isSuperkeyContext = activeTab === "super";
-  // Super-key Layer Lens (OVERLAY_KEY) re-implements the tap/hold/double-tap gestures
+  // SK-LENS (OVERLAY_KEY) re-implements the tap/hold/double-tap gestures
   // that a superkey action slot already represents, so it can't be nested inside one.
-  const superKeyDisabled = disabled || isSuperkeyContext;
-  // Toggle Layer Lens (OVERLAY_TAP) only makes sense on the two tap-triggered slots.
-  const toggleDisabled = disabled || (isSuperkeyContext && !SUPERKEY_TAP_SLOTS.includes(action));
+  // Hide it entirely from the Superkeys menu instead of just disabling it.
+  const hideSuperKey = isSuperkeyContext;
+  // Toggle Layer Lens (OVERLAY_TAP) makes sense on the tap-triggered slots and on Hold.
+  const toggleDisabled = disabled || (isSuperkeyContext && !TOGGLE_LENS_ALLOWED_SLOTS.includes(action));
   // Hold Layer Lens (OVERLAY_HOLD) is the inverse: a Tap/2Tap slot already only
   // fires on a tap gesture, so a "hold" assignment there could never trigger.
   const holdDisabled = disabled || (isSuperkeyContext && SUPERKEY_TAP_SLOTS.includes(action));
@@ -89,26 +93,28 @@ function LayerLensTab(props: LayerLensTabProps) {
                 {i18n.editor.standardView.layerLens.holdLayerLens}
               </Button>
             </div>
-            <div className="flex-1 py-2">
-              <Heading renderAs="h4" headingLevel={4} className="text-base">
-                {i18n.editor.standardView.layerLens.superKey}
-              </Heading>
-              <p className="text-ssm font-medium text-gray-400 dark:text-gray-200">
-                {i18n.editor.standardView.layerLens.superKeyDescription}
-              </p>
-              <Button
-                variant="config"
-                onClick={() => {
-                  onKeySelect(OverlayCodes.OVERLAY_KEY);
-                }}
-                selected={KC === OverlayCodes.OVERLAY_KEY}
-                disabled={superKeyDisabled}
-                className="w-max-[124px] w-[124px] text-center mt-2"
-                size="sm"
-              >
-                {i18n.editor.standardView.layerLens.superKey}
-              </Button>
-            </div>
+            {!hideSuperKey && (
+              <div className="flex-1 py-2">
+                <Heading renderAs="h4" headingLevel={4} className="text-base">
+                  {i18n.editor.standardView.layerLens.superKey}
+                </Heading>
+                <p className="text-ssm font-medium text-gray-400 dark:text-gray-200">
+                  {i18n.editor.standardView.layerLens.superKeyDescription}
+                </p>
+                <Button
+                  variant="config"
+                  onClick={() => {
+                    onKeySelect(OverlayCodes.OVERLAY_KEY);
+                  }}
+                  selected={KC === OverlayCodes.OVERLAY_KEY}
+                  disabled={disabled}
+                  className="w-max-[124px] w-[124px] text-center mt-2"
+                  size="sm"
+                >
+                  {i18n.editor.standardView.layerLens.superKey}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

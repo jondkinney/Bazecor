@@ -180,10 +180,15 @@ export function App() {
 
   return (
     <div ref={appRef} className="app">
-      <div className="board" onMouseDown={handleBoardMouseDown}>
+      <div className="board">
         <div
           ref={keyboardSizerRef}
           className="keyboard-sizer"
+          // Moved here from .board: .board fills the whole window, but the
+          // draggable-to-move area must stop at the visible keyboard's own
+          // box (this element, exactly what the blue resize frame outlines),
+          // not extend into any leftover margin around it.
+          onMouseDown={handleBoardMouseDown}
           onMouseEnter={() => {
             console.log(`[Lens/Renderer] onMouseEnter (keyboard): hoverMode=${settings?.hoverMode}`);
             if (settings?.hoverMode) setHovered(true);

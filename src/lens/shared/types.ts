@@ -42,6 +42,9 @@ export interface LensSettings {
   overlayMode: boolean;
   overlayAutoShow: boolean;
   hoverMode: boolean;
+  /** When true, the overlay's resize frame and drag surface are always active,
+   * even if hover mode is disabled. Toggled from the system tray. */
+  resizeMode: boolean;
 }
 
 /** Last position/size of the overlay window, persisted so the overlay reopens
@@ -83,4 +86,5 @@ export interface DecodedKey {
   hold: string;
   subtitle?: string; // second line at same size as primary (superkey name, macro name)
   modifiers?: string[]; // modifier tag boxes shown at bottom
+  holdIcon?: "lock" | "shift" | "oneshot"; // Bazecor-style layer-switch glyph drawn in place of hold text
 }

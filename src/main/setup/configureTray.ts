@@ -100,7 +100,13 @@ export function applyRunInBackground(v: boolean): void {
 }
 
 const configureTray = () => {
-  app.on("before-quit", () => {
+  app.on("before-quit", event => {
+    // main/index.ts's own before-quit handler runs first (registered earlier)
+    // and may have already cancelled this on macOS (Cmd+Q redirected to a
+    // normal window close instead of a real quit) — don't mark quitting in
+    // that case, or every future window close would think a quit is already
+    // in progress and skip the "keep running in background" handling.
+    if (event.defaultPrevented) return;
     markAppQuitting();
   });
   if (getRunInBackground()) {

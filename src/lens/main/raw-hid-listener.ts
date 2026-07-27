@@ -113,6 +113,10 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
 
   private activeProduct: LensProduct | null = null;
 
+  // TODO(lens-idle-debug): temporary, remove once the "stops listening after
+  // minutes hidden" report is root-caused.
+  private dbgScanCount = 0;
+
   // Debounces per (source, eventType) pair so bouncy/duplicate packets from a
   // single physical press can't fire the same handler twice in quick succession.
   private shouldEmit(source: string, eventType: number): boolean {
@@ -159,15 +163,28 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
 
   /** Begin watching; keeps scanning on an interval until stop(). */
   startWithRetry(): void {
-    this.scan().then(() => this.scheduleScan());
+    this.scan()
+      .catch(err => log.warn("[Lens/HID] Initial scan() failed:", err))
+      .finally(() => this.scheduleScan());
   }
 
+  // scan() can throw past its own try/catches — e.g. a listener registered on
+  // "connected"/"active-changed" (overlay-controller.ts) throwing synchronously
+  // during setActive(). Previously that rejected this callback before reaching
+  // scheduleScan() below, and since scanTimer was already nulled, the polling
+  // loop died silently and permanently — no more layer-change/overlay events,
+  // ever, until the app restarted. Always reschedule regardless of outcome.
   private scheduleScan(): void {
     if (this.scanTimer) return;
     this.scanTimer = setTimeout(async () => {
       this.scanTimer = null;
-      await this.scan();
-      this.scheduleScan();
+      try {
+        await this.scan();
+      } catch (err) {
+        log.warn("[Lens/HID] scan() failed, will retry:", err);
+      } finally {
+        this.scheduleScan();
+      }
     }, SCAN_INTERVAL_MS);
   }
 
@@ -177,6 +194,16 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
    * to the most-recently-seen board still present).
    */
   private async scan(): Promise<void> {
+    // TODO(lens-idle-debug): heartbeat every ~30s so we can tell whether the
+    // main-process scan timer itself is still ticking during a long idle gap
+    // with the overlay hidden, and whether the device handle is still "open"
+    // from this side's point of view.
+    this.dbgScanCount += 1;
+    if (this.dbgScanCount % 15 === 0) {
+      log.info(
+        `[Lens/idle-debug] scan heartbeat #${this.dbgScanCount} running=${this.running} activePath=${this.activePath} activeProduct=${this.activeProduct} deviceOpen=${!!this.device} seen=${this.seen.size}`,
+      );
+    }
     const HID = await this.loadHid();
     if (!HID) return;
 
@@ -307,8 +334,10 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
     this.running = false;
     this.emit("disconnected");
     // Re-evaluate immediately: another board may still be connected, or the same
-    // one may re-enumerate.
-    this.scan();
+    // one may re-enumerate. Fire-and-forget, but never leave it unhandled — this
+    // is called from a "device error" event, exactly the moment a listener
+    // downstream is most likely to hit unexpected state.
+    this.scan().catch(err => log.warn("[Lens/HID] Re-scan after device error failed:", err));
   }
 
   private closeDevice(): void {
@@ -341,6 +370,11 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
   }
 
   private onData(buf: Buffer): void {
+    // TODO(lens-idle-debug): confirm raw HID reports are still arriving at
+    // all after the overlay's been hidden for a while — this only fires on
+    // the dedicated overlay/layer report interface, so it's low-volume by
+    // construction (not every keystroke), safe to always log.
+    log.info(`[Lens/idle-debug] onData: buf.length=${buf.length}`);
     if (buf.length < OVERLAY_PACKET_SIZE) return;
 
     // USB HID prepends the report ID at buf[0]; BLE HID does not.

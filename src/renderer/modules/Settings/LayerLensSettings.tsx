@@ -19,7 +19,7 @@ import { ipcRenderer } from "electron";
 import { Card, CardContent, CardHeader, CardTitle } from "@Renderer/components/atoms/Card";
 import { Switch } from "@Renderer/components/atoms/Switch";
 import { Slider } from "@Renderer/components/atoms/slider";
-import { IconLens } from "@Renderer/components/atoms/icons";
+import { IconLens, IconInformation } from "@Renderer/components/atoms/icons";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@Renderer/components/atoms/Tooltip";
 
 interface LensSettingsShape {
@@ -138,16 +138,21 @@ const LayerLensSettings = () => {
         <form>
           <TooltipProvider delayDuration={200}>
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <label htmlFor="lensEnabledSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
-                    Layout Lens
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">Shows a keyboard overlay with the active layer. Toggle it anytime with Ctrl+Alt+L.</p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-1.5">
+                <label htmlFor="lensEnabledSwitch" className="m-0 text-sm font-semibold tracking-tight">
+                  Layout Lens
+                </label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                      <IconInformation size="sm" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">Shows a keyboard overlay with the active layer. Toggle it anytime with Ctrl+Alt+L.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Switch
                 id="lensEnabledSwitch"
                 checked={lensEnabled}
@@ -158,19 +163,24 @@ const LayerLensSettings = () => {
             </div>
 
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <label htmlFor="layerLensOnChangeSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
-                    Show only on layer
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">
-                    Automatically shows Layout Lens for a few seconds whenever you switch to a different layer, then hides it
-                    again.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-1.5">
+                <label htmlFor="layerLensOnChangeSwitch" className="m-0 text-sm font-semibold tracking-tight">
+                  Show only on layer change
+                </label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                      <IconInformation size="sm" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      Automatically shows Layout Lens for a few seconds whenever you switch to a different layer, then hides it
+                      again.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Switch
                 id="layerLensOnChangeSwitch"
                 checked={layerLensOnChange}
@@ -181,36 +191,46 @@ const LayerLensSettings = () => {
             </div>
 
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <label htmlFor="hoverModeSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
-                    Resize Mode
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">
-                    Lets you click, drag, and resize the Layout Lens overlay by hovering your mouse over it, instead of it staying
-                    click-through.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-1.5">
+                <label htmlFor="hoverModeSwitch" className="m-0 text-sm font-semibold tracking-tight">
+                  Resize Mode
+                </label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                      <IconInformation size="sm" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      Lets you click, drag, and resize the Layout Lens overlay by hovering your mouse over it, instead of it
+                      staying click-through.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Switch id="hoverModeSwitch" checked={hoverMode} onCheckedChange={handleHoverMode} variant="default" size="sm" />
             </div>
 
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <label htmlFor="runInBackgroundSwitch" className="m-0 text-sm font-semibold tracking-tight cursor-help">
-                    Keep running in background
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">
-                    Keeps Bazecor in the system tray when you close its window (and starts it at login), so Layout Lens stays
-                    available at all times.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-1.5">
+                <label htmlFor="runInBackgroundSwitch" className="m-0 text-sm font-semibold tracking-tight">
+                  Keep running in background
+                </label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                      <IconInformation size="sm" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      Keeps Bazecor in the system tray when you close its window (and starts it at login), so Layout Lens stays
+                      available at all times.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Switch
                 id="runInBackgroundSwitch"
                 checked={runInBackground}
@@ -221,21 +241,23 @@ const LayerLensSettings = () => {
             </div>
 
             <div className="py-3">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <label
-                    htmlFor="overlayTransparencySlider"
-                    className="block mb-3 text-sm font-semibold tracking-tight cursor-help"
-                  >
-                    Overlay transparency
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">
-                    Controls how see-through the Layout Lens overlay is, so it blends with whatever is behind it.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-1.5 mb-3">
+                <label htmlFor="overlayTransparencySlider" className="block text-sm font-semibold tracking-tight">
+                  Overlay transparency
+                </label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                      <IconInformation size="sm" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      Controls how see-through the Layout Lens overlay is, so it blends with whatever is behind it.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Slider
                 id="overlayTransparencySlider"
                 value={overlayTransparency}

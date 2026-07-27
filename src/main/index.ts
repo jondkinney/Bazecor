@@ -12,6 +12,7 @@ import configureLens from "./setup/configureLens";
 import configureTray, { openMainWindow } from "./setup/configureTray";
 import { getRunInBackground } from "../lens/main/lens-settings";
 import { overlayController } from "../lens/main/overlay-controller";
+import { isAppQuitting } from "./managers/AppLifecycle";
 
 if (process.env.NODE_ENV === "development") {
   log.transports.console.level = "verbose";
@@ -59,7 +60,22 @@ app.on("ready", async () => {
 // Emitted before the application starts closing its windows.
 // Calling event.preventDefault() will prevent the default behavior,
 // which is terminating the application.
-app.on("before-quit", () => {
+app.on("before-quit", event => {
+  // macOS delivers Cmd+Q (and Dock "Quit") straight to the app as a terminate
+  // request — it never goes through a window's own "close" event, so it skips
+  // right past onClose.ts's "keep running in background" handling and tears
+  // down everything, including a live Lens overlay. isAppQuitting() is only
+  // true here if something in our own code (tray Quit) already called
+  // markAppQuitting() before requesting the quit, so this only catches the
+  // OS-level trigger. Redirect it to a normal window close instead, which
+  // mac's onClose.ts already handles correctly (close the window, leave the
+  // app + overlay running, same as clicking the red button or Cmd+W).
+  if (process.platform === "darwin" && !isAppQuitting()) {
+    event.preventDefault();
+    const win = Window.getWindow();
+    if (win && !win.isDestroyed()) win.close();
+    return;
+  }
   removeUSBListeners();
 });
 
@@ -101,9 +117,6 @@ app.on("web-contents-created", (_, wc) => {
       }
       if (input.code === "KeyR") {
         wc.reload();
-      }
-      if (input.code === "KeyQ") {
-        app.quit();
       }
     }
   });
