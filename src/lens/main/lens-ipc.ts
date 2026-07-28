@@ -3,12 +3,10 @@ import log from "electron-log/main";
 import type { LensKeyboardRef, LensSettings, LensState } from "../shared/types";
 import { MACOS_INPUT_MONITORING_SETTINGS_URL, isSupportedLensProduct } from "../shared/constants";
 import { getLensSettings, getRunInBackground, isRunInBackgroundUnset, setLensKeyboard, setLensSettings } from "./lens-settings";
-import { overlayController } from "./overlay-controller";
+import { overlayController, setResizeMode } from "./overlay-controller";
 import {
-  applyHoverModeLive,
   applyOpacityLive,
   applyOverlayMode,
-  applyResizeModeLive,
   broadcastSettings,
   overlayMove,
   overlayMoveBy,
@@ -46,19 +44,7 @@ export function registerLensIpc(onRunInBackgroundChange: (v: boolean) => void): 
     return s;
   });
 
-  ipcMain.handle("lens:set-hover-mode", (_, v: boolean): LensSettings => {
-    const s = setLensSettings({ hoverMode: v });
-    applyHoverModeLive(s.hoverMode);
-    broadcastSettings(s);
-    return s;
-  });
-
-  ipcMain.handle("lens:set-resize-mode", (_, v: boolean): LensSettings => {
-    const s = setLensSettings({ resizeMode: v });
-    applyResizeModeLive(s.resizeMode);
-    broadcastSettings(s);
-    return s;
-  });
+  ipcMain.handle("lens:set-resize-mode", (_, v: boolean): LensSettings => setResizeMode(v));
 
   ipcMain.handle("lens:set-show-underglow", (_, v: boolean): LensSettings => {
     const s = setLensSettings({ showUnderglow: v });
@@ -130,7 +116,7 @@ export function registerLensIpc(onRunInBackgroundChange: (v: boolean) => void): 
     overlayController.reloadForSavedBackup(keyboard.product);
   });
 
-  // Overlay drag / resize in hover mode.
+  // Overlay drag / resize in Resize Mode.
   ipcMain.on("lens:win-move", (_, x: number, y: number) => overlayMove(x, y));
   ipcMain.on("lens:win-move-by", (_, dx: number, dy: number) => overlayMoveBy(dx, dy));
   ipcMain.on("lens:win-resize", (_, dir: string, dx: number, dy: number) => overlayResize(dir, dx, dy));

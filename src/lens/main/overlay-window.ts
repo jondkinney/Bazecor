@@ -158,7 +158,8 @@ export function applyOverlayMode(enabled: boolean): void {
       win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true });
     }
     win.setAlwaysOnTop(true, "screen-saver");
-    win.setIgnoreMouseEvents(!settings.hoverMode, { forward: true });
+    // Resize Mode wanting mouse events means the window can't be click-through.
+    win.setIgnoreMouseEvents(!settings.resizeMode, { forward: true });
     win.setResizable(false);
     win.removeListener("will-resize", preventOverlayResize);
     win.removeListener("resize", guardOverlayBounds);
@@ -167,7 +168,7 @@ export function applyOverlayMode(enabled: boolean): void {
     win.webContents
       .executeJavaScript(
         `document.body.classList.add('overlay');${
-          settings.hoverMode ? `document.body.classList.add('hover-mode');` : `document.body.classList.remove('hover-mode');`
+          settings.resizeMode ? `document.body.classList.add('resize-mode');` : `document.body.classList.remove('resize-mode');`
         }`,
       )
       .catch(() => {});
@@ -185,7 +186,7 @@ export function applyOverlayMode(enabled: boolean): void {
     }
     win.setIgnoreMouseEvents(false);
     win.setResizable(true);
-    win.webContents.executeJavaScript(`document.body.classList.remove('overlay','hover-mode');`).catch(() => {});
+    win.webContents.executeJavaScript(`document.body.classList.remove('overlay','resize-mode');`).catch(() => {});
     if (normalBounds) win.setBounds(normalBounds);
   }
 }
@@ -313,11 +314,6 @@ export function destroyOverlayWindow(): void {
 
 export function showOverlay(): void {
   const win = getWin();
-  // TODO(lens-idle-debug): confirm the window itself is still alive/valid and
-  // this function is actually reached after a long idle-hidden gap.
-  log.info(
-    `[Lens/idle-debug] showOverlay() called: win=${!!win} destroyed=${win?.isDestroyed()} overlayStyleApplied=${overlayStyleApplied}`,
-  );
   if (!win) return;
   overlayVisible = true;
   const settings = getLensSettings();
@@ -357,16 +353,19 @@ export function applyOpacityLive(v: number): void {
   if (overlayStyleApplied) getWin()?.setOpacity(v);
 }
 
-export function applyHoverModeLive(v: boolean): void {
+/** Resize Mode makes the overlay's resize/move surface active, so it stops
+ * being click-through. Toggled from the tray or Settings — both call this
+ * same function so they can never drift out of sync. */
+export function applyResizeModeLive(v: boolean): void {
   const win = getWin();
   if (!win || !overlayStyleApplied) return;
   win.setIgnoreMouseEvents(!v, { forward: true });
   win.webContents
-    .executeJavaScript(v ? `document.body.classList.add('hover-mode');` : `document.body.classList.remove('hover-mode');`)
+    .executeJavaScript(v ? `document.body.classList.add('resize-mode');` : `document.body.classList.remove('resize-mode');`)
     .catch(() => {});
 }
 
-// ── Overlay drag / resize (driven by the overlay renderer in hover mode) ──────
+// ── Overlay drag / resize (driven by the overlay renderer in Resize Mode) ─────
 
 export function overlayMove(x: number, y: number): void {
   const win = getWin();

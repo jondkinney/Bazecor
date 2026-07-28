@@ -1,7 +1,11 @@
 /* Ported from the standalone Dygma Lens app. The overlay is a mouse-driven,
  * click-through window: its drag/resize surfaces are intentionally divs (they
- * must not be focusable/tabbable), its console logs feed the overlay debugging
- * workflow, and its hover effect depends only on settings.hoverMode. */
+ * must not be focusable/tabbable), and its console logs feed the overlay
+ * debugging workflow. Resize Mode (settings.resizeMode) makes the window
+ * non-click-through the whole time it's on, but the blue frame/glow/handles
+ * themselves only reveal once the cursor is actually over the keyboard (the
+ * .hovered class here, mirrored by index.css's body.overlay.resize-mode
+ * .app.hovered rules) — otherwise they'd sit on screen permanently. */
 /* eslint-disable jsx-a11y/no-static-element-interactions, no-console, consistent-return, react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { KeyboardView } from "./KeyboardView";
@@ -63,14 +67,8 @@ export function App() {
   const keyboardSizerRef = useRef<HTMLDivElement>(null);
 
   const setHovered = useCallback((v: boolean) => {
-    console.log(`[Lens/Renderer] setHovered(${v}), hasAppRef=${!!appRef.current}, currentClasses=${appRef.current?.className}`);
-    if (v) {
-      appRef.current?.classList.add("hovered");
-      console.log(`[Lens/Renderer] After add: ${appRef.current?.className}`);
-    } else {
-      appRef.current?.classList.remove("hovered");
-      console.log(`[Lens/Renderer] After remove: ${appRef.current?.className}`);
-    }
+    if (v) appRef.current?.classList.add("hovered");
+    else appRef.current?.classList.remove("hovered");
   }, []);
 
   useEffect(() => {
@@ -88,10 +86,7 @@ export function App() {
       setConfigFound(true);
     });
     const offLayer = window.lens.onActiveLayer(l => setActiveLayer(l));
-    const offSettings = window.lens.onSettings(s => {
-      console.log("[Lens/Renderer] Settings updated:", s);
-      setSettings(s);
-    });
+    const offSettings = window.lens.onSettings(s => setSettings(s));
 
     return () => {
       offModel();
@@ -100,31 +95,21 @@ export function App() {
     };
   }, []);
 
+  // Keep the hover-revealed frame/glow in sync when Resize Mode itself gets
+  // toggled mid-session (e.g. from the tray) while the cursor already happens
+  // to be sitting over the keyboard, or turn it off outright when disabled.
   useEffect(() => {
-    if (settings) {
-      console.log(`[Lens/Renderer] Settings effect: hoverMode=${settings.hoverMode}, body.classList=${document.body.className}`);
-
-      // When hover mode changes, sync the .hovered class based on whether mouse is currently over the keyboard
-      if (settings.hoverMode) {
-        // Check if mouse is currently over the keyboard element
-        const isMouseOver = keyboardSizerRef.current?.matches(":hover");
-        console.log(`[Lens/Renderer] Hover mode enabled, isMouseOver=${isMouseOver}`);
-        if (isMouseOver) {
-          console.log("[Lens/Renderer] Forcing setHovered(true) because mouse is already over keyboard");
-          setHovered(true);
-        }
-      } else {
-        // When hover mode is disabled, remove .hovered
-        console.log("[Lens/Renderer] Hover mode disabled, removing .hovered");
-        setHovered(false);
-      }
+    if (!settings) return;
+    if (settings.resizeMode) {
+      if (keyboardSizerRef.current?.matches(":hover")) setHovered(true);
+    } else {
+      setHovered(false);
     }
-  }, [settings?.hoverMode, setHovered]);
+  }, [settings?.resizeMode, setHovered]);
 
   if (!settings) return null;
 
   if (!configFound || !model) {
-    console.log(`[Lens/Renderer] Showing waiting screen: configFound=${configFound}, hasModel=${!!model}`);
     return (
       <div className="app">
         <div className="centered" style={{ flexDirection: "column", gap: 12 }}>
@@ -137,14 +122,10 @@ export function App() {
     );
   }
 
-  console.log(`[Lens/Renderer] Rendering keyboard: activeLayer=${activeLayer}, hoverMode=${settings.hoverMode}`);
-
   const layerNames = model.layerNames?.length ? model.layerNames : settings.layerNames;
 
   function handleBoardMouseDown(e: React.MouseEvent<HTMLDivElement>) {
-    console.log(`[Lens/Renderer] handleBoardMouseDown: hoverMode=${settings?.hoverMode}, button=${e.button}`);
-    if (!settings?.hoverMode || e.button !== 0) return;
-    console.log("[Lens/Renderer] Starting drag");
+    if (!settings?.resizeMode || e.button !== 0) return;
     e.preventDefault();
     isDragging.current = true;
     // Capture the cursor's offset inside the window once. Each move sets the
@@ -157,21 +138,13 @@ export function App() {
       window.lens?.winMove(ev.screenX - grabX, ev.screenY - grabY);
     };
     const onUp = () => {
-      console.log("[Lens/Renderer] Drag ended (mouseup)");
       isDragging.current = false;
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
-
-      // After dragging, check if mouse is still over the app element
-      // If not, manually trigger setHovered(false) since onMouseLeave won't fire
+      // onMouseLeave won't fire if the drag ends with the cursor outside the
+      // keyboard element, so check explicitly once the drag settles.
       setTimeout(() => {
-        const isMouseOver = keyboardSizerRef.current?.matches(":hover");
-        const bounds = keyboardSizerRef.current?.getBoundingClientRect();
-        console.log(`[Lens/Renderer] After drag, isMouseOver=${isMouseOver}, bounds:`, bounds);
-        if (!isMouseOver && settings?.hoverMode) {
-          console.log("[Lens/Renderer] Mouse not over app after drag, forcing setHovered(false)");
-          setHovered(false);
-        }
+        if (!keyboardSizerRef.current?.matches(":hover") && settings?.resizeMode) setHovered(false);
       }, 50);
     };
     window.addEventListener("mousemove", onMove);
@@ -184,19 +157,15 @@ export function App() {
         <div
           ref={keyboardSizerRef}
           className="keyboard-sizer"
-          // Moved here from .board: .board fills the whole window, but the
-          // draggable-to-move area must stop at the visible keyboard's own
-          // box (this element, exactly what the blue resize frame outlines),
-          // not extend into any leftover margin around it.
+          // .board fills the whole window, but the draggable-to-move area must
+          // stop at the visible keyboard's own box (this element, exactly what
+          // the blue resize frame outlines), not extend into any leftover
+          // margin around it.
           onMouseDown={handleBoardMouseDown}
           onMouseEnter={() => {
-            console.log(`[Lens/Renderer] onMouseEnter (keyboard): hoverMode=${settings?.hoverMode}`);
-            if (settings?.hoverMode) setHovered(true);
+            if (settings?.resizeMode) setHovered(true);
           }}
           onMouseLeave={() => {
-            console.log(
-              `[Lens/Renderer] onMouseLeave (keyboard): isDragging=${isDragging.current}, resizing=${document.body.classList.contains("resizing")}`,
-            );
             if (!isDragging.current && !document.body.classList.contains("resizing")) setHovered(false);
           }}
         >

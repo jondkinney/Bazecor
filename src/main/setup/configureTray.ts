@@ -6,8 +6,8 @@ import log from "electron-log/main";
 import Window from "../managers/Window";
 import createWindow from "../createWindow";
 import { markAppQuitting } from "../managers/AppLifecycle";
-import { getRunInBackground, setRunInBackground } from "../../lens/main/lens-settings";
-import { overlayController } from "../../lens/main/overlay-controller";
+import { getLensSettings, getRunInBackground, setRunInBackground } from "../../lens/main/lens-settings";
+import { overlayController, setResizeMode } from "../../lens/main/overlay-controller";
 
 let tray: Tray | null = null;
 
@@ -38,6 +38,7 @@ function createTray(): void {
     Menu.buildFromTemplate([
       { label: "Open Bazecor", click: () => openMainWindow() },
       { label: "Toggle Layout Lens", click: () => overlayController.toggleOverlay() },
+      { label: "Toggle Resize Mode", click: () => setResizeMode(!getLensSettings().resizeMode) },
       { type: "separator" },
       {
         label: "Quit",

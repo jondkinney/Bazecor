@@ -9,7 +9,6 @@ export const LENS_DEFAULTS: LensSettings = {
   layerNames: [],
   overlayMode: true,
   overlayAutoShow: true,
-  hoverMode: false,
   resizeMode: false,
 };
 
@@ -26,7 +25,6 @@ export function sanitizeLensSettings(s: Partial<LensSettings>): LensSettings {
     layerNames: Array.isArray(s.layerNames) ? s.layerNames : LENS_DEFAULTS.layerNames,
     overlayMode: typeof s.overlayMode === "boolean" ? s.overlayMode : LENS_DEFAULTS.overlayMode,
     overlayAutoShow: typeof s.overlayAutoShow === "boolean" ? s.overlayAutoShow : LENS_DEFAULTS.overlayAutoShow,
-    hoverMode: typeof s.hoverMode === "boolean" ? s.hoverMode : LENS_DEFAULTS.hoverMode,
     resizeMode: typeof s.resizeMode === "boolean" ? s.resizeMode : LENS_DEFAULTS.resizeMode,
   };
 }

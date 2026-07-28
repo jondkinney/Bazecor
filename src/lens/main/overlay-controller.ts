@@ -1,7 +1,7 @@
 import { dialog, globalShortcut, powerMonitor, shell } from "electron";
 import log from "electron-log/main";
 import GlobalRecording from "../../main/managers/GlobalRecording";
-import type { KeyboardModel, LensState } from "../shared/types";
+import type { KeyboardModel, LensSettings, LensState } from "../shared/types";
 import {
   OVERLAY_EVENT_TAP,
   OVERLAY_EVENT_HOLD,
@@ -15,6 +15,7 @@ import { getAllLensKeyboards, getLensKeyboard, getLensSettings, hasAnyLensKeyboa
 import { readLatestModel } from "./backup-reader";
 import {
   applyAspectRatioFor,
+  applyResizeModeLive,
   broadcastSettings,
   broadcastState,
   createOverlayWindow,
@@ -239,6 +240,23 @@ class OverlayController {
     setOverlayShown(this.overlayActive);
   }
 
+  /** Used by setResizeMode below: makes sure the overlay is actually on screen
+   * before enabling drag/resize. Goes through `overlayActive` (rather than
+   * calling showOverlay() directly) so it can't desync from the physical
+   * overlay key's own on/off state — if the overlay had been toggled off,
+   * calling showOverlay() straight from setResizeMode left overlayActive
+   * stuck false while the window reappeared, silently breaking the overlay
+   * key (its TAP/HOLD handlers all guard on overlayActive). */
+  ensureVisible(): void {
+    if (!this.enabled || !overlayAlive()) return;
+    if (!this.overlayActive) {
+      this.overlayActive = true;
+      setOverlayShown(true);
+    } else if (!isOverlayVisible()) {
+      showOverlay();
+    }
+  }
+
   private registerShortcut(): void {
     if (globalShortcut.isRegistered(TOGGLE_SHORTCUT)) return;
     globalShortcut.register(TOGGLE_SHORTCUT, () => {
@@ -288,9 +306,6 @@ class OverlayController {
     });
 
     this.hid.on("layer-change", ({ layer }) => {
-      // TODO(lens-idle-debug): confirm this handler still fires after the
-      // overlay's been hidden for a while.
-      log.info(`[Lens/idle-debug] layer-change received: layer=${layer}, overlayVisible=${isOverlayVisible()}`);
       this.activeLayer = layer;
       pushActiveLayer(layer);
       const defaultLayer = this.currentModel?.defaultLayer ?? 0;
@@ -302,9 +317,6 @@ class OverlayController {
     });
 
     this.hid.on("overlay", ({ eventType }) => {
-      log.info(
-        `[Lens/idle-debug] overlay event received: eventType=0x${eventType.toString(16)}, overlayVisible=${isOverlayVisible()}`,
-      );
       if (eventType === OVERLAY_EVENT_TAP) {
         this.onOverlayTapAction();
       } else if (eventType === OVERLAY_EVENT_HOLD) {
@@ -317,16 +329,10 @@ class OverlayController {
     });
 
     this.hid.on("overlay-tap", ({ eventType }) => {
-      log.info(
-        `[Lens/idle-debug] overlay-tap event received: eventType=0x${eventType.toString(16)}, overlayVisible=${isOverlayVisible()}`,
-      );
       if (eventType === OVERLAY_EVENT_TAP) this.onOverlayTapAction();
     });
 
     this.hid.on("overlay-hold", ({ eventType }) => {
-      log.info(
-        `[Lens/idle-debug] overlay-hold event received: eventType=0x${eventType.toString(16)}, overlayVisible=${isOverlayVisible()}`,
-      );
       if (eventType === OVERLAY_EVENT_HOLD) this.onOverlayHoldStart();
       else if (eventType === OVERLAY_EVENT_RELEASE) this.onOverlayHoldEnd();
     });
@@ -450,3 +456,19 @@ class OverlayController {
 }
 
 export const overlayController = new OverlayController();
+
+/** Shared by the tray menu, Preferences, and the lens:set-resize-mode IPC
+ * handler so the "apply + broadcast" side effects only live in one place.
+ *
+ * Turning it on also reveals the overlay if it's currently hidden (which is
+ * the default most of the time — it only shows on a layer change or the
+ * overlay key) — enabling resize/drag on a window nobody can see looks like
+ * the toggle silently does nothing. Goes through overlayController.ensureVisible()
+ * rather than calling showOverlay() directly — see its comment. */
+export function setResizeMode(v: boolean): LensSettings {
+  const s = setLensSettings({ resizeMode: v });
+  applyResizeModeLive(s.resizeMode);
+  if (v) overlayController.ensureVisible();
+  broadcastSettings(s);
+  return s;
+}

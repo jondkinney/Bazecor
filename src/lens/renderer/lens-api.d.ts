@@ -9,7 +9,6 @@ declare global {
       getState(): Promise<LensState>;
       getSettings(): Promise<LensSettings>;
       setOpacity(v: number): Promise<LensSettings>;
-      setHoverMode(v: boolean): Promise<LensSettings>;
       setResizeMode(v: boolean): Promise<LensSettings>;
       setShowUnderglow(v: boolean): Promise<LensSettings>;
       setLayout(v: string): Promise<LensSettings>;

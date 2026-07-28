@@ -1,4 +1,4 @@
-import type { DecodedKey } from "../shared/types";
+import type { DecodedKey, FunctionIconName } from "../shared/types";
 
 /* Firmware keycode → display label decoding for the Lens overlay.
  *
@@ -188,24 +188,26 @@ const ONE_SHOT_MOD: Record<number, string> = {
   49160: "OS",
 };
 
-// Media / miscellaneous singles (db/mediacontrols.tsx, db/miscellaneous.tsx —
-// rendered as icons in Bazecor; text equivalents of their verbose names here).
-const FUNCTION: Record<number, string> = {
-  19682: "Mute",
-  23785: "Vol+",
-  23786: "Vol-",
-  22733: "Play",
-  22709: "Next",
-  22710: "Prev",
-  22711: "Stop",
-  22712: "Eject",
-  22713: "Shuffle",
-  18552: "Camera",
-  18834: "Calc",
-  23663: "Bright+",
-  23664: "Bright-",
-  20865: "Off",
-  20866: "Sleep",
+// Media / miscellaneous singles (db/mediacontrols.tsx, db/miscellaneous.tsx) —
+// Bazecor renders these as icons (IconMediaSoundMute, IconToolsEject, …); the
+// icon glyphs themselves are drawn in key-label.tsx's FUNCTION_ICON_PATHS,
+// keyed by the names below.
+const FUNCTION: Record<number, FunctionIconName> = {
+  19682: "mute",
+  23785: "vol-up",
+  23786: "vol-down",
+  22733: "play-pause",
+  22709: "next",
+  22710: "prev",
+  22711: "stop",
+  22712: "eject",
+  22713: "shuffle",
+  18552: "camera",
+  18834: "calculator",
+  23663: "bright-up",
+  23664: "bright-down",
+  20865: "power-off",
+  20866: "sleep",
 };
 
 export { layoutOverrides } from "./layouts";
@@ -256,6 +258,36 @@ const MACRO_MIN = 53852; // 53852 + index (128 macros)
 const MACRO_MAX = 53979;
 const SUPERKEY_MIN = 53980; // 53980 + index (128 superkeys)
 const SUPERKEY_MAX = 54107;
+
+// Standard (US-QWERTY) Shift-row symbols. When a key is exactly Shift+<one of
+// these>, that's a printable character (e.g. Shift+2 = "@"), not a shortcut —
+// showing "2" with a small "Shift" chip hid the actual result; show the
+// resolved symbol directly instead, matching what the key actually produces.
+// Not layout-aware (Shift+2 differs on es/de/etc.) — a known gap, same scoping
+// call as the language-layout work: covers the common case, not every board.
+const SHIFT_SYMBOL: Record<number, string> = {
+  30: "!",
+  31: "@",
+  32: "#",
+  33: "$",
+  34: "%",
+  35: "^",
+  36: "&",
+  37: "*",
+  38: "(",
+  39: ")",
+  45: "_",
+  46: "+",
+  47: "{",
+  48: "}",
+  49: "|",
+  51: ":",
+  52: '"',
+  53: "~",
+  54: "<",
+  55: ">",
+  56: "?",
+};
 
 /* eslint-disable no-bitwise -- decoding firmware keycodes is inherently bit-mask work */
 // Modifier flag bits per Bazecor's withModifiers() offsets (db/utils.ts):
@@ -341,7 +373,7 @@ export function decodeKey(
   const twoLine = TWO_LINE[code];
   if (twoLine) return twoLine[1] ? { primary: twoLine[0], subtitle: twoLine[1], hold: "" } : { primary: twoLine[0], hold: "" };
   if (ONE_SHOT_MOD[code]) return { primary: ONE_SHOT_MOD[code], hold: "1shot" };
-  if (FUNCTION[code]) return { primary: FUNCTION[code], hold: "" };
+  if (FUNCTION[code]) return { primary: "", hold: "", icon: FUNCTION[code] };
 
   const layerKey = decodeLayerKey(code, layerNames, layout);
   if (layerKey) return layerKey;
@@ -367,6 +399,13 @@ export function decodeKey(
   const modFlags = (code >> 8) & 0xff;
   const baseCode = code & 0xff;
   if (modFlags !== 0) {
+    // Shift alone on a symbol-row key produces a specific character — show
+    // that character, not the unshifted key + a "Shift" chip (see SHIFT_SYMBOL
+    // above for why this is scoped to plain Shift only, not Ctrl/Alt/AltGr/OS
+    // combos, which really are shortcuts and should keep showing the chip).
+    if (modFlags === 0x08 && SHIFT_SYMBOL[baseCode]) {
+      return { primary: SHIFT_SYMBOL[baseCode], hold: "" };
+    }
     const baseLabel = baseLabelFor(baseCode, layout);
     if (baseLabel) return { primary: baseLabel, hold: "", modifiers: modBitsToArray(modFlags) };
   }

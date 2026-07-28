@@ -41,9 +41,8 @@ export interface LensSettings {
   layerNames: string[];
   overlayMode: boolean;
   overlayAutoShow: boolean;
-  hoverMode: boolean;
-  /** When true, the overlay's resize frame and drag surface are always active,
-   * even if hover mode is disabled. Toggled from the system tray. */
+  /** When true, the overlay's resize frame and drag surface are active, so the
+   * window can be repositioned/resized. Toggled from Preferences or the tray. */
   resizeMode: boolean;
 }
 
@@ -81,10 +80,28 @@ export interface LensState {
   hidPermissionDenied: boolean;
 }
 
+export type FunctionIconName =
+  | "mute"
+  | "vol-up"
+  | "vol-down"
+  | "play-pause"
+  | "next"
+  | "prev"
+  | "stop"
+  | "eject"
+  | "shuffle"
+  | "camera"
+  | "calculator"
+  | "bright-up"
+  | "bright-down"
+  | "power-off"
+  | "sleep";
+
 export interface DecodedKey {
   primary: string;
   hold: string;
   subtitle?: string; // second line at same size as primary (superkey name, macro name)
   modifiers?: string[]; // modifier tag boxes shown at bottom
   holdIcon?: "lock" | "shift" | "oneshot"; // Bazecor-style layer-switch glyph drawn in place of hold text
+  icon?: FunctionIconName; // Bazecor media/tool key glyph drawn in place of primary text
 }

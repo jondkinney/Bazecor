@@ -113,10 +113,6 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
 
   private activeProduct: LensProduct | null = null;
 
-  // TODO(lens-idle-debug): temporary, remove once the "stops listening after
-  // minutes hidden" report is root-caused.
-  private dbgScanCount = 0;
-
   // Debounces per (source, eventType) pair so bouncy/duplicate packets from a
   // single physical press can't fire the same handler twice in quick succession.
   private shouldEmit(source: string, eventType: number): boolean {
@@ -194,16 +190,6 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
    * to the most-recently-seen board still present).
    */
   private async scan(): Promise<void> {
-    // TODO(lens-idle-debug): heartbeat every ~30s so we can tell whether the
-    // main-process scan timer itself is still ticking during a long idle gap
-    // with the overlay hidden, and whether the device handle is still "open"
-    // from this side's point of view.
-    this.dbgScanCount += 1;
-    if (this.dbgScanCount % 15 === 0) {
-      log.info(
-        `[Lens/idle-debug] scan heartbeat #${this.dbgScanCount} running=${this.running} activePath=${this.activePath} activeProduct=${this.activeProduct} deviceOpen=${!!this.device} seen=${this.seen.size}`,
-      );
-    }
     const HID = await this.loadHid();
     if (!HID) return;
 
@@ -370,11 +356,6 @@ export class RawHidListener extends EventEmitter<RawHidEvents> {
   }
 
   private onData(buf: Buffer): void {
-    // TODO(lens-idle-debug): confirm raw HID reports are still arriving at
-    // all after the overlay's been hidden for a while — this only fires on
-    // the dedicated overlay/layer report interface, so it's low-volume by
-    // construction (not every keystroke), safe to always log.
-    log.info(`[Lens/idle-debug] onData: buf.length=${buf.length}`);
     if (buf.length < OVERLAY_PACKET_SIZE) return;
 
     // USB HID prepends the report ID at buf[0]; BLE HID does not.

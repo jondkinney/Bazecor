@@ -321,29 +321,35 @@ body.overlay .layer-label {
   height: 100%;
 }
 
-/* ── Hover mode (overlay + hover-mode body classes) ─────────────────── */
-body.overlay.hover-mode .board {
+/* ── Resize Mode (overlay + resize-mode body classes) ───────────────── */
+/* Resize Mode keeps the window non-click-through the whole time it's on (so
+   hover can even be detected and dragging works), but the blue frame/glow/
+   handles themselves only reveal once the cursor is actually over the
+   keyboard (.app.hovered, set from App.tsx's onMouseEnter/onMouseLeave) —
+   otherwise they sit on screen permanently even when nobody's about to
+   resize anything. */
+body.overlay.resize-mode .app.hovered .board {
   cursor: grab;
 }
-body.overlay.hover-mode .board:active {
+body.overlay.resize-mode .app.hovered .board:active {
   cursor: grabbing;
 }
 
-/* Keys: maintain full opacity, add highlight on hover */
-body.overlay.hover-mode .keyboard-view {
+/* Keys: maintain full opacity, add highlight only while hovered */
+body.overlay.resize-mode .keyboard-view {
   opacity: 1;
   filter: none;
   transition: filter 0.3s ease;
 }
-body.overlay.hover-mode .app.hovered .keyboard-view {
+body.overlay.resize-mode .app.hovered .keyboard-view {
   filter: drop-shadow(0 0 10px rgba(35, 136, 255, 0.4));
 }
 
-/* Resize frame container — hidden until hovered */
+/* Resize frame container — hidden until hovered. */
 .resize-frame {
   display: none;
 }
-body.overlay.hover-mode .resize-frame {
+body.overlay.resize-mode .resize-frame {
   display: block;
   position: absolute;
   inset: 0;
@@ -352,7 +358,7 @@ body.overlay.hover-mode .resize-frame {
   opacity: 0;
   transition: opacity 0.25s ease;
 }
-body.overlay.hover-mode .app.hovered .resize-frame {
+body.overlay.resize-mode .app.hovered .resize-frame {
   opacity: 1;
 }
 
@@ -365,16 +371,17 @@ body.overlay.hover-mode .app.hovered .resize-frame {
   pointer-events: none;
 }
 
-/* Freeze all hover transitions while resizing */
+/* Freeze all hover transitions while resizing, and keep the frame/glow shown
+   even if a fast drag briefly carries the cursor outside the keyboard. */
 body.resizing .keyboard-view,
 body.resizing .resize-frame {
   transition: none !important;
 }
-body.overlay.hover-mode.resizing .keyboard-view {
+body.overlay.resize-mode.resizing .keyboard-view {
   opacity: 1;
   filter: drop-shadow(0 0 10px rgba(35, 136, 255, 0.4));
 }
-body.overlay.hover-mode.resizing .resize-frame {
+body.overlay.resize-mode.resizing .resize-frame {
   opacity: 1;
 }
 
@@ -385,7 +392,7 @@ body.overlay.hover-mode.resizing .resize-frame {
   -webkit-app-region: no-drag;
   background: transparent;
 }
-body.overlay.hover-mode .app.hovered .resize-handle {
+body.overlay.resize-mode .app.hovered .resize-handle {
   pointer-events: all;
 }
 .resize-n  { top: 0;    left: 10px;  right: 10px; height: 6px; cursor: n-resize;  }

@@ -26,7 +26,7 @@ interface LensSettingsShape {
   enabled: boolean;
   opacity: number;
   overlayAutoShow: boolean;
-  hoverMode: boolean;
+  resizeMode: boolean;
 }
 
 interface LensStateShape {
@@ -36,7 +36,7 @@ interface LensStateShape {
 const LayerLensSettings = () => {
   const [lensEnabled, setLensEnabled] = useState(false);
   const [layerLensOnChange, setLayerLensOnChange] = useState(false);
-  const [hoverMode, setHoverMode] = useState(false);
+  const [resizeMode, setResizeModeState] = useState(false);
   const [overlayTransparency, setOverlayTransparency] = useState([85]);
   const [runInBackground, setRunInBackground] = useState(false);
   const [hidPermissionDenied, setHidPermissionDenied] = useState(false);
@@ -44,7 +44,7 @@ const LayerLensSettings = () => {
   const applySettings = (s: Partial<LensSettingsShape>) => {
     if (typeof s.enabled === "boolean") setLensEnabled(s.enabled);
     if (typeof s.overlayAutoShow === "boolean") setLayerLensOnChange(s.overlayAutoShow);
-    if (typeof s.hoverMode === "boolean") setHoverMode(s.hoverMode);
+    if (typeof s.resizeMode === "boolean") setResizeModeState(s.resizeMode);
     if (typeof s.opacity === "number") setOverlayTransparency([Math.round(s.opacity * 100)]);
   };
 
@@ -86,9 +86,9 @@ const LayerLensSettings = () => {
     ipcRenderer.invoke("lens:set-overlay-auto-show", checked).catch(() => {});
   };
 
-  const handleHoverMode = (checked: boolean) => {
-    setHoverMode(checked);
-    ipcRenderer.invoke("lens:set-hover-mode", checked).catch(() => {});
+  const handleResizeMode = (checked: boolean) => {
+    setResizeModeState(checked);
+    ipcRenderer.invoke("lens:set-resize-mode", checked).catch(() => {});
   };
 
   const handleOverlayTransparency = (value: number[]) => {
@@ -192,7 +192,7 @@ const LayerLensSettings = () => {
 
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
               <div className="flex items-center gap-1.5">
-                <label htmlFor="hoverModeSwitch" className="m-0 text-sm font-semibold tracking-tight">
+                <label htmlFor="resizeModeSwitch" className="m-0 text-sm font-semibold tracking-tight">
                   Resize Mode
                 </label>
                 <Tooltip>
@@ -203,13 +203,13 @@ const LayerLensSettings = () => {
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
-                      Lets you click, drag, and resize the Layout Lens overlay by hovering your mouse over it, instead of it
-                      staying click-through.
+                      Lets you click, drag, and resize the Layout Lens overlay, instead of it staying click-through. You can also
+                      toggle this from the system tray icon.
                     </p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <Switch id="hoverModeSwitch" checked={hoverMode} onCheckedChange={handleHoverMode} variant="default" size="sm" />
+              <Switch id="resizeModeSwitch" checked={resizeMode} onCheckedChange={handleResizeMode} variant="default" size="sm" />
             </div>
 
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
