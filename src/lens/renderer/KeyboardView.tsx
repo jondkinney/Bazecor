@@ -3,7 +3,7 @@ import type { KeyboardModel } from "../shared/types";
 import { SONSEI_KEYS } from "./geometry-sonsei";
 import { DefyKeyboardView } from "./DefyKeyboardView";
 import { Raise2KeyboardView } from "./Raise2KeyboardView";
-import { decodeKey, superkeyIndex, layoutOverrides } from "./keycodes";
+import { decodeKey, superkeyIndex, layoutOverrides, shiftOverrides } from "./keycodes";
 import { keyLabel, fg, fitFontSize, splitLongWord } from "./key-label";
 import { DEFY_THUMB_ROTATION } from "./defy-thumb-paths";
 
@@ -66,6 +66,7 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
   }
 
   const overrides = layoutOverrides(layout);
+  const shiftSymbols = shiftOverrides(layout);
   const layer = Math.min(activeLayer, model.keymap.length - 1);
   const keymapLayer = model.keymap[layer] ?? [];
   const colormapLayer = model.colormap[layer] ?? [];
@@ -86,7 +87,7 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
       const name = model.superkeyNames?.[sk] || `SK${sk + 1}`;
       return { primary: "SUPER", subtitle: name, hold: "" };
     }
-    return decodeKey(code, overrides, names, macroNames);
+    return decodeKey(code, overrides, names, macroNames, shiftSymbols);
   }
 
   function renderKey(key: (typeof SONSEI_KEYS)[0]) {
@@ -182,8 +183,16 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
       }
       return (
         <g key={`k-${key.index}`} transform={`translate(${key.x},${key.y})`}>
+          <g className="key-shadow-hover" transform="translate(0,4)">
+            <path d={thumbPath} fill={color.css} />
+          </g>
           <path d={thumbPath} fill="#303949" />
+          <path d={thumbPath} fill="url(#lens-key-sheen)" fillOpacity="0.35" />
+          <g className="key-shadow-middle" transform="translate(4,12)">
+            <path d={thumbPath} fill={color.css} />
+          </g>
           <path d={thumbPath} fill={color.css} />
+          <path d={thumbPath} fill="url(#lens-key-sheen)" fillOpacity="0.45" />
           {thumbLabel}
         </g>
       );
@@ -195,8 +204,12 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
 
     return (
       <g key={`k-${key.index}`}>
+        <rect className="key-shadow-hover" x={x} y={y + 4} width={w} height={h} rx={4} fill={color.css} />
         <rect x={x} y={y} width={w} height={h} rx={4} fill="#303949" />
+        <rect x={x} y={y} width={w} height={h} rx={4} fill="url(#lens-key-sheen)" fillOpacity="0.35" />
+        <rect className="key-shadow-middle" x={x + 4} y={y + 12} width={w - 8} height={h - 8} rx={4} fill={color.css} />
         <rect x={x + 4} y={y} width={w - 8} height={h - 8} rx={4} fill={color.css} />
+        <rect x={x + 4} y={y} width={w - 8} height={h - 8} rx={4} fill="url(#lens-key-sheen)" fillOpacity="0.45" />
         {keyLabel(cx, cy, y, h, label, fgColor)}
       </g>
     );
@@ -213,6 +226,12 @@ export const KeyboardView: React.FC<Props> = ({ model, activeLayer, layout, laye
         viewBox={`0 ${VIEW_Y} ${SVG_W} ${VIEW_H}`}
         style={{ width: "100%", display: "block" }}
       >
+        <defs>
+          <linearGradient id="lens-key-sheen" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="25%" stopColor="#fff" stopOpacity="1" />
+            <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+          </linearGradient>
+        </defs>
         <g id="keyshapes-left" transform="rotate(10, 320, 680)">
           {leftKeys.map(renderKey)}
         </g>

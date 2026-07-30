@@ -362,7 +362,10 @@ export function keyLabel(
   } else if (hasMods) {
     // 3+ separate chips ("Ctrl"/"Alt"/"Shift"/…) don't fit a 57px key face —
     // collapse into a single combined chip instead (see combineMods above).
-    const display = mods.length >= 3 ? [combineMods(mods)] : mods;
+    // Shift alone is abbreviated to "S" even at 1-2 chips: it's the most common
+    // modifier shown here, and the full word crowds a key face that's already
+    // showing the modified character above it.
+    const display = mods.length >= 3 ? [combineMods(mods)] : mods.map(m => (m === "Shift" ? "S" : m));
     const totalW = display.reduce((s, m) => s + modBoxWidth(m), 0) + MOD_BOX_GAP * (display.length - 1);
     const boxY = boxTop + boxH - 10 - MOD_BOX_H;
     let bx = cx - totalW / 2;

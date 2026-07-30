@@ -321,6 +321,19 @@ body.overlay .layer-label {
   height: 100%;
 }
 
+/* Blurred, LED-colored halo bleeding out past each key's edges, matching
+   Bazecor's own .shadowHover/.shadowMiddle (src/api/hardware/Key.tsx +
+   LayoutEditor.tsx) — drawn behind the key face in KeyboardView.tsx/
+   DefyKeyboardView.tsx/Raise2KeyboardView.tsx. */
+.key-shadow-hover {
+  filter: blur(16px);
+  opacity: 0.2;
+}
+.key-shadow-middle {
+  filter: blur(18px);
+  opacity: 0.4;
+}
+
 /* ── Resize Mode (overlay + resize-mode body classes) ───────────────── */
 /* Resize Mode keeps the window non-click-through the whole time it's on (so
    hover can even be detected and dragging works), but the blue frame/glow/

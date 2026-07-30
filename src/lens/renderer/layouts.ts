@@ -280,3 +280,98 @@ export const LAYOUTS: Record<string, Record<number, string>> = {
 export function layoutOverrides(layout: string): Record<number, string> {
   return LAYOUTS[layout] ?? {};
 }
+
+/* Shift-row symbol tables: what a plain Shift + digit/punctuation key actually
+ * produces on each layout, transcribed from each language's own Bazecor DB
+ * shift-modifier table (src/api/keymap/languages/**, the "shiftModifier*"
+ * table each file feeds into withModifiers(..., 2048)) — NOT derived from the
+ * BASE tables above, since a key's shifted symbol isn't always guessable from
+ * its unshifted one (e.g. es-ES Shift+2 is '"', not related to '2' at all). */
+
+export const SHIFT_US: Record<number, string> = {
+  30: "!",
+  31: "@",
+  32: "#",
+  33: "$",
+  34: "%",
+  35: "^",
+  36: "&",
+  37: "*",
+  38: "(",
+  39: ")",
+  45: "_",
+  46: "+",
+  47: "{",
+  48: "}",
+  49: "|",
+  51: ":",
+  52: '"',
+  53: "~",
+  54: "<",
+  55: ">",
+  56: "?",
+};
+
+// From src/api/keymap/languages/es/ES.ts's shiftModifierSpanish table.
+export const SHIFT_ES_ES: Record<number, string> = {
+  31: '"',
+  32: "·",
+  35: "&",
+  36: "/",
+  37: "(",
+  38: ")",
+  39: "=",
+  45: "?",
+  46: "¿",
+  47: "^",
+  48: "*",
+  49: "Ç",
+  51: "Ñ",
+  52: "¨",
+  53: "ª",
+  54: ";",
+  55: ":",
+  56: "_",
+  100: ">",
+};
+
+// From src/api/keymap/languages/es/MX.ts's shiftModifierSpanish table — also
+// used for Argentina and the rest of Latin America, which Bazecor doesn't
+// split out any further (its language picker only offers "es-MX" for all of
+// Latin America, same physical layout).
+export const SHIFT_ES_MX: Record<number, string> = {
+  31: '"',
+  32: "#",
+  35: "&",
+  36: "/",
+  37: "(",
+  38: ")",
+  39: "=",
+  45: "?",
+  46: "¡",
+  47: "¨",
+  48: "*",
+  49: "]",
+  51: "Ñ",
+  52: "[",
+  53: "°",
+  54: ";",
+  55: ":",
+  56: "_",
+  100: ">",
+};
+
+const SHIFT_LAYOUTS: Record<string, Record<number, string>> = {
+  us: SHIFT_US,
+  "en-US": SHIFT_US,
+  "es-ES": SHIFT_ES_ES,
+  "es-MX": SHIFT_ES_MX,
+};
+
+/** Shift-row symbol table for `layout`, or `null` if this layout doesn't have
+ * one transcribed yet — callers should fall back to showing the base key +
+ * a "S" chip rather than guessing with another layout's symbols (showing the
+ * US "@" for Shift+2 on a Spanish board was the actual bug this avoids). */
+export function shiftOverrides(layout: string): Record<number, string> | null {
+  return SHIFT_LAYOUTS[layout] ?? null;
+}

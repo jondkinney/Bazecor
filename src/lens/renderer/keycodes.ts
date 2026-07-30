@@ -210,7 +210,7 @@ const FUNCTION: Record<number, FunctionIconName> = {
   20866: "sleep",
 };
 
-export { layoutOverrides } from "./layouts";
+export { layoutOverrides, shiftOverrides } from "./layouts";
 
 // Layer key codes — verified against Bazecor src/api/keymap/db/layerswitch.tsx
 const LAYER_LOCK_MIN = 17408; // LockLayerTable  layer 1-10
@@ -259,36 +259,6 @@ const MACRO_MAX = 53979;
 const SUPERKEY_MIN = 53980; // 53980 + index (128 superkeys)
 const SUPERKEY_MAX = 54107;
 
-// Standard (US-QWERTY) Shift-row symbols. When a key is exactly Shift+<one of
-// these>, that's a printable character (e.g. Shift+2 = "@"), not a shortcut —
-// showing "2" with a small "Shift" chip hid the actual result; show the
-// resolved symbol directly instead, matching what the key actually produces.
-// Not layout-aware (Shift+2 differs on es/de/etc.) — a known gap, same scoping
-// call as the language-layout work: covers the common case, not every board.
-const SHIFT_SYMBOL: Record<number, string> = {
-  30: "!",
-  31: "@",
-  32: "#",
-  33: "$",
-  34: "%",
-  35: "^",
-  36: "&",
-  37: "*",
-  38: "(",
-  39: ")",
-  45: "_",
-  46: "+",
-  47: "{",
-  48: "}",
-  49: "|",
-  51: ":",
-  52: '"',
-  53: "~",
-  54: "<",
-  55: ">",
-  56: "?",
-};
-
 /* eslint-disable no-bitwise -- decoding firmware keycodes is inherently bit-mask work */
 // Modifier flag bits per Bazecor's withModifiers() offsets (db/utils.ts):
 // Control +256, Alt +512, AltGr +1024, Shift +2048, OS +4096.
@@ -320,25 +290,27 @@ function layerName(num: number, layerNames: string[]): string {
   return layerNames[num - 1] || "";
 }
 
-/* Layer keys mirror Bazecor's LayerTag (shift/lock icon + layer number):
- * the primary line shows the target layer number or name, and holdIcon tells
- * key-label.tsx to draw the matching lock/shift/oneshot glyph in place of text. */
+/* Layer keys mirror Bazecor's LayerTag (shift/lock icon + layer number): the
+ * primary line always shows the target layer's plain number — never a custom
+ * layer name, so the icon + number reads the same regardless of how long or
+ * short the layer's name happens to be — and holdIcon tells key-label.tsx to
+ * draw the matching lock/shift/oneshot glyph in place of text. */
 function decodeLayerKey(code: number, layerNames: string[], layout: Record<number, string>): DecodedKey | null {
   if (code >= LAYER_LOCK_MIN && code <= LAYER_LOCK_MAX) {
     const n = code - LAYER_LOCK_MIN + 1;
-    return { primary: layerName(n, layerNames) || `${n}`, hold: "lock", holdIcon: "lock" };
+    return { primary: `${n}`, hold: "lock", holdIcon: "lock" };
   }
   if (code >= LAYER_SHIFT_MIN && code <= LAYER_SHIFT_MAX) {
     const n = code - LAYER_SHIFT_MIN + 1;
-    return { primary: layerName(n, layerNames) || `${n}`, hold: "shift", holdIcon: "shift" };
+    return { primary: `${n}`, hold: "shift", holdIcon: "shift" };
   }
   if (code >= LAYER_MOVE_MIN && code <= LAYER_MOVE_MAX) {
     const n = code - LAYER_MOVE_MIN + 1;
-    return { primary: layerName(n, layerNames) || `${n}`, hold: "lock", holdIcon: "lock" };
+    return { primary: `${n}`, hold: "lock", holdIcon: "lock" };
   }
   if (code >= LAYER_ONESHOT_MIN && code <= LAYER_ONESHOT_MAX) {
     const n = code - LAYER_ONESHOT_MIN + 1;
-    return { primary: layerName(n, layerNames) || `${n}`, hold: "1shot", holdIcon: "oneshot" };
+    return { primary: `${n}`, hold: "1shot", holdIcon: "oneshot" };
   }
   if (code >= LAYER_DUAL_MIN && code <= LAYER_DUAL_MAX) {
     const layerIdx = Math.trunc((code - LAYER_DUAL_MIN) / 256);
@@ -365,6 +337,7 @@ export function decodeKey(
   layout: Record<number, string> = {},
   layerNames: string[] = [],
   macroNames: string[] = [],
+  shiftSymbols: Record<number, string> | null = null,
 ): DecodedKey {
   if (code === 0) return { primary: "NO", subtitle: "KEY", hold: "" };
   if (code === 1 || code === 65535) return { primary: "TRANS", hold: "" };
@@ -400,11 +373,13 @@ export function decodeKey(
   const baseCode = code & 0xff;
   if (modFlags !== 0) {
     // Shift alone on a symbol-row key produces a specific character — show
-    // that character, not the unshifted key + a "Shift" chip (see SHIFT_SYMBOL
-    // above for why this is scoped to plain Shift only, not Ctrl/Alt/AltGr/OS
-    // combos, which really are shortcuts and should keep showing the chip).
-    if (modFlags === 0x08 && SHIFT_SYMBOL[baseCode]) {
-      return { primary: SHIFT_SYMBOL[baseCode], hold: "" };
+    // that character, not the unshifted key + a "S" chip (see shiftOverrides
+    // in layouts.ts for why this is scoped to plain Shift only, not Ctrl/Alt/
+    // AltGr/OS combos, which really are shortcuts and should keep showing the
+    // chip — and why it's null instead of guessing on layouts with no
+    // transcribed shift table yet).
+    if (modFlags === 0x08 && shiftSymbols?.[baseCode]) {
+      return { primary: shiftSymbols[baseCode], hold: "" };
     }
     const baseLabel = baseLabelFor(baseCode, layout);
     if (baseLabel) return { primary: baseLabel, hold: "", modifiers: modBitsToArray(modFlags) };
