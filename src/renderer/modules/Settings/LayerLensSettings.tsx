@@ -102,7 +102,7 @@ const LayerLensSettings = () => {
   };
 
   return (
-    // Width kept in sync with LayoutLensOnboarding above it — see its comment.
+    // Width kept in sync with LayerLensOnboarding above it — see its comment.
     <Card className="mt-3 max-w-[60.48rem] mx-auto" variant="default">
       <CardHeader>
         <CardTitle variant="default">
@@ -141,7 +141,7 @@ const LayerLensSettings = () => {
             <div className="flex items-center w-full justify-between py-2 border-b-[1px] border-gray-50 dark:border-gray-700">
               <div className="flex items-center gap-1.5">
                 <label htmlFor="lensEnabledSwitch" className="m-0 text-sm font-semibold tracking-tight">
-                  Layout Lens
+                  Layer Lens
                 </label>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -176,7 +176,7 @@ const LayerLensSettings = () => {
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
-                      Automatically shows Layout Lens for a few seconds whenever you switch to a different layer, then hides it
+                      Automatically shows Layer Lens for a few seconds whenever you switch to a different layer, then hides it
                       again.
                     </p>
                   </TooltipContent>
@@ -204,7 +204,7 @@ const LayerLensSettings = () => {
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
-                      Lets you click, drag, and resize the Layout Lens overlay, instead of it staying click-through. You can also
+                      Lets you click, drag, and resize the Layer Lens overlay, instead of it staying click-through. You can also
                       toggle this from the system tray icon.
                     </p>
                   </TooltipContent>
@@ -226,7 +226,7 @@ const LayerLensSettings = () => {
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
-                      Keeps Bazecor in the system tray when you close its window (and starts it at login), so Layout Lens stays
+                      Keeps Bazecor in the system tray when you close its window (and starts it at login), so Layer Lens stays
                       available at all times.
                     </p>
                   </TooltipContent>
@@ -254,7 +254,7 @@ const LayerLensSettings = () => {
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
-                      Controls how see-through the Layout Lens overlay is, so it blends with whatever is behind it.
+                      Controls how see-through the Layer Lens overlay is, so it blends with whatever is behind it.
                     </p>
                   </TooltipContent>
                 </Tooltip>

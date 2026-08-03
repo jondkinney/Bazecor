@@ -21,8 +21,8 @@ import DeviceConnectedPreview from "./DeviceConnectedPreview";
 import EnergyManagement from "./EnergyManagement";
 import FileBackUpHandling from "./FileBackUpHandling";
 import GeneralSettings from "./GeneralSettings";
+import LayerLensOnboarding from "./LayerLensOnboarding";
 import LayerLensSettings from "./LayerLensSettings";
-import LayoutLensOnboarding from "./LayoutLensOnboarding";
 import LEDSettings from "./LEDSettings";
 import NeuronSettings from "./NeuronSettings";
 import RFSettings from "./RFSettings";
@@ -35,8 +35,8 @@ export {
   EnergyManagement,
   FileBackUpHandling,
   GeneralSettings,
+  LayerLensOnboarding,
   LayerLensSettings,
-  LayoutLensOnboarding,
   LEDSettings,
   NeuronSettings,
   RFSettings,

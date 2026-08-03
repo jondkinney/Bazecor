@@ -38,7 +38,7 @@ import {
   BatterySettings,
   EnergyManagement,
   LayerLensSettings,
-  LayoutLensOnboarding,
+  LayerLensOnboarding,
 } from "@Renderer/modules/Settings";
 
 import { PageHeader } from "@Renderer/modules/PageHeader";
@@ -175,7 +175,7 @@ const Preferences = (props: PreferencesProps) => {
   } = props;
   const [activeTab, setActiveTab] = useState(connected ? "Keyboard" : "Application");
 
-  // Layout Lens is available for Sonsei (fw >= 1.0.0) and Defy (fw >= 2.3.0). The
+  // Layer Lens is available for Sonsei (fw >= 1.0.0) and Defy (fw >= 2.3.0). The
   // capability is written to the store on connect (see App.tsx onKeyboardConnect).
   // Raise2 and Raise (Raise1) never set this flag, so the nav item stays hidden.
   const lensCapabilityRaw = store.get("capabilities.lens");
@@ -767,8 +767,8 @@ const Preferences = (props: PreferencesProps) => {
                 <IconLogoDygma /> Application
               </TabsTrigger>
               {isLensAvailable && (
-                <TabsTrigger value="LayoutLens" variant="tab">
-                  <IconLens /> Layout Lens
+                <TabsTrigger value="LayerLens" variant="tab">
+                  <IconLens /> Layer Lens
                 </TabsTrigger>
               )}
               <TabsTrigger value="Backups" variant="tab">
@@ -864,9 +864,9 @@ const Preferences = (props: PreferencesProps) => {
                 </motion.div>
               </TabsContent>
               {isLensAvailable && (
-                <TabsContent value="LayoutLens">
+                <TabsContent value="LayerLens">
                   <motion.div initial="hidden" animate="visible" variants={tabVariants}>
-                    <LayoutLensOnboarding />
+                    <LayerLensOnboarding />
                     <LayerLensSettings />
                   </motion.div>
                 </TabsContent>

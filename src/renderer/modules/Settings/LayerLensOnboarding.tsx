@@ -38,7 +38,7 @@ const steps: Step[] = [
   },
   {
     title: "Turn it on",
-    description: "Enable Layout Lens in the Settings below.",
+    description: "Enable Layer Lens in the Settings below.",
     image: turnItOn,
   },
   {
@@ -57,14 +57,14 @@ const steps: Step[] = [
 // The card is 44% wider than the max-w-2xl (42rem) every other settings card
 // uses, so the step GIFs get enough room to be readable. LayerLensSettings is
 // widened to match, keeping the two cards of this tab aligned.
-const LayoutLensOnboarding = () => (
+const LayerLensOnboarding = () => (
   <Card className="mt-3 max-w-[60.48rem] mx-auto" variant="default">
     <CardHeader>
       <CardTitle variant="default">
-        <IconLens /> First time using Layout Lens
+        <IconLens /> First time using Layer Lens
       </CardTitle>
       <CardDescription className="mt-1">
-        Layout Lens is an on-screen overlay that shows your keyboard&apos;s active layer. Here&apos;s how to get started.
+        Layer Lens is an on-screen overlay that shows your keyboard&apos;s active layer. Here&apos;s how to get started.
       </CardDescription>
     </CardHeader>
     <CardContent>
@@ -94,4 +94,4 @@ const LayoutLensOnboarding = () => (
   </Card>
 );
 
-export default LayoutLensOnboarding;
+export default LayerLensOnboarding;

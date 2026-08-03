@@ -17,7 +17,7 @@ interface LayerLensTabProps extends TabLayoutEditorProps {
 // Superkey action slots, by index: 0 = Tap, 1 = Hold, 2 = Tap & hold, 3 = 2Tap, 4 = 2Tap & hold.
 const SUPERKEY_TAP_SLOTS = [0, 3];
 // LENS TAP (OVERLAY_TAP) is also allowed on the Hold slot, so a superkey can send the
-// "toggle Layout Lens" keycode when the key is held.
+// "toggle Layer Lens" keycode when the key is held.
 const TOGGLE_LENS_ALLOWED_SLOTS = [0, 1, 3];
 
 function LayerLensTab(props: LayerLensTabProps) {
