@@ -43,6 +43,7 @@ function readState(): LensStoreState {
     keyboards,
     migratedFromStandalone: raw?.migratedFromStandalone,
     overlayBounds: raw?.overlayBounds,
+    overlayShown: raw?.overlayShown,
   };
 }
 
@@ -112,6 +113,20 @@ export function getOverlayBounds(): OverlayBounds | null {
 
 export function setOverlayBounds(bounds: OverlayBounds): void {
   writeState({ ...readState(), overlayBounds: bounds });
+}
+
+/**
+ * Last deliberate visibility of the overlay (see LensStoreState.overlayShown).
+ * Only the explicit show/hide paths write it — the momentary ones (Lens key
+ * HOLD, "show only on layer change") must not, or a layer switch right before
+ * quitting would decide how Lens comes back next launch.
+ */
+export function getLastOverlayShown(): boolean {
+  return readState().overlayShown !== false;
+}
+
+export function setLastOverlayShown(shown: boolean): void {
+  writeState({ ...readState(), overlayShown: shown });
 }
 
 export function isLegacyLensMigrated(): boolean {

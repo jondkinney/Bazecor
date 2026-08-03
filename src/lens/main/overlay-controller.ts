@@ -11,7 +11,15 @@ import {
 } from "../shared/constants";
 import { RawHidListener } from "./raw-hid-listener";
 import { getInputMonitoringStatus, requestInputMonitoringAccess } from "./macos-permissions";
-import { getAllLensKeyboards, getLensKeyboard, getLensSettings, hasAnyLensKeyboard, setLensSettings } from "./lens-settings";
+import {
+  getAllLensKeyboards,
+  getLastOverlayShown,
+  getLensKeyboard,
+  getLensSettings,
+  hasAnyLensKeyboard,
+  setLastOverlayShown,
+  setLensSettings,
+} from "./lens-settings";
 import { readLatestModel } from "./backup-reader";
 import {
   applyAspectRatioFor,
@@ -26,7 +34,6 @@ import {
   pushActiveLayer,
   pushModel,
   pushState,
-  setOverlayShown,
   showOverlay,
   stopFade,
 } from "./overlay-window";
@@ -60,6 +67,12 @@ class OverlayController {
 
   private layerChangeHideTimer: ReturnType<typeof setTimeout> | null = null;
 
+  // The overlay should be on screen (restored/last user intent) but there is no
+  // keyboard model to draw yet — showing it now would put the "Waiting for
+  // Bazecor" placeholder on the user's screen. Reveal it as soon as a model
+  // arrives instead.
+  private pendingShow = false;
+
   private hidPermissionDenied = false;
 
   // Shown at most once per enable so the 2s HID retry loop can't spam dialogs.
@@ -81,8 +94,13 @@ class OverlayController {
 
   setEnabled(v: boolean): void {
     setLensSettings({ enabled: v });
-    if (v) this.enable();
-    else this.disable();
+    if (v) {
+      // Flipping the toggle on is an explicit "show me Lens", so it overrides
+      // whatever visibility the user had left behind before disabling it —
+      // otherwise turning Lens on would look like it did nothing at all.
+      setLastOverlayShown(true);
+      this.enable();
+    } else this.disable();
   }
 
   enable(): void {
@@ -95,7 +113,16 @@ class OverlayController {
     this.wireHidEvents();
     this.reloadModel(false);
     if (!overlayAlive()) {
+      // Come back exactly as the user left Lens: on screen only if it was on
+      // screen last time, and never as the bare "Waiting for Bazecor"
+      // placeholder when there's no keyboard model to draw yet.
+      const wantsShow = getLastOverlayShown();
+      const showOnStart = wantsShow && this.currentModel !== null;
+      this.pendingShow = wantsShow && !showOnStart;
       createOverlayWindow(() => {
+        // Stays true even when the overlay starts hidden: this is the master
+        // switch for the Lens key gestures, and a hidden overlay must still be
+        // summonable with LENS TAP / HOLD.
         this.overlayActive = true;
         // reloadModel(false) above ran before this window existed, so its own
         // applyAspectRatioFor() call was a no-op (getWin() was still null) —
@@ -109,7 +136,7 @@ class OverlayController {
         }
         pushState(this.getState());
         broadcastSettings(getLensSettings());
-      });
+      }, showOnStart);
     }
     this.registerShortcut();
     this.checkMacosPermission();
@@ -125,6 +152,7 @@ class OverlayController {
     this.holdKeyActive = false;
     this.layerAutoShowActive = false;
     this.overlayActive = false;
+    this.pendingShow = false;
     this.hid.stop();
     destroyOverlayWindow();
     if (this.hidPermissionDenied) {
@@ -196,6 +224,7 @@ class OverlayController {
         pushModel(model);
         pushActiveLayer(this.activeLayer);
       }
+      this.applyPendingShow();
       return;
     }
 
@@ -208,6 +237,7 @@ class OverlayController {
       // stale model from another keyboard.
       this.currentModel = null;
       if (push) pushState(this.getState());
+      this.hideForMissingModel();
       return;
     }
     this.currentModel = model;
@@ -217,6 +247,31 @@ class OverlayController {
       pushModel(model);
       pushActiveLayer(this.activeLayer);
     }
+    this.applyPendingShow();
+  }
+
+  /** A model is available again: reveal the overlay if it was meant to be on
+   * screen but had nothing to draw at the time (see pendingShow). */
+  private applyPendingShow(): void {
+    if (!this.pendingShow) return;
+    if (!this.enabled || !this.overlayActive || !overlayAlive()) return;
+    this.pendingShow = false;
+    if (!isOverlayVisible()) showOverlay();
+  }
+
+  /** The active board has no model to draw. The overlay is a floating window
+   * over everything else, so the "Waiting for Bazecor…" placeholder must never
+   * be left sitting there — hide it and come back once a model shows up. */
+  private hideForMissingModel(): void {
+    if (!isOverlayVisible()) return;
+    this.clearLayerChangeHideTimer();
+    this.layerAutoShowActive = false;
+    this.holdKeyActive = false;
+    // Only come back on its own if being on screen was the user's standing
+    // choice — it may well have been visible just for a momentary HOLD or a
+    // layer-change auto-show.
+    this.pendingShow = getLastOverlayShown();
+    hideOverlay();
   }
 
   /**
@@ -236,8 +291,32 @@ class OverlayController {
 
   toggleOverlay(): void {
     if (!this.enabled || !overlayAlive()) return;
-    this.overlayActive = !this.overlayActive;
-    setOverlayShown(this.overlayActive);
+    // Toggle off what's actually on screen, not off `overlayActive`: the two
+    // can legitimately differ (the overlay starts hidden when the user left it
+    // hidden, and the Lens key's TAP hides it without touching overlayActive),
+    // and toggling the flag alone would waste the first press on a window
+    // that's already hidden.
+    const next = !isOverlayVisible();
+    this.overlayActive = next;
+    this.setUserVisible(next);
+  }
+
+  /**
+   * Applies an explicit user show/hide (Lens key TAP, Ctrl+Alt+L, tray, Resize
+   * Mode): remembers the choice so the next launch restores it, and defers the
+   * reveal while there's no keyboard model to draw — the overlay floats over
+   * everything, so the "Waiting for Bazecor…" placeholder must never be what
+   * the user gets handed.
+   */
+  private setUserVisible(next: boolean): void {
+    setLastOverlayShown(next);
+    if (next && this.currentModel === null) {
+      this.pendingShow = true;
+      return;
+    }
+    this.pendingShow = false;
+    if (next) showOverlay();
+    else hideOverlay();
   }
 
   /** Used by setResizeMode below: makes sure the overlay is actually on screen
@@ -249,12 +328,9 @@ class OverlayController {
    * key (its TAP/HOLD handlers all guard on overlayActive). */
   ensureVisible(): void {
     if (!this.enabled || !overlayAlive()) return;
-    if (!this.overlayActive) {
-      this.overlayActive = true;
-      setOverlayShown(true);
-    } else if (!isOverlayVisible()) {
-      showOverlay();
-    }
+    if (this.overlayActive && isOverlayVisible()) return;
+    this.overlayActive = true;
+    this.setUserVisible(true);
   }
 
   private registerShortcut(): void {
@@ -353,8 +429,7 @@ class OverlayController {
     this.clearLayerChangeHideTimer();
     this.layerAutoShowActive = false;
     log.verbose(`[Lens] TAP action → toggling visibility (currently ${isOverlayVisible() ? "visible" : "hidden"})`);
-    if (isOverlayVisible()) hideOverlay();
-    else showOverlay();
+    this.setUserVisible(!isOverlayVisible());
   }
 
   private onOverlayHoldStart(): void {

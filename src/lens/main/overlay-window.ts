@@ -228,7 +228,13 @@ function fadeWindowOpacity(target: number, duration: number, onComplete?: () => 
   }, FADE_INTERVAL_MS);
 }
 
-export function createOverlayWindow(onReady: () => void): BrowserWindow {
+/**
+ * `showOnStart` is the restored visibility from last session (see
+ * getLastOverlayShown): the window is always created and its overlay styling
+ * always applied, but it only actually goes on screen when the user left it
+ * there — Lens must not pop up again after being hidden.
+ */
+export function createOverlayWindow(onReady: () => void, showOnStart: boolean): BrowserWindow {
   // Adopt last session's saved bounds (if still on-screen) so applyOverlayMode(true)
   // on ready-to-show places the overlay where the user left it.
   restoreOverlayBounds();
@@ -261,12 +267,12 @@ export function createOverlayWindow(onReady: () => void): BrowserWindow {
   w.loadURL(LENS_WINDOW_WEBPACK_ENTRY);
 
   w.once("ready-to-show", () => {
-    log.info("[Lens] Overlay window ready-to-show");
-    overlayVisible = true;
+    log.info(`[Lens] Overlay window ready-to-show (showOnStart=${showOnStart})`);
+    overlayVisible = showOnStart;
     applyOverlayMode(true);
     // showInactive: an overlay must never activate Bazecor — on macOS a plain
     // show() focuses the app, yanking the user out of whatever they're doing.
-    w.showInactive();
+    if (showOnStart) w.showInactive();
     onReady();
   });
 
@@ -334,19 +340,6 @@ export function hideOverlay(): void {
   fadeWindowOpacity(0, FADE_OUT_DURATION_MS, () => {
     getWin()?.hide();
   });
-}
-
-export function setOverlayShown(shown: boolean): void {
-  const win = getWin();
-  if (!win) return;
-  overlayVisible = shown;
-  if (shown) {
-    applyOverlayMode(true);
-    win.showInactive();
-  } else {
-    applyOverlayMode(false);
-    win.hide();
-  }
 }
 
 export function applyOpacityLive(v: number): void {

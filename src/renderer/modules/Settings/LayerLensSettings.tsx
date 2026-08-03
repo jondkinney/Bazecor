@@ -102,7 +102,8 @@ const LayerLensSettings = () => {
   };
 
   return (
-    <Card className="mt-3 max-w-2xl mx-auto" variant="default">
+    // Width kept in sync with LayoutLensOnboarding above it — see its comment.
+    <Card className="mt-3 max-w-[60.48rem] mx-auto" variant="default">
       <CardHeader>
         <CardTitle variant="default">
           <IconLens /> Settings
@@ -144,7 +145,7 @@ const LayerLensSettings = () => {
                 </label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                    <span className="inline-flex cursor-help text-purple-100 dark:text-purple-200">
                       <IconInformation size="sm" />
                     </span>
                   </TooltipTrigger>
@@ -169,7 +170,7 @@ const LayerLensSettings = () => {
                 </label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                    <span className="inline-flex cursor-help text-purple-100 dark:text-purple-200">
                       <IconInformation size="sm" />
                     </span>
                   </TooltipTrigger>
@@ -197,7 +198,7 @@ const LayerLensSettings = () => {
                 </label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                    <span className="inline-flex cursor-help text-purple-100 dark:text-purple-200">
                       <IconInformation size="sm" />
                     </span>
                   </TooltipTrigger>
@@ -219,7 +220,7 @@ const LayerLensSettings = () => {
                 </label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                    <span className="inline-flex cursor-help text-purple-100 dark:text-purple-200">
                       <IconInformation size="sm" />
                     </span>
                   </TooltipTrigger>
@@ -247,7 +248,7 @@ const LayerLensSettings = () => {
                 </label>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-help text-gray-300 dark:text-gray-100">
+                    <span className="inline-flex cursor-help text-purple-100 dark:text-purple-200">
                       <IconInformation size="sm" />
                     </span>
                   </TooltipTrigger>
