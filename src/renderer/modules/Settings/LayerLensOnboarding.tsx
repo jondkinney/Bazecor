@@ -20,7 +20,7 @@ import { IconLens } from "@Renderer/components/atoms/icons";
 
 // Assets
 import assignLensKeys from "@Assets/Animation.gif";
-import turnItOn from "@Assets/LensOnPic.png";
+import turnItOn from "@Assets/TurnItOn.gif";
 import showItYourWay from "@Assets/ShotItYourWay.gif";
 import moveAndResizeIt from "@Assets/Move&ResizeIt.gif";
 
@@ -71,12 +71,14 @@ const LayerLensOnboarding = () => (
       <div className="grid grid-cols-2 gap-4">
         {steps.map((step, index) => (
           <div key={step.title} className="flex flex-col gap-2">
-            {/* Every asset is ~16:9 (see src/static), so a fixed video ratio keeps the
-                four cards aligned no matter which one is a still and which is a GIF. */}
+            {/* A fixed video ratio keeps the four cards aligned, and object-contain
+                fits each asset inside it whatever its own ratio is: three are ~16:9,
+                but TurnItOn.gif is a much wider 2.7:1 that object-cover would crop by
+                a third. The tinted box makes the leftover letterbox read as framing. */}
             <img
               src={step.image}
               alt={step.title}
-              className="aspect-video w-full rounded-lg border border-gray-100 object-cover dark:border-gray-600"
+              className="aspect-video w-full rounded-lg border border-gray-100 bg-gray-25/60 object-contain dark:border-gray-600 dark:bg-gray-700/40"
             />
             <div className="flex items-start gap-2">
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[11px] font-semibold text-gray-500 dark:bg-gray-600 dark:text-gray-100">
