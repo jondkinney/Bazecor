@@ -116,6 +116,14 @@ export function registerLensIpc(onRunInBackgroundChange: (v: boolean) => void): 
     overlayController.reloadForSavedBackup(keyboard.product);
   });
 
+  // Fired by the Bazecor renderer (App.tsx toggleFlashing) at both ends of a
+  // firmware update. Lens releases the keyboard for the whole flash — see
+  // OverlayController.setFlashing().
+  ipcMain.on("lens:set-flashing", (_, v: boolean) => {
+    log.info(`[Lens] lens:set-flashing ${v}`);
+    overlayController.setFlashing(!!v);
+  });
+
   // Overlay drag / resize in Resize Mode.
   ipcMain.on("lens:win-move", (_, x: number, y: number) => overlayMove(x, y));
   ipcMain.on("lens:win-move-by", (_, dx: number, dy: number) => overlayMoveBy(dx, dy));

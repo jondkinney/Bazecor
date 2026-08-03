@@ -40,6 +40,10 @@ import {
 
 const LAYER_CHANGE_AUTO_HIDE_MS = 3000;
 const TOGGLE_SHORTCUT = "CommandOrControl+Alt+L";
+// Upper bound on a firmware flash. If the renderer never sends the matching
+// "flashing finished" (crash, reload, an abort path we don't cover), Lens comes
+// back on its own rather than staying dead until the app restarts.
+const FLASHING_WATCHDOG_MS = 15 * 60 * 1000;
 
 class OverlayController {
   private hid = new RawHidListener();
@@ -77,6 +81,10 @@ class OverlayController {
 
   // Shown at most once per enable so the 2s HID retry loop can't spam dialogs.
   private permissionDialogShown = false;
+
+  private flashing = false;
+
+  private flashingWatchdog: ReturnType<typeof setTimeout> | null = null;
 
   isEnabled(): boolean {
     return this.enabled;
@@ -140,7 +148,9 @@ class OverlayController {
     }
     this.registerShortcut();
     this.checkMacosPermission();
-    this.hid.startWithRetry();
+    // Enabling Lens in the middle of a firmware update must not re-open the
+    // keyboard; setFlashing(false) starts the listener once the flash is done.
+    if (!this.flashing) this.hid.startWithRetry();
   }
 
   disable(): void {
@@ -158,6 +168,38 @@ class OverlayController {
     if (this.hidPermissionDenied) {
       this.hidPermissionDenied = false;
       broadcastState(this.getState());
+    }
+  }
+
+  /**
+   * Called by the Bazecor renderer around a firmware update. While flashing, Lens
+   * must let go of the keyboard completely: the flasher talks to the same USB
+   * device over serial and the board reboots in and out of its bootloader, so an
+   * open HID handle (plus node-hid's periodic enumeration) can stall the flash.
+   *
+   * Independent of enable/disable — a flash suspends the listener even if the
+   * user's Lens toggle is on, and resuming only restarts it if Lens is still
+   * enabled by then.
+   */
+  setFlashing(v: boolean): void {
+    if (this.flashing === v) return;
+    this.flashing = v;
+    this.clearFlashingWatchdog();
+    if (v) {
+      this.hid.suspend();
+      this.flashingWatchdog = setTimeout(() => {
+        log.warn("[Lens] Flashing watchdog fired — no 'flashing finished' received, resuming Lens");
+        this.setFlashing(false);
+      }, FLASHING_WATCHDOG_MS);
+    } else if (this.enabled) {
+      this.hid.resume();
+    }
+  }
+
+  private clearFlashingWatchdog(): void {
+    if (this.flashingWatchdog) {
+      clearTimeout(this.flashingWatchdog);
+      this.flashingWatchdog = null;
     }
   }
 
@@ -193,6 +235,7 @@ class OverlayController {
   /** Called on app quit. */
   shutdown(): void {
     globalShortcut.unregister(TOGGLE_SHORTCUT);
+    this.clearFlashingWatchdog();
     this.clearLayerChangeHideTimer();
     stopFade();
     this.hid.stop();
