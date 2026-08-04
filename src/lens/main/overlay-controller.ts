@@ -39,6 +39,12 @@ import {
 } from "./overlay-window";
 
 const LAYER_CHANGE_AUTO_HIDE_MS = 3000;
+// How long the overlay is held on screen but fully transparent before the
+// layer-change auto-show fades it in, so the renderer has repainted the new
+// active layer by the time anything is visible. See showOverlay()'s fadeDelayMs.
+// Long enough to cover a slow repaint, still under the delay that would make the
+// auto-show feel like it lags behind the layer key.
+const LAYER_PAINT_SETTLE_MS = 230;
 const TOGGLE_SHORTCUT = "CommandOrControl+Alt+L";
 // Upper bound on a firmware flash. If the renderer never sends the matching
 // "flashing finished" (crash, reload, an abort path we don't cover), Lens comes
@@ -332,16 +338,25 @@ class OverlayController {
     this.reloadModel();
   }
 
+  /** Tray "Toggle Layer Lens" and the Ctrl+Alt+L shortcut. Deliberately the same
+   * behaviour as the Lens key's own TAP (onOverlayTapAction) — the two are the
+   * user's two ways of saying "show/hide it now" and must stay interchangeable. */
   toggleOverlay(): void {
     if (!this.enabled || !overlayAlive()) return;
+    this.clearLayerChangeHideTimer();
+    this.layerAutoShowActive = false;
     // Toggle off what's actually on screen, not off `overlayActive`: the two
     // can legitimately differ (the overlay starts hidden when the user left it
     // hidden, and the Lens key's TAP hides it without touching overlayActive),
     // and toggling the flag alone would waste the first press on a window
     // that's already hidden.
-    const next = !isOverlayVisible();
-    this.overlayActive = next;
-    this.setUserVisible(next);
+    //
+    // overlayActive itself is never cleared here. It's the master switch for the
+    // Lens key gestures (see enable()), so hiding the overlay from the tray used
+    // to kill LENS TAP / LENS HOLD until the tray showed it again — a hidden
+    // overlay must stay summonable from the keyboard.
+    this.overlayActive = true;
+    this.setUserVisible(!isOverlayVisible());
   }
 
   /**
@@ -502,11 +517,15 @@ class OverlayController {
       // Only Lens' own layer-change auto-show is allowed to auto-hide on release.
       return;
     }
+    this.clearLayerChangeHideTimer();
     this.layerAutoShowActive = true;
-    showOverlay();
+    // The caller has only just handed the renderer the new layer over IPC. Hold
+    // the overlay transparent for a beat before fading it in, so what appears is
+    // already the layer being switched to rather than the one being left behind
+    // — see showOverlay()'s fadeDelayMs.
+    showOverlay(LAYER_PAINT_SETTLE_MS);
     // Fallback in case the layer never reverts to the default layer (e.g. a locked
     // layer switch instead of a momentary hold) — don't leave Lens on screen forever.
-    this.clearLayerChangeHideTimer();
     this.layerChangeHideTimer = setTimeout(() => {
       this.layerChangeHideTimer = null;
       this.layerAutoShowActive = false;
