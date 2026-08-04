@@ -150,7 +150,9 @@ const LayerLensSettings = () => {
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">Shows a keyboard overlay with the active layer. Toggle it anytime with Ctrl+Alt+L.</p>
+                    <p className="max-w-xs">
+                      Shows a keyboard overlay with the active layer. Toggle it anytime with a LENS TAP / LENS HOLD key.
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </div>

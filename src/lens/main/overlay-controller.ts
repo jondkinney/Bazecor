@@ -590,3 +590,11 @@ export function setResizeMode(v: boolean): LensSettings {
   broadcastSettings(s);
   return s;
 }
+
+/** Shared by the tray menu and the lens:set-overlay-auto-show IPC handler, so
+ * both paths persist and broadcast the change the same way. */
+export function setOverlayAutoShow(v: boolean): LensSettings {
+  const s = setLensSettings({ overlayAutoShow: v });
+  broadcastSettings(s);
+  return s;
+}
