@@ -17,7 +17,7 @@
 import React, { useEffect, useState } from "react";
 import { ipcRenderer } from "electron";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@Renderer/components/atoms/Card";
-import { IconLens, IconChevronDown } from "@Renderer/components/atoms/icons";
+import { IconInformation, IconChevronDown } from "@Renderer/components/atoms/icons";
 
 // Assets
 import assignLensKeys from "@Assets/Animation.gif";
@@ -55,9 +55,6 @@ const steps: Step[] = [
   },
 ];
 
-// The card is 44% wider than the max-w-2xl (42rem) every other settings card
-// uses, so the step GIFs get enough room to be readable. LayerLensSettings is
-// widened to match, keeping the two cards of this tab aligned.
 const LayerLensOnboarding = () => {
   const [collapsed, setCollapsed] = useState(false);
   // The stored choice is read over IPC, so the card can't render until it lands
@@ -81,7 +78,7 @@ const LayerLensOnboarding = () => {
   if (!loaded) return null;
 
   return (
-    <Card className="mt-3 max-w-[60.48rem] mx-auto" variant="default">
+    <Card className="mt-3 max-w-2xl mx-auto" variant="default">
       <CardHeader>
         <button
           type="button"
@@ -90,7 +87,7 @@ const LayerLensOnboarding = () => {
           className="flex w-full items-center justify-between gap-2 bg-transparent p-0 text-left"
         >
           <CardTitle variant="default">
-            <IconLens /> First time using Layer Lens
+            <IconInformation /> First time using Layer Lens
           </CardTitle>
           <span
             className={`inline-flex shrink-0 text-gray-500 transition-transform dark:text-gray-100 ${
@@ -108,18 +105,9 @@ const LayerLensOnboarding = () => {
       </CardHeader>
       {!collapsed && (
         <CardContent>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-8">
             {steps.map((step, index) => (
               <div key={step.title} className="flex flex-col gap-2">
-                {/* A fixed video ratio keeps the four cards aligned, and object-contain
-                    fits each asset inside it whatever its own ratio is: three are ~16:9,
-                    but TurnItOn.gif is a much wider 2.7:1 that object-cover would crop by
-                    a third. The tinted box makes the leftover letterbox read as framing. */}
-                <img
-                  src={step.image}
-                  alt={step.title}
-                  className="aspect-video w-full rounded-lg border border-gray-100 bg-gray-25/60 object-contain dark:border-gray-600 dark:bg-gray-700/40"
-                />
                 <div className="flex items-start gap-2">
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[11px] font-semibold text-gray-500 dark:bg-gray-600 dark:text-gray-100">
                     {index + 1}
@@ -129,6 +117,15 @@ const LayerLensOnboarding = () => {
                     <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-300">{step.description}</p>
                   </div>
                 </div>
+                {/* A fixed video ratio keeps the four cards aligned, and object-contain
+                    fits each asset inside it whatever its own ratio is: three are ~16:9,
+                    but TurnItOn.gif is a much wider 2.7:1 that object-cover would crop by
+                    a third. The tinted box makes the leftover letterbox read as framing. */}
+                <img
+                  src={step.image}
+                  alt={step.title}
+                  className="aspect-video w-full rounded-lg border border-gray-100 bg-gray-25/60 object-contain dark:border-gray-600 dark:bg-gray-700/40"
+                />
               </div>
             ))}
           </div>
