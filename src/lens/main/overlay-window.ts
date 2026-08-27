@@ -261,6 +261,45 @@ export function applyOverlayMode(enabled: boolean): void {
   }
 }
 
+// Repaint nudges fired after a show, and the gap between them.
+const FIRST_FRAME_KICKS = 4;
+const FIRST_FRAME_KICK_MS = 60;
+let firstFrameTimer: ReturnType<typeof setTimeout> | null = null;
+
+/**
+ * Makes sure the window actually gets a frame drawn into it after being shown.
+ *
+ * A Wayland surface is mapped only once the client commits a frame to it, and a
+ * window coming back from hide() has nothing dirty to draw — React's tree is
+ * unchanged, so no repaint is scheduled and the compositor is handed nothing.
+ * Electron still reports the window as shown (its renderer even reports
+ * document.visibilityState "visible"), so everything downstream believes Lens is
+ * up while the screen stays empty, and the next press "toggles" an invisible
+ * window back off. That is what made the Lens key feel like it needed three or
+ * four presses.
+ *
+ * invalidate() forces the repaint. It is repeated a few times across the first
+ * frames because a single one occasionally still lands before the surface is
+ * ready to take it — the calls are cheap, and a redundant repaint of an
+ * already-visible overlay costs nothing visible.
+ */
+function forceFirstFrames(win: BrowserWindow): void {
+  if (firstFrameTimer) {
+    clearTimeout(firstFrameTimer);
+    firstFrameTimer = null;
+  }
+  let kicks = 0;
+  const kick = (): void => {
+    firstFrameTimer = null;
+    const w = getWin();
+    if (!w || w.isDestroyed() || w !== win) return;
+    w.webContents.invalidate();
+    kicks += 1;
+    if (kicks < FIRST_FRAME_KICKS) firstFrameTimer = setTimeout(kick, FIRST_FRAME_KICK_MS);
+  };
+  kick();
+}
+
 const FADE_IN_DURATION_MS = 80;
 const FADE_OUT_DURATION_MS = 150;
 const FADE_INTERVAL_MS = 16;
@@ -382,6 +421,10 @@ export function createOverlayWindow(onReady: () => void, showOnStart: boolean): 
 export function destroyOverlayWindow(): void {
   stopFade();
   cancelLinuxResizableSync();
+  if (firstFrameTimer) {
+    clearTimeout(firstFrameTimer);
+    firstFrameTimer = null;
+  }
   if (persistBoundsTimer) {
     clearTimeout(persistBoundsTimer);
     persistBoundsTimer = null;
@@ -428,6 +471,7 @@ export function showOverlay(fadeDelayMs = 0): void {
   if (LINUX && overlayStyleApplied && win.isResizable()) win.setResizable(false);
   if (overlayStyleApplied) win.showInactive();
   else win.show();
+  forceFirstFrames(win);
   if (overlayStyleApplied) scheduleLinuxResizableSync();
   if (fadeDelayMs <= 0) {
     fadeWindowOpacity(target, FADE_IN_DURATION_MS);
