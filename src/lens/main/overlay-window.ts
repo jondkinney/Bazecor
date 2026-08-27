@@ -2,6 +2,7 @@ import { BrowserWindow, screen } from "electron";
 import log from "electron-log/main";
 import LensOverlay from "../../main/managers/LensOverlay";
 import Window from "../../main/managers/Window";
+import { isAppQuitting } from "../../main/managers/AppLifecycle";
 import type { KeyboardModel, LensSettings, LensState } from "../shared/types";
 import { getLensSettings, getOverlayBounds, setOverlayBounds } from "./lens-settings";
 
@@ -261,6 +262,11 @@ export function applyOverlayMode(enabled: boolean): void {
   }
 }
 
+// Consecutive renderer reloads allowed before giving up (reset by a load that
+// completes) — see the render-process-gone handler in createOverlayWindow.
+const MAX_OVERLAY_RELOADS = 3;
+let overlayReloadAttempts = 0;
+
 // Repaint nudges fired after a show, and the gap between them.
 const FIRST_FRAME_KICKS = 4;
 const FIRST_FRAME_KICK_MS = 60;
@@ -379,6 +385,49 @@ export function createOverlayWindow(onReady: () => void, showOnStart: boolean): 
 
   LensOverlay.setWindow(w);
   w.loadURL(LENS_WINDOW_WEBPACK_ENTRY);
+
+  // The overlay's renderer process has been observed dying (a clean exit, no
+  // crash dump) while the window sits hidden for a few minutes, leaving a
+  // zombie BrowserWindow that show() can't bring back — no renderer means no
+  // frames, so the surface never maps and the Lens key summons nothing.
+  // Reload to spawn a fresh renderer: the window object itself is fine, and
+  // the page refetches its state on mount (App.tsx) while did-finish-load
+  // below re-applies the injected overlay classes. The logged reason/exitCode
+  // is Chromium's own verdict on why the process went away.
+  w.webContents.on("render-process-gone", (_e, details) => {
+    // On the way out the renderer legitimately goes away; reloading it there
+    // just races the shutdown (and a renderer that can no longer launch answers
+    // every reload with another "gone", which is a spin, not a recovery).
+    if (isAppQuitting() || w.isDestroyed()) return;
+    if (overlayReloadAttempts >= MAX_OVERLAY_RELOADS) {
+      log.error(
+        `[Lens] Overlay renderer gone (${details.reason}) and ${overlayReloadAttempts} reloads have not stuck — leaving it alone. Toggle Layer Lens off and on to rebuild it.`,
+      );
+      return;
+    }
+    overlayReloadAttempts += 1;
+    log.warn(`[Lens] Overlay renderer gone (reason: ${details.reason}, exitCode: ${details.exitCode}) -> reloading`);
+    w.webContents.reload();
+  });
+
+  // A renderer reload (crash recovery, webpack live-reload in dev) resets the
+  // <body> classes applyOverlayMode/applyResizeModeLive injected, leaving the
+  // overlay rendering its window-mode chrome. Re-inject the current mode after
+  // every load (the first one included — harmlessly redundant there).
+  w.webContents.on("did-finish-load", () => {
+    // A load that completes is a renderer that stuck, so the budget above is
+    // spent per incident rather than for the lifetime of the window.
+    overlayReloadAttempts = 0;
+    if (!overlayStyleApplied) return;
+    const settings = getLensSettings();
+    w.webContents
+      .executeJavaScript(
+        `document.body.classList.add('overlay');document.body.classList.${
+          settings.resizeMode ? "add" : "remove"
+        }('resize-mode');`,
+      )
+      .catch(() => {});
+  });
 
   w.once("ready-to-show", () => {
     log.info(`[Lens] Overlay window ready-to-show (showOnStart=${showOnStart})`);
