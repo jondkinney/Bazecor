@@ -133,30 +133,73 @@ class OverlayController {
       const wantsShow = getLastOverlayShown();
       const showOnStart = wantsShow && this.currentModel !== null;
       this.pendingShow = wantsShow && !showOnStart;
-      createOverlayWindow(() => {
-        // Stays true even when the overlay starts hidden: this is the master
-        // switch for the Lens key gestures, and a hidden overlay must still be
-        // summonable with LENS TAP / HOLD.
-        this.overlayActive = true;
-        // reloadModel(false) above ran before this window existed, so its own
-        // applyAspectRatioFor() call was a no-op (getWin() was still null) —
-        // and createOverlayWindow()/applyOverlayMode() restore whatever bounds
-        // were persisted from the last session, which may predate this ratio
-        // lock entirely. Re-apply it now that the window is actually there.
-        applyAspectRatioFor(this.currentModel?.product);
-        if (this.currentModel) {
-          pushModel(this.currentModel);
-          pushActiveLayer(this.activeLayer);
-        }
-        pushState(this.getState());
-        broadcastSettings(getLensSettings());
-      }, showOnStart);
+      this.buildOverlayWindow(showOnStart);
     }
     this.registerShortcut();
     this.checkMacosPermission();
     // Enabling Lens in the middle of a firmware update must not re-open the
     // keyboard; setFlashing(false) starts the listener once the flash is done.
     if (!this.flashing) this.hid.startWithRetry();
+  }
+
+  /** Creates the overlay window and hands the fresh renderer everything it needs
+   * to draw. Shared by enable() and the on-demand rebuild in overlayReadyFor(),
+   * so a window that comes back mid-session is wired up exactly like one created
+   * at enable time. */
+  private buildOverlayWindow(showOnStart: boolean): void {
+    createOverlayWindow(() => {
+      // Stays true even when the overlay starts hidden: this is the master
+      // switch for the Lens key gestures, and a hidden overlay must still be
+      // summonable with LENS TAP / HOLD.
+      this.overlayActive = true;
+      // reloadModel() may well have run before this window existed, so its own
+      // applyAspectRatioFor() call was a no-op (getWin() was still null) —
+      // and createOverlayWindow()/applyOverlayMode() restore whatever bounds
+      // were persisted from the last session, which may predate this ratio
+      // lock entirely. Re-apply it now that the window is actually there.
+      applyAspectRatioFor(this.currentModel?.product);
+      if (this.currentModel) {
+        pushModel(this.currentModel);
+        pushActiveLayer(this.activeLayer);
+      }
+      pushState(this.getState());
+      broadcastSettings(getLensSettings());
+    }, showOnStart);
+  }
+
+  /**
+   * Gate for every user-driven overlay gesture (Lens key TAP/HOLD, the tray
+   * item, Ctrl+Alt+L). Returns true when the overlay window is live and the
+   * gesture can go ahead.
+   *
+   * The window can disappear from under us: nothing in Bazecor closes it
+   * (disable() destroys it, which emits no "close"), but the compositor can —
+   * on Wayland the overlay becomes focusable, and therefore closable, while
+   * Resize Mode is on. Every gesture used to just `return` when that happened,
+   * which left the Lens key AND the tray item doing nothing at all, with not one
+   * line in the log, until Lens was toggled off and on in Preferences. Rebuild
+   * the window instead, and say so in the log — a gesture that can't act must
+   * never again fail invisibly.
+   *
+   * A rebuild returns false because the window only reveals itself once it is
+   * ready to show: this press is spent bringing Lens back, and the next one
+   * resumes toggling normally.
+   */
+  private overlayReadyFor(gesture: string): boolean {
+    if (!this.enabled) {
+      log.verbose(`[Lens] ${gesture} ignored — Lens is turned off`);
+      return false;
+    }
+    if (overlayAlive()) return true;
+    log.warn(`[Lens] ${gesture}: the overlay window is gone — rebuilding it`);
+    // The user just asked for Lens, so bring it back on screen (deferring, as
+    // enable() does, when there is no model yet to draw).
+    const showOnStart = this.currentModel !== null;
+    this.pendingShow = !showOnStart;
+    this.overlayActive = true;
+    setLastOverlayShown(true);
+    this.buildOverlayWindow(showOnStart);
+    return false;
   }
 
   disable(): void {
@@ -342,7 +385,7 @@ class OverlayController {
    * behaviour as the Lens key's own TAP (onOverlayTapAction) — the two are the
    * user's two ways of saying "show/hide it now" and must stay interchangeable. */
   toggleOverlay(): void {
-    if (!this.enabled || !overlayAlive()) return;
+    if (!this.overlayReadyFor("Tray/shortcut toggle")) return;
     this.clearLayerChangeHideTimer();
     this.layerAutoShowActive = false;
     // Toggle off what's actually on screen, not off `overlayActive`: the two
@@ -385,7 +428,7 @@ class OverlayController {
    * stuck false while the window reappeared, silently breaking the overlay
    * key (its TAP/HOLD handlers all guard on overlayActive). */
   ensureVisible(): void {
-    if (!this.enabled || !overlayAlive()) return;
+    if (!this.overlayReadyFor("Resize Mode")) return;
     if (this.overlayActive && isOverlayVisible()) return;
     this.overlayActive = true;
     this.setUserVisible(true);
@@ -483,7 +526,11 @@ class OverlayController {
   // originates from the OVERLAY_KEY superkey (eventType-based) or a dedicated
   // OVERLAY_TAP / OVERLAY_HOLD key (its own packet type).
   private onOverlayTapAction(): void {
-    if (!this.overlayActive || !overlayAlive()) return;
+    if (!this.overlayReadyFor("TAP")) return;
+    if (!this.overlayActive) {
+      log.verbose("[Lens] TAP ignored — overlay gestures are switched off");
+      return;
+    }
     this.clearLayerChangeHideTimer();
     this.layerAutoShowActive = false;
     log.verbose(`[Lens] TAP action → toggling visibility (currently ${isOverlayVisible() ? "visible" : "hidden"})`);
@@ -491,7 +538,11 @@ class OverlayController {
   }
 
   private onOverlayHoldStart(): void {
-    if (!this.overlayActive || !overlayAlive()) return;
+    if (!this.overlayReadyFor("HOLD")) return;
+    if (!this.overlayActive) {
+      log.verbose("[Lens] HOLD ignored — overlay gestures are switched off");
+      return;
+    }
     if (isOverlayVisible()) {
       log.verbose("[Lens] HOLD start ignored (Lens already visible)");
       return;

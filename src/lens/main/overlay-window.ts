@@ -357,6 +357,13 @@ export function createOverlayWindow(onReady: () => void, showOnStart: boolean): 
   // through destroyOverlayWindow(), which persists explicitly before destroy()).
   // destroy() itself never emits "close", so the two paths don't double-save.
   w.on("close", () => {
+    // Nothing in Bazecor closes this window — disable() destroys it, and
+    // destroy() emits no "close" — so arriving here means something outside
+    // did: the app quitting, or (on Wayland, where Resize Mode makes the
+    // overlay focusable and so closable) a compositor-side close aimed at it.
+    // That used to leave the Lens key and the tray item silently dead; the
+    // gestures rebuild the window now, but log it so the cause is visible.
+    log.info("[Lens] Overlay window is closing");
     if (overlayStyleApplied) {
       overlayBounds = w.getBounds();
       persistOverlayBounds();
