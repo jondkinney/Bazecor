@@ -139,6 +139,64 @@ function preventOverlayResize(e: { preventDefault(): void }): void {
   e.preventDefault();
 }
 
+// ── Linux (Wayland/tiling WMs) resize handling ────────────────────────────────
+// The overlay must MAP with fixed-size hints (resizable=false): min==max size is
+// what makes Hyprland and other tiling compositors auto-float it instead of
+// tiling it into the layout. But those same hints are exactly what blocks
+// compositor-side resizing — Hyprland clamps every resize to min==max — and the
+// in-app resize handles can't cover for it there: they drive win.setBounds()
+// from screenX/screenY math, and Wayland neither lets a client position itself
+// nor reports global pointer coordinates. So on Linux the compositor owns
+// move/resize: map with fixed-size hints, then once the surface is actually
+// mapped lift them (while Resize Mode is on) so SUPER+drag / resizewindow work,
+// and re-pin them before every hide so the NEXT map floats again.
+const LINUX = process.platform === "linux";
+let linuxResizableTimer: ReturnType<typeof setTimeout> | null = null;
+
+function cancelLinuxResizableSync(): void {
+  if (linuxResizableTimer) {
+    clearTimeout(linuxResizableTimer);
+    linuxResizableTimer = null;
+  }
+}
+
+/** Lifts the fixed-size mapping hints shortly after the overlay is shown (the
+ * delay lets the surface actually map first — float/tile is decided at map
+ * time, when the hints must still be in place). No-op off Linux.
+ *
+ * The delay is a race against the compositor: win.isVisible() flips
+ * immediately on show, but the Wayland surface only maps a few frames later —
+ * and on a busy main process (cold start with a device scan in flight) that
+ * has been observed to take >250ms, after which a too-early lift gets the
+ * overlay tiled into the layout instead of floated. 1s loses only "resize
+ * available a beat after the overlay appears", so err far on the late side.
+ * (A compositor window rule floating the overlay by title — "Dygma Lens" —
+ * makes this race harmless entirely; see the Linux note above.) */
+function scheduleLinuxResizableSync(): void {
+  if (!LINUX) return;
+  cancelLinuxResizableSync();
+  linuxResizableTimer = setTimeout(() => {
+    linuxResizableTimer = null;
+    const win = getWin();
+    if (win && !win.isDestroyed() && overlayStyleApplied && win.isVisible()) {
+      win.setResizable(getLensSettings().resizeMode);
+    }
+  }, 1000);
+}
+
+/** Linux replacement for guardOverlayBounds: instead of snapping external
+ * resizes back, adopt them — the compositor is the one driving them here. Only
+ * the size is trusted: Wayland position readback is not meaningful. */
+function adoptExternalResize(): void {
+  const win = getWin();
+  if (!win || !overlayStyleApplied) return;
+  const b = win.getBounds();
+  if (overlayLockedBounds) {
+    overlayLockedBounds = { ...overlayLockedBounds, width: b.width, height: b.height };
+  }
+  schedulePersistBounds();
+}
+
 export function applyOverlayMode(enabled: boolean): void {
   const win = getWin();
   if (!win) return;
@@ -160,11 +218,21 @@ export function applyOverlayMode(enabled: boolean): void {
     win.setAlwaysOnTop(true, "screen-saver");
     // Resize Mode wanting mouse events means the window can't be click-through.
     win.setIgnoreMouseEvents(!settings.resizeMode, { forward: true });
+    // Fixed-size at map on every platform: on Linux it's what floats the
+    // overlay on tiling compositors (see the Linux block above, which lifts it
+    // again after mapping); on Windows/macOS it stays locked for good and the
+    // in-app handles do the resizing.
     win.setResizable(false);
     win.removeListener("will-resize", preventOverlayResize);
     win.removeListener("resize", guardOverlayBounds);
-    win.on("will-resize", preventOverlayResize);
-    win.on("resize", guardOverlayBounds);
+    win.removeListener("resize", adoptExternalResize);
+    if (LINUX) {
+      win.on("resize", adoptExternalResize);
+      scheduleLinuxResizableSync();
+    } else {
+      win.on("will-resize", preventOverlayResize);
+      win.on("resize", guardOverlayBounds);
+    }
     win.webContents
       .executeJavaScript(
         `document.body.classList.add('overlay');${
@@ -175,8 +243,10 @@ export function applyOverlayMode(enabled: boolean): void {
     if (overlayBounds) win.setBounds(overlayBounds);
   } else {
     overlayLockedBounds = null;
+    cancelLinuxResizableSync();
     win.removeListener("will-resize", preventOverlayResize);
     win.removeListener("resize", guardOverlayBounds);
+    win.removeListener("resize", adoptExternalResize);
     overlayBounds = win.getBounds();
     persistOverlayBounds();
     win.setOpacity(1.0);
@@ -304,6 +374,7 @@ export function createOverlayWindow(onReady: () => void, showOnStart: boolean): 
 
 export function destroyOverlayWindow(): void {
   stopFade();
+  cancelLinuxResizableSync();
   if (persistBoundsTimer) {
     clearTimeout(persistBoundsTimer);
     persistBoundsTimer = null;
@@ -345,8 +416,12 @@ export function showOverlay(fadeDelayMs = 0): void {
   const target = overlayStyleApplied ? settings.opacity : 1.0;
   stopFade();
   win.setOpacity(0);
+  // Linux: re-pin the fixed-size hints for this map (a hidden window may still
+  // carry a previous lift), then lift them again once mapped.
+  if (LINUX && overlayStyleApplied && win.isResizable()) win.setResizable(false);
   if (overlayStyleApplied) win.showInactive();
   else win.show();
+  if (overlayStyleApplied) scheduleLinuxResizableSync();
   if (fadeDelayMs <= 0) {
     fadeWindowOpacity(target, FADE_IN_DURATION_MS);
     return;
@@ -364,8 +439,13 @@ export function hideOverlay(): void {
   const win = getWin();
   if (!win) return;
   overlayVisible = false;
+  cancelLinuxResizableSync();
   fadeWindowOpacity(0, FADE_OUT_DURATION_MS, () => {
-    getWin()?.hide();
+    const w = getWin();
+    if (!w) return;
+    // Linux: back to fixed-size while hidden so the next map floats again.
+    if (LINUX && overlayStyleApplied && w.isResizable()) w.setResizable(false);
+    w.hide();
   });
 }
 
@@ -380,6 +460,9 @@ export function applyResizeModeLive(v: boolean): void {
   const win = getWin();
   if (!win || !overlayStyleApplied) return;
   win.setIgnoreMouseEvents(!v, { forward: true });
+  // Linux: the compositor does the resizing (see the Linux block above), so the
+  // fixed-size hints follow Resize Mode directly while the window is mapped.
+  if (LINUX && win.isVisible()) win.setResizable(v);
   win.webContents
     .executeJavaScript(v ? `document.body.classList.add('resize-mode');` : `document.body.classList.remove('resize-mode');`)
     .catch(() => {});
